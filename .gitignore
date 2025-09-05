@@ -5,7 +5,6 @@
 *.swp
 .DS_Store
 .atom/
-.build/
 .buildlog/
 .history
 .svn/
@@ -30,8 +29,8 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
-/coverage/
+build/
+coverage/
 
 # Symbolication related
 app.*.symbols
@@ -43,3 +42,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#====================================================#
+# CUSTOM ADDITIONS FOR NAAMJAAP (VERY IMPORTANT)     #
+#====================================================#
+
+# Ignore Firebase configuration file to protect API keys.
+/android/app/google-services.json
+
+# Ignore signing secrets to protect your upload key.
+/android/key.properties
+/android/app/*.jks
+
+# Ignore Gradle cache and distribution files to prevent build errors and large uploads.
+/android/.gradle
+/android/gradle/
+.gradle/

@@ -121,4 +121,9 @@ class FirestoreService {
     // We listen to a specific, single document that our function will update.
     return _db.collection('app_config').doc('daily_quote').snapshots();
   }
+
+  /// Updates the photoURL field in a user's document.
+  Future<void> updateUserProfilePicture(String uid, String newPhotoUrl) {
+    return _db.collection('users').doc(uid).update({'photoURL': newPhotoUrl});
+  }
 }

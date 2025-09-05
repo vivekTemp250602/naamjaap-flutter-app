@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
+import 'package:naamjaap/services/storage_service.dart';
 import 'package:naamjaap/widgets/share_card.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,10 +24,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirestoreService _firestoreService = FirestoreService();
+  final StorageService _storageService = StorageService();
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
 
   String _shareableName = '';
+  bool _isUploading = false;
   int _shareableJapps = 0;
 
   // The sign-out logic.
@@ -34,6 +37,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await AudioService().stop();
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
+  }
+
+  // Upload Profile Image
+  Future<void> _pickAndUploadImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+
+    if (image == null) return; // User cancelled the picker
+
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      // 1. Upload the image to Firebase Storage
+      final String downloadUrl =
+          await _storageService.uploadProfilePicture(_currentUser.uid, image);
+
+      // 2. Update the user's document in Firestore with the new URL
+      await _firestoreService.updateUserProfilePicture(
+          _currentUser.uid, downloadUrl);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Profile picture updated successfully!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Failed to upload image. Please try again.')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
+      }
+    }
   }
 
   Future<void> _triggerShare() async {
@@ -190,7 +236,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             StreamBuilder<DocumentSnapshot>(
               stream: _firestoreService.getUserStatsStream(_currentUser.uid),
               builder: (context, userSnapshot) {
-                if (userSnapshot.connectionState == ConnectionState.waiting) {
+                if (userSnapshot.connectionState == ConnectionState.waiting &&
+                    !_isUploading) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
@@ -213,12 +260,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Card(
           child: Padding(
-            // CORRECTED: Replaced the incorrect large padding with a standard one.
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: _pickImage,
+                  onTap: _pickAndUploadImage,
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
@@ -229,15 +275,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             NetworkImage(userData['photoURL'] ?? ''),
                         backgroundColor: Colors.grey.shade300,
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
+                      if (_isUploading)
+                        const CircularProgressIndicator(
+                          color: Colors.white,
                         ),
-                        child: const Icon(Icons.edit,
-                            color: Colors.white, size: 20),
-                      ),
+                      if (!_isUploading)
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(6.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),

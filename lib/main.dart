@@ -1,9 +1,10 @@
-import 'dart:ui'; // Required for PlatformDispatcher
+import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:naamjaap/screens/splash_screen.dart';
+import 'package:naamjaap/services/remote_config_service.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -15,6 +16,10 @@ Future<void> main() async {
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
+
+  // Initialize Remote Config
+  await RemoteConfigService().initialize();
+
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

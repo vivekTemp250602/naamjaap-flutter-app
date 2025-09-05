@@ -9,6 +9,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:naamjaap/services/achievements_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
 import 'package:naamjaap/widgets/quote_card.dart';
@@ -221,7 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: const BouncingScrollPhysics(),
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Row(
-                            children: AppConstants.mantras.map((mantra) {
+                            children:
+                                RemoteConfigService().mantras.map((mantra) {
                               final isSelected = _selectedMantra == mantra;
                               return Padding(
                                 padding:

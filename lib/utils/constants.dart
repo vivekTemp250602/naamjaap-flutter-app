@@ -29,6 +29,17 @@ class AppConstants {
     omNamahShivay: 'assets/images/om_namah_shivay.png',
   };
 
+  // A default quote to show on first launch or if the server is unavailable.
+  static const Map<String, String> defaultQuote = {
+    'text_en':
+        'It is better to live your own destiny imperfectly than to live an imitation of somebody else’s life with perfection.',
+    'text_hi':
+        'अपने स्वयं के भाग्य को अपूर्ण रूप से जीना किसी और के जीवन की नकल को पूर्णता के साथ जीने से बेहतर है।',
+    'text_sa':
+        'श्रेयान्स्वधर्मो विगुणः परधर्मात्स्वनुष्ठितात्। स्वधर्मे निधनं श्रेयः परधर्मो भयावहः।।',
+    'source': 'Bhagavad Gita 3.35',
+  };
+
   // Keys for SharedPreferences
   static const String prefsKeyMute = 'isMuted';
   static const String prefsKeyVibrationEnabled = 'isVibrationEnabled';

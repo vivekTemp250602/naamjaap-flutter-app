@@ -1,6 +1,6 @@
+/* eslint-disable max-len */
 const admin = require("firebase-admin");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
-const {VertexAI} = require("@google-cloud/vertexai");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -8,6 +8,7 @@ const db = admin.firestore();
 // ===================================================================
 // Function 1: Send Daily Reminder Notifications
 // ===================================================================
+// Runs every day at 8:00 PM Indian Standard Time (IST).
 exports.sendDailyReminders = onSchedule({
   schedule: "0 20 * * *",
   timeZone: "Asia/Kolkata",
@@ -59,10 +60,10 @@ exports.sendDailyReminders = onSchedule({
   return null;
 });
 
-
 // ===================================================================
 // Function 2: Reset the Weekly Leaderboard
 // ===================================================================
+// Runs every Monday at 12:05 AM UTC.
 exports.resetWeeklyLeaderboard = onSchedule({
   schedule: "5 0 * * 1",
   timeZone: "UTC",
@@ -86,51 +87,67 @@ exports.resetWeeklyLeaderboard = onSchedule({
   return null;
 });
 
-
 // ===================================================================
-// Function 3: Send the API-Powered Daily Quote
+// Function 3: Send the Daily Quote from Your Firestore Library
 // ===================================================================
+// Runs every day at 7:00 AM Indian Standard Time (IST).
 exports.sendDailyQuote = onSchedule({
   schedule: "0 7 * * *",
   timeZone: "Asia/Kolkata",
+  // NEW: Add a retry config for added resilience
+  retryConfig: {
+    retryCount: 3,
+  },
 }, async (event) => {
-  console.log("Running AI-powered daily quote function...");
+  console.log("Running resilient daily quote function...");
   try {
-    // 1. Initialize Vertex AI with your project details
-    const vertexAI = new VertexAI({project: process.env.GCLOUD_PROJECT, location: "us-central1"});
-    const model = "gemini-1.0-pro";
+    // We will try up to 5 times to find a complete quote.
+    for (let i = 0; i < 5; i++) {
+      console.log(`Attempt ${i + 1} to find a complete quote...`);
+      const curatedVerses = [
+        {chapter: 2, verse: 47}, {chapter: 2, verse: 20}, {chapter: 4, verse: 7},
+        {chapter: 9, verse: 22}, {chapter: 18, verse: 66}, {chapter: 12, verse: 14},
+        {chapter: 3, verse: 27}, {chapter: 6, verse: 5},
+      ];
+      const randomVerseInfo = curatedVerses[Math.floor(Math.random() * curatedVerses.length)];
+      const apiUrl = `https://bhagavadgita.io/slok/${randomVerseInfo.chapter}/${randomVerseInfo.verse}/`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        console.warn(`API call failed for verse ${randomVerseInfo.chapter}.${randomVerseInfo.verse}. Trying again.`);
+        continue; // Skip to the next iteration of the loop
+      }
+      const quoteData = await response.json();
 
-    // 2. Craft a powerful, specific prompt for the AI
-    // eslint-disable-next-line max-len
-    const prompt = `Act as a wise spiritual guide. Provide one profound, inspiring, and lesser-known quote from a sacred Hindu text like the Bhagavad Gita, the Upanishads, or the Puranas. The quote should be about devotion, mindfulness, or the nature of the self. Format your response as a JSON object with two keys: "text" for the quote, and "source" for its origin (e.g., "Bhagavad Gita 2.47"). Do not include markdown formatting like \`\`\`json.`;
-    const generativeModel = vertexAI.getGenerativeModel({model: model});
-    // 3. Send the prompt to Gemini
-    const resp = await generativeModel.generateContent(prompt);
-    const responseData = await resp.response;
-    const content = responseData.candidates[0].content.parts[0].text;
-    // 4. Parse the AI's JSON response
-    const quoteJson = JSON.parse(content);
+      const textEN = quoteData.siva && quoteData.siva.et ? quoteData.siva.et : null;
+      const textHI = quoteData.tej && quoteData.tej.ht ? quoteData.tej.ht : null;
+      const textSA = quoteData.transliteration;
+      const source = `Bhagavad Gita ${quoteData.chapter}.${quoteData.verse}`;
 
-    const dailyQuote = {
-      text: quoteJson.text,
-      source: quoteJson.source,
-    };
+      // If all three texts are valid, we have found our quote!
+      if (textEN && textHI && textSA) {
+        const dailyQuote = {
+          text_en: textEN, text_hi: textHI, text_sa: textSA, source: source,
+        };
+        await db.collection("app_config").doc("daily_quote").set(dailyQuote);
 
-    // 5. Save and send the quote, just like before
-    await db.collection("app_config").doc("daily_quote").set(dailyQuote);
+        const payload = {
+          notification: {
+            title: "Wisdom for Your Day 🙏",
+            body: `"${dailyQuote.text_en}" — ${dailyQuote.source}`,
+          },
+          topic: "daily_quote",
+        };
 
-    const payload = {
-      notification: {
-        title: "Wisdom for Your Day 🙏",
-        body: `"${dailyQuote.text}" — ${dailyQuote.source}`,
-      },
-      topic: "daily_quote",
-    };
+        await admin.messaging().send(payload);
+        console.log(`SUCCESS: Found and sent quote ${source} after ${i + 1} attempts.`);
+        return null; // Exit the function successfully.
+      }
+    }
 
-    await admin.messaging().send(payload);
-    console.log(`Successfully sent AI-generated daily quote: ${dailyQuote.source}`);
+    // If the loop finishes without finding a complete quote
+    console.error("Failed to find a complete quote after 5 attempts.");
   } catch (error) {
-    console.error("Error with Gemini AI or sending daily quote:", error);
+    console.error("A critical error occurred in sendDailyQuote function:", error);
   }
   return null;
 });

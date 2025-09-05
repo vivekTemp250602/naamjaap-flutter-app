@@ -17,6 +17,11 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
 
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   // Initialize Remote Config
   await RemoteConfigService().initialize();
 

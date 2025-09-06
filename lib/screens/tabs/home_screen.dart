@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _incrementCounter(int currentTotalCount) {
     if (_isVibrationEnabled) {
-      HapticFeedback.lightImpact();
+      HapticFeedback.mediumImpact();
     }
 
     final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');

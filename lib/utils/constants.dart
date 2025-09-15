@@ -3,14 +3,12 @@ class AppConstants {
   static const String hareKrishna = 'Hare Krishna';
   static const String radhaRadha = 'Radha Radha';
   static const String ramRam = 'Ram Ram';
-  static const String omNamahShivay = 'Om Namah Shivay';
 
   // List of all mantras for easy mapping in the UI
   static const List<String> mantras = [
     hareKrishna,
     radhaRadha,
     ramRam,
-    omNamahShivay,
   ];
 
   // Map of mantra names to their audio file paths
@@ -18,7 +16,6 @@ class AppConstants {
     hareKrishna: 'assets/audio/hare_krishna.mp3',
     radhaRadha: 'assets/audio/radha_radha.mp3',
     ramRam: 'assets/audio/ram_ram.mp3',
-    omNamahShivay: 'assets/audio/om_namah_shivay.mp3',
   };
 
   // Map of mantra names to their background image paths
@@ -26,7 +23,6 @@ class AppConstants {
     hareKrishna: 'assets/images/hare_krishna.png',
     radhaRadha: 'assets/images/radha_radha.png',
     ramRam: 'assets/images/ram_ram.png',
-    omNamahShivay: 'assets/images/om_namah_shivay.png',
   };
 
   // A default quote to show on first launch or if the server is unavailable.

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 const admin = require("firebase-admin");
+const {onCall, HttpsError} = require("firebase-functions/v2/https");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 
 admin.initializeApp();
@@ -90,64 +91,107 @@ exports.resetWeeklyLeaderboard = onSchedule({
 // ===================================================================
 // Function 3: Send the Daily Quote from Your Firestore Library
 // ===================================================================
-// Runs every day at 7:00 AM Indian Standard Time (IST).
+// Runs every day at 1:00 AM Indian Standard Time (IST).
 exports.sendDailyQuote = onSchedule({
-  schedule: "0 7 * * *",
+  schedule: "0 1 * * *", // Now set to 1:00 AM as you requested
   timeZone: "Asia/Kolkata",
-  // NEW: Add a retry config for added resilience
-  retryConfig: {
-    retryCount: 3,
-  },
 }, async (event) => {
-  console.log("Running resilient daily quote function...");
+  console.log("Running daily quote function from Firestore library...");
   try {
-    // We will try up to 5 times to find a complete quote.
-    for (let i = 0; i < 5; i++) {
-      console.log(`Attempt ${i + 1} to find a complete quote...`);
-      const curatedVerses = [
-        {chapter: 2, verse: 47}, {chapter: 2, verse: 20}, {chapter: 4, verse: 7},
-        {chapter: 9, verse: 22}, {chapter: 18, verse: 66}, {chapter: 12, verse: 14},
-        {chapter: 3, verse: 27}, {chapter: 6, verse: 5},
-      ];
-      const randomVerseInfo = curatedVerses[Math.floor(Math.random() * curatedVerses.length)];
-      const apiUrl = `https://bhagavadgita.io/slok/${randomVerseInfo.chapter}/${randomVerseInfo.verse}/`;
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
-        console.warn(`API call failed for verse ${randomVerseInfo.chapter}.${randomVerseInfo.verse}. Trying again.`);
-        continue; // Skip to the next iteration of the loop
-      }
-      const quoteData = await response.json();
-
-      const textEN = quoteData.siva && quoteData.siva.et ? quoteData.siva.et : null;
-      const textHI = quoteData.tej && quoteData.tej.ht ? quoteData.tej.ht : null;
-      const textSA = quoteData.transliteration;
-      const source = `Bhagavad Gita ${quoteData.chapter}.${quoteData.verse}`;
-
-      // If all three texts are valid, we have found our quote!
-      if (textEN && textHI && textSA) {
-        const dailyQuote = {
-          text_en: textEN, text_hi: textHI, text_sa: textSA, source: source,
-        };
-        await db.collection("app_config").doc("daily_quote").set(dailyQuote);
-
-        const payload = {
-          notification: {
-            title: "Wisdom for Your Day 🙏",
-            body: `"${dailyQuote.text_en}" — ${dailyQuote.source}`,
-          },
-          topic: "daily_quote",
-        };
-
-        await admin.messaging().send(payload);
-        console.log(`SUCCESS: Found and sent quote ${source} after ${i + 1} attempts.`);
-        return null; // Exit the function successfully.
-      }
+    // 1. Get all available quotes from your personal library.
+    const quotesSnapshot = await db.collection("quotes").get();
+    if (quotesSnapshot.empty) {
+      console.log("No quotes found in the 'quotes' collection. Exiting.");
+      return null;
     }
+    // 2. Select a random quote from the documents you created.
+    const quotes = quotesSnapshot.docs;
+    const randomQuoteDoc = quotes[Math.floor(Math.random() * quotes.length)];
+    const dailyQuote = randomQuoteDoc.data();
 
-    // If the loop finishes without finding a complete quote
-    console.error("Failed to find a complete quote after 5 attempts.");
+    // 3. Save the selected quote to the public 'daily_quote' document.
+    await db.collection("app_config").doc("daily_quote").set(dailyQuote);
+
+    // 4. Create the push notification payload.
+    const payload = {
+      notification: {
+        title: "Wisdom for Your Day 🙏",
+        body: `"${dailyQuote.text_en}" — ${dailyQuote.source}`,
+      },
+      topic: "daily_quote",
+    };
+
+    // 5. Send the notification.
+    await admin.messaging().send(payload);
+    console.log(`Successfully sent daily quote: ${dailyQuote.source}`);
   } catch (error) {
-    console.error("A critical error occurred in sendDailyQuote function:", error);
+    console.error("Error sending daily quote from Firestore:", error);
   }
   return null;
+});
+
+// ===================================================================
+// Function 4: Add a New Quote to the Library from a Google Sheet
+// ===================================================================
+exports.addQuoteFromSheet = onCall(async (request) => {
+  const data = request.data;
+  try {
+    const writeResult = await db.collection("quotes").add({
+      text_en: data.text_en,
+      text_hi: data.text_hi || "",
+      text_sa: data.text_sa || "",
+      source: data.source,
+    });
+
+    console.log(`Successfully add a new quote with ID: {$writeResult.id}`);
+    return {result: `Quote added successfully: ${writeResult.id}`};
+  } catch (error) {
+    console.error("Error writing new quote to Firestore:", error);
+    throw new HttpsError(
+        "internal",
+        "Failed to add quote.",
+    );
+  }
+});
+
+// ===================================================================
+// Function 5: Add a Batch of Quotes to the Library from a Google Sheet
+// ===================================================================
+exports.addQuotesInBatch = onCall(async (request) => {
+  // We expect the Google Sheet to send us an ARRAY of quote objects.
+  const quotes = request.data.quotes;
+  // Security and validation check.
+  if (!quotes || !Array.isArray(quotes) || quotes.length === 0) {
+    throw new HttpsError(
+        "invalid-argument",
+        "The function must be called with a non-empty 'quotes' array.",
+    );
+  }
+
+  // Use a Firestore Batched Write for maximum efficiency.
+  // This performs all the writes in a single, atomic operation.
+  const batch = db.batch();
+  quotes.forEach((quote) => {
+    // For each quote in our "cargo shipment," add it to the batch.
+    const docRef = db.collection("quotes").doc(); // Create a new document reference
+    batch.set(docRef, {
+      text_en: quote.text_en || "",
+      text_hi: quote.text_hi || "",
+      text_sa: quote.text_sa || "",
+      source: quote.source || "Unknown",
+    });
+  });
+
+  try {
+    // Commit the entire batch to the database at once.
+    await batch.commit();
+    console.log(`Successfully added a batch of ${quotes.length} quotes.`);
+    return {result: `Successfully added ${quotes.length} quotes.`};
+  } catch (error) {
+    console.error("Error writing batch of quotes to Firestore:", error);
+    throw new HttpsError(
+        "internal",
+        "Failed to add batch of quotes.",
+    );
+  }
 });

@@ -40,8 +40,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
     ];
 
     _screenTitles = [
-      const Text('Home'), // Simple text for the Home screen
-      // NEW: A custom title widget for the Leaderboard!
+      const Text('Home'),
       Row(
         mainAxisSize: MainAxisSize.min, // Important to keep the Row compact
         children: [

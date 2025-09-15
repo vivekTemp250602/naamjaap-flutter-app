@@ -32,13 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
   late ConfettiController _milestoneConfettiController;
   late ConfettiController _malaConfettiController;
 
-  // State variables are now simple preferences
+  // State variables are now only for user preferences, not for counters.
   String _selectedMantra = AppConstants.hareKrishna;
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
   bool _isQuoteDismissedToday = false;
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -49,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
 
-    _initializeScreen();
+    _loadPreferences();
 
     _playerStateSubscription =
         _audioService.onPlayerStateChanged.listen((state) {
@@ -68,10 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- Helper Methods ---
 
-  Future<void> _initializeScreen() async {
-    setState(() => _isLoading = true);
+  Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-
     final lastDismissedDate = prefs.getString('lastQuoteDismissedDate') ?? '';
     final todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final selectedMantra =
@@ -87,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedMantra = selectedMantra;
         _isMuted = isMuted;
         _isVibrationEnabled = isVibrationEnabled;
-        _isLoading = false;
       });
       await _audioService.setMuted(_isMuted);
     }
@@ -112,9 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
     await _saveSelectedMantra(mantra);
   }
 
+  // This function now takes the current total count directly from the StreamBuilder.
   void _incrementCounter(int currentTotalCount) {
     if (_isVibrationEnabled) {
-      HapticFeedback.mediumImpact();
+      HapticFeedback.lightImpact();
     }
 
     final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');
@@ -124,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final newTotal = currentTotalCount + 1;
     if (newTotal > 0 && newTotal % 108 == 0) {
       _malaConfettiController.play();
+      _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
     } else if (newTotal > 0 && newTotal % 500 == 0) {
       _milestoneConfettiController.play();
     }
@@ -179,9 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              Colors.black.withOpacity(0.6),
-              Colors.black.withOpacity(0.3),
-              Colors.black.withOpacity(0.6)
+              Colors.black.withAlpha(150),
+              Colors.black.withAlpha(60),
+              Colors.black.withAlpha(150)
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
           ),
         ),
@@ -190,283 +188,237 @@ class _HomeScreenState extends State<HomeScreen> {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Colors.white))
-                : StreamBuilder<DocumentSnapshot>(
-                    stream: _firestoreService.getUserStatsStream(_uid),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData || !snapshot.data!.exists) {
-                        return const Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.white));
-                      }
-                      final userData =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      final int streakCount = userData['currentStreak'] ?? 0;
-                      final jappsMap =
-                          userData['japps'] as Map<String, dynamic>? ?? {};
-                      final mantraKey =
-                          _selectedMantra.toLowerCase().replaceAll(' ', '_');
-                      final int totalMantraCount =
-                          jappsMap[mantraKey] as int? ?? 0;
-                      final int malaProgressCounter = totalMantraCount % 108;
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: _firestoreService.getUserStatsStream(_uid),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || !snapshot.data!.exists) {
+                  return const Center(
+                      child: CircularProgressIndicator(color: Colors.white));
+                }
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                final int streakCount = userData['currentStreak'] ?? 0;
+                final jappsMap =
+                    userData['japps'] as Map<String, dynamic>? ?? {};
+                final mantraKey =
+                    _selectedMantra.toLowerCase().replaceAll(' ', '_');
+                final int totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
 
-                      return Column(
-                        children: [
-                          // --- TOP UI ELEMENTS ---
-                          if (!_isQuoteDismissedToday)
-                            Dismissible(
-                              key:
-                                  ValueKey(userData['uid']), // Use a stable key
-                              onDismissed: (direction) => _dismissQuote(),
-                              child: StreamBuilder<DocumentSnapshot>(
-                                stream: _firestoreService.getDailyQuoteStream(),
-                                builder: (context, quoteSnapshot) {
-                                  if (snapshot.hasError) {
-                                    return QuoteCard(
-                                      textEN:
-                                          AppConstants.defaultQuote['text_en']!,
-                                      textHI:
-                                          AppConstants.defaultQuote['text_hi']!,
-                                      textSA:
-                                          AppConstants.defaultQuote['text_sa']!,
-                                      source:
-                                          AppConstants.defaultQuote['source']!,
-                                    );
-                                  }
+                // The "Mala Progress" is now DERIVED directly from the live total count.
+                final int malaProgressCounter = totalMantraCount % 108;
 
-                                  if (snapshot.connectionState ==
-                                          ConnectionState.waiting ||
-                                      !snapshot.data!.exists) {
-                                    return QuoteCard(
-                                      textEN:
-                                          AppConstants.defaultQuote['text_en']!,
-                                      textHI:
-                                          AppConstants.defaultQuote['text_hi']!,
-                                      textSA:
-                                          AppConstants.defaultQuote['text_sa']!,
-                                      source:
-                                          AppConstants.defaultQuote['source']!,
-                                    );
-                                  }
+                return Column(
+                  children: [
+                    // --- TOP UI ELEMENTS ---
+                    if (!_isQuoteDismissedToday)
+                      Dismissible(
+                        key: ValueKey(userData['uid']), // Use a stable key
+                        onDismissed: (direction) => _dismissQuote(),
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: _firestoreService.getDailyQuoteStream(),
+                          builder: (context, quoteSnapshot) {
+                            if (!quoteSnapshot.hasData ||
+                                quoteSnapshot.connectionState ==
+                                    ConnectionState.waiting ||
+                                !quoteSnapshot.data!.exists) {
+                              return QuoteCard(
+                                textEN: AppConstants.defaultQuote['text_en']!,
+                                textHI: AppConstants.defaultQuote['text_hi']!,
+                                textSA: AppConstants.defaultQuote['text_sa']!,
+                                source: AppConstants.defaultQuote['source']!,
+                              );
+                            }
+                            final quoteData = quoteSnapshot.data!.data()
+                                as Map<String, dynamic>;
+                            return QuoteCard(
+                              textEN: quoteData['text_en'] ?? '...',
+                              textHI: quoteData['text_hi'] ?? '...',
+                              textSA: quoteData['text_sa'] ?? '...',
+                              source: quoteData['source'] ?? '...',
+                            );
+                          },
+                        ),
+                      ),
 
-                                  final quoteData = snapshot.data!.data()
-                                      as Map<String, dynamic>;
-                                  return Dismissible(
-                                    key: ValueKey(quoteData['source']),
-                                    onDismissed: (direction) => _dismissQuote(),
-                                    child: QuoteCard(
-                                      textEN: quoteData['text_en'] ??
-                                          AppConstants.defaultQuote['text_en'],
-                                      textHI: quoteData['text_hi'] ??
-                                          AppConstants.defaultQuote['text_hi']!,
-                                      textSA: quoteData['text_sa'] ??
-                                          AppConstants.defaultQuote['text_sa']!,
-                                      source: quoteData['source'] ??
-                                          AppConstants.defaultQuote['source']!,
+                    Chip(
+                      avatar: Icon(Icons.local_fire_department,
+                          color: Colors.orange.shade800),
+                      label: Text('$streakCount Day Streak',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      backgroundColor: Colors.white.withOpacity(0.8),
+                      elevation: 4,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: SizedBox(
+                        height: 50,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            children:
+                                RemoteConfigService().mantras.map((mantra) {
+                              final isSelected = _selectedMantra == mantra;
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 6.0),
+                                child: GestureDetector(
+                                  onTap: () => _onMantraSelected(mantra),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? Colors.orange.withOpacity(0.9)
+                                          : Colors.black.withOpacity(0.3),
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                          color: isSelected
+                                              ? Colors.orange.shade300
+                                              : Colors.white.withOpacity(0.5),
+                                          width: 2),
                                     ),
-                                  );
-                                },
+                                    child: Text(mantra,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal)),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(_isVibrationEnabled
+                                ? Icons.vibration
+                                : Icons.mobile_off_rounded),
+                            iconSize: 28,
+                            color: Colors.white.withOpacity(0.9),
+                            onPressed: _toggleVibration,
+                            tooltip: _isVibrationEnabled
+                                ? 'Vibration On'
+                                : 'Vibration Off',
+                          ),
+                          IconButton(
+                            icon: Icon(
+                                _isMuted ? Icons.volume_off : Icons.volume_up),
+                            iconSize: 28,
+                            color: Colors.white.withOpacity(0.9),
+                            onPressed: _toggleMute,
+                            tooltip: _isMuted ? 'Sound Off' : 'Sound On',
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // --- CENTER UI ELEMENTS ---
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: 340,
+                            height: 340,
+                            child: CustomPaint(
+                              painter: MalaPainter(
+                                beadCount: 108,
+                                activeBeadIndex: malaProgressCounter,
                               ),
                             ),
-
-                          Chip(
-                            avatar: Icon(Icons.local_fire_department,
-                                color: Colors.orange.shade800),
-                            label: Text('$streakCount Day Streak',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            backgroundColor: Colors.white.withOpacity(0.8),
-                            elevation: 4,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: SizedBox(
-                              height: 50,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: Row(
-                                  children: RemoteConfigService()
-                                      .mantras
-                                      .map((mantra) {
-                                    final isSelected =
-                                        _selectedMantra == mantra;
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0),
-                                      child: GestureDetector(
-                                        onTap: () => _onMantraSelected(mantra),
-                                        child: AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? Colors.orange.withOpacity(0.9)
-                                                : Colors.black.withOpacity(0.3),
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            border: Border.all(
-                                                color: isSelected
-                                                    ? Colors.orange.shade300
-                                                    : Colors.white
-                                                        .withOpacity(0.5),
-                                                width: 2),
-                                          ),
-                                          child: Text(mantra,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: isSelected
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal)),
+                          GestureDetector(
+                            onTap: () => _incrementCounter(totalMantraCount),
+                            child: Container(
+                              width: 260,
+                              height: 260,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.orange.shade700,
+                                gradient: RadialGradient(colors: [
+                                  Colors.orange.shade500,
+                                  Colors.orange.shade800
+                                ]),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.orange.shade900
+                                          .withOpacity(0.7),
+                                      spreadRadius: 2,
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10)),
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      spreadRadius: 10,
+                                      blurRadius: 40),
+                                ],
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      transitionBuilder: (Widget child,
+                                          Animation<double> animation) {
+                                        return ScaleTransition(
+                                            scale: animation, child: child);
+                                      },
+                                      child: Text(
+                                        (malaProgressCounter == 0 &&
+                                                totalMantraCount > 0)
+                                            ? "108"
+                                            : (malaProgressCounter).toString(),
+                                        key: ValueKey<int>(totalMantraCount),
+                                        style: const TextStyle(
+                                          fontSize: 72,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(
+                                                blurRadius: 10.0,
+                                                color: Colors.black54,
+                                                offset: Offset(2.0, 2.0))
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  }).toList(),
+                                    ),
+                                    Text(
+                                      'Total: ${totalMantraCount.toString()}',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.7),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 8.0, right: 16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: Icon(_isVibrationEnabled
-                                      ? Icons.vibration
-                                      : Icons.mobile_off_rounded),
-                                  iconSize: 28,
-                                  color: Colors.white.withOpacity(0.9),
-                                  onPressed: _toggleVibration,
-                                  tooltip: _isVibrationEnabled
-                                      ? 'Vibration On'
-                                      : 'Vibration Off',
-                                ),
-                                IconButton(
-                                  icon: Icon(_isMuted
-                                      ? Icons.volume_off
-                                      : Icons.volume_up),
-                                  iconSize: 28,
-                                  color: Colors.white.withOpacity(0.9),
-                                  onPressed: _toggleMute,
-                                  tooltip: _isMuted ? 'Sound Off' : 'Sound On',
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // --- CENTER UI ELEMENTS ---
-                          Expanded(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 340,
-                                  height: 340,
-                                  child: CustomPaint(
-                                    painter: MalaPainter(
-                                      beadCount: 108,
-                                      activeBeadIndex: malaProgressCounter,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () =>
-                                      _incrementCounter(totalMantraCount),
-                                  child: Container(
-                                    width: 260,
-                                    height: 260,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.orange.shade700,
-                                      gradient: RadialGradient(colors: [
-                                        Colors.orange.shade500,
-                                        Colors.orange.shade800
-                                      ]),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.orange.shade900
-                                                .withOpacity(0.7),
-                                            spreadRadius: 2,
-                                            blurRadius: 20,
-                                            offset: const Offset(0, 10)),
-                                        BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                            spreadRadius: 10,
-                                            blurRadius: 40),
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          AnimatedSwitcher(
-                                            duration: const Duration(
-                                                milliseconds: 200),
-                                            transitionBuilder: (Widget child,
-                                                Animation<double> animation) {
-                                              return ScaleTransition(
-                                                  scale: animation,
-                                                  child: child);
-                                            },
-                                            child: Text(
-                                              (malaProgressCounter == 0 &&
-                                                      totalMantraCount > 0)
-                                                  ? "108"
-                                                  : (malaProgressCounter)
-                                                      .toString(),
-                                              key: ValueKey<int>(
-                                                  totalMantraCount),
-                                              style: const TextStyle(
-                                                fontSize: 72,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                                shadows: [
-                                                  Shadow(
-                                                      blurRadius: 10.0,
-                                                      color: Colors.black54,
-                                                      offset: Offset(2.0, 2.0))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'Total: ${totalMantraCount.toString()}',
-                                            style: TextStyle(
-                                              color:
-                                                  Colors.white.withOpacity(0.7),
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // --- BOTTOM UI ELEMENTS ---
-                          Text('Tap to Chant',
-                              style: TextStyle(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 18)),
-                          const SizedBox(height: 36),
                         ],
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+
+                    // --- BOTTOM UI ELEMENTS ---
+                    Text('Tap to Chant',
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 18)),
+                    const SizedBox(height: 36),
+                  ],
+                );
+              },
+            ),
           ),
         ),
 

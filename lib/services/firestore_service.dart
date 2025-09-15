@@ -81,6 +81,23 @@ class FirestoreService {
         .snapshots();
   }
 
+  // NEW: A more flexible method for batch updates.
+  Future<void> batchIncrementJappCount({
+    required String uid,
+    required String mantraKey,
+    required int incrementBy,
+  }) async {
+    final userRef = _db.collection('users').doc(uid);
+
+    return userRef.update({
+      'japps.$mantraKey': FieldValue.increment(incrementBy),
+      'total_japps': FieldValue.increment(incrementBy),
+      'weekly_total_japps': FieldValue.increment(incrementBy),
+      'lastChantDate': FieldValue.serverTimestamp(),
+      'lastActive': FieldValue.serverTimestamp(),
+    });
+  }
+
   /// Returns a stream of a single user's document.
   /// This is useful for listening to live updates on a profile screen.
   Stream<DocumentSnapshot> getUserStatsStream(String uid) {

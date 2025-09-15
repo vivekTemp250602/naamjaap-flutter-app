@@ -181,9 +181,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Exact UPI Launch Code
   Future<void> _launchUPI() async {
+    const String defaultAmount = "11";
     final String transactionId = 'TR${DateTime.now().millisecondsSinceEpoch}';
     final Uri upiUri = Uri.parse(
-        'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&am=0&cu=INR');
+        'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&am=$defaultAmount&cu=INR');
 
     try {
       if (await canLaunchUrl(upiUri)) {
@@ -213,6 +214,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SnackBar(content: Text('Could not open feedback form.')),
         );
       }
+    }
+  }
+
+  //  Privacy pages.
+  Future<void> _launchPrivacyPolicy() async {
+    final Uri url = Uri.parse(
+        'https://vivekTemp250602.github.io/naamjaap-legal/privacy.html');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      // Handle error
+    }
+  }
+
+  // Terms and conditions pages
+  Future<void> _launchTerms() async {
+    final Uri url = Uri.parse(
+        'https://vivekTemp250602.github.io/naamjaap-legal/terms.html');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      // Handle error
     }
   }
 
@@ -509,6 +528,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               size: 15,
             ),
           ),
+        ),
+
+        const Divider(height: 1, indent: 16, endIndent: 16),
+
+        ListTile(
+          onTap: _launchPrivacyPolicy,
+          leading: const Icon(Icons.privacy_tip_outlined, color: Colors.green),
+          title: const Text("Privacy Policy"),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        ),
+
+        const Divider(height: 1, indent: 16, endIndent: 16),
+
+        ListTile(
+          onTap: _launchTerms,
+          leading: const Icon(Icons.gavel_outlined, color: Colors.black54),
+          title: const Text("Terms & Conditions"),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         ),
 
         const SizedBox(

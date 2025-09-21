@@ -206,125 +206,138 @@ class _HomeScreenState extends State<HomeScreen> {
                 // The "Mala Progress" is now DERIVED directly from the live total count.
                 final int malaProgressCounter = totalMantraCount % 108;
 
-                return Column(
-                  children: [
-                    // --- TOP UI ELEMENTS ---
-                    if (!_isQuoteDismissedToday)
-                      Dismissible(
-                        key: ValueKey(userData['uid']), // Use a stable key
-                        onDismissed: (direction) => _dismissQuote(),
-                        child: StreamBuilder<DocumentSnapshot>(
-                          stream: _firestoreService.getDailyQuoteStream(),
-                          builder: (context, quoteSnapshot) {
-                            if (!quoteSnapshot.hasData ||
-                                quoteSnapshot.connectionState ==
-                                    ConnectionState.waiting ||
-                                !quoteSnapshot.data!.exists) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // --- TOP UI ELEMENTS ---
+                      if (!_isQuoteDismissedToday)
+                        Dismissible(
+                          key: ValueKey(userData['uid']), // Use a stable key
+                          onDismissed: (direction) => _dismissQuote(),
+                          child: StreamBuilder<DocumentSnapshot>(
+                            stream: _firestoreService.getDailyQuoteStream(),
+                            builder: (context, quoteSnapshot) {
+                              if (!quoteSnapshot.hasData ||
+                                  quoteSnapshot.connectionState ==
+                                      ConnectionState.waiting ||
+                                  !quoteSnapshot.data!.exists) {
+                                return QuoteCard(
+                                  textEN: AppConstants.defaultQuote['text_en']!,
+                                  textHI: AppConstants.defaultQuote['text_hi']!,
+                                  textSA: AppConstants.defaultQuote['text_sa']!,
+                                  source: AppConstants.defaultQuote['source']!,
+                                );
+                              }
+                              final quoteData = quoteSnapshot.data!.data()
+                                  as Map<String, dynamic>;
                               return QuoteCard(
-                                textEN: AppConstants.defaultQuote['text_en']!,
-                                textHI: AppConstants.defaultQuote['text_hi']!,
-                                textSA: AppConstants.defaultQuote['text_sa']!,
-                                source: AppConstants.defaultQuote['source']!,
+                                textEN: quoteData['text_en'] ?? '...',
+                                textHI: quoteData['text_hi'] ?? '...',
+                                textSA: quoteData['text_sa'] ?? '...',
+                                source: quoteData['source'] ?? '...',
                               );
-                            }
-                            final quoteData = quoteSnapshot.data!.data()
-                                as Map<String, dynamic>;
-                            return QuoteCard(
-                              textEN: quoteData['text_en'] ?? '...',
-                              textHI: quoteData['text_hi'] ?? '...',
-                              textSA: quoteData['text_sa'] ?? '...',
-                              source: quoteData['source'] ?? '...',
-                            );
-                          },
+                            },
+                          ),
                         ),
+
+                      const SizedBox(
+                        height: 16,
                       ),
 
-                    Chip(
-                      avatar: Icon(Icons.local_fire_department,
-                          color: Colors.orange.shade800),
-                      label: Text('$streakCount Day Streak',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      backgroundColor: Colors.white.withOpacity(0.8),
-                      elevation: 4,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: SizedBox(
-                        height: 50,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children:
-                                RemoteConfigService().mantras.map((mantra) {
-                              final isSelected = _selectedMantra == mantra;
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: GestureDetector(
-                                  onTap: () => _onMantraSelected(mantra),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? Colors.orange.withOpacity(0.9)
-                                          : Colors.black.withOpacity(0.3),
-                                      borderRadius: BorderRadius.circular(30),
-                                      border: Border.all(
-                                          color: isSelected
-                                              ? Colors.orange.shade300
-                                              : Colors.white.withOpacity(0.5),
-                                          width: 2),
+                      Chip(
+                        avatar: Icon(Icons.local_fire_department,
+                            color: Colors.orange.shade800),
+                        label: Text('$streakCount Day Streak',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        backgroundColor: Colors.white.withAlpha(180),
+                        elevation: 4,
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: SizedBox(
+                          height: 50,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              children:
+                                  RemoteConfigService().mantras.map((mantra) {
+                                final isSelected = _selectedMantra == mantra;
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0),
+                                  child: GestureDetector(
+                                    onTap: () => _onMantraSelected(mantra),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Colors.orange.withAlpha(210)
+                                            : Colors.black.withAlpha(70),
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                            color: isSelected
+                                                ? Colors.orange.shade300
+                                                : Colors.white.withAlpha(120),
+                                            width: 2),
+                                      ),
+                                      child: Text(mantra,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal)),
                                     ),
-                                    child: Text(mantra,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: isSelected
-                                                ? FontWeight.bold
-                                                : FontWeight.normal)),
                                   ),
-                                ),
-                              );
-                            }).toList(),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: Icon(_isVibrationEnabled
-                                ? Icons.vibration
-                                : Icons.mobile_off_rounded),
-                            iconSize: 28,
-                            color: Colors.white.withOpacity(0.9),
-                            onPressed: _toggleVibration,
-                            tooltip: _isVibrationEnabled
-                                ? 'Vibration On'
-                                : 'Vibration Off',
-                          ),
-                          IconButton(
-                            icon: Icon(
-                                _isMuted ? Icons.volume_off : Icons.volume_up),
-                            iconSize: 28,
-                            color: Colors.white.withOpacity(0.9),
-                            onPressed: _toggleMute,
-                            tooltip: _isMuted ? 'Sound Off' : 'Sound On',
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: Icon(_isVibrationEnabled
+                                  ? Icons.vibration
+                                  : Icons.mobile_off_rounded),
+                              iconSize: 28,
+                              color: Colors.white.withOpacity(0.9),
+                              onPressed: _toggleVibration,
+                              tooltip: _isVibrationEnabled
+                                  ? 'Vibration On'
+                                  : 'Vibration Off',
+                            ),
+                            IconButton(
+                              icon: Icon(_isMuted
+                                  ? Icons.volume_off
+                                  : Icons.volume_up),
+                              iconSize: 28,
+                              color: Colors.white.withOpacity(0.9),
+                              onPressed: _toggleMute,
+                              tooltip: _isMuted ? 'Sound Off' : 'Sound On',
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
-                    // --- CENTER UI ELEMENTS ---
-                    Expanded(
-                      child: Stack(
+                      // --- CENTER UI ELEMENTS ---
+                      const SizedBox(
+                        height: 24,
+                      ),
+
+                      Stack(
                         alignment: Alignment.center,
                         children: [
                           SizedBox(
@@ -407,15 +420,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                    ),
 
-                    // --- BOTTOM UI ELEMENTS ---
-                    Text('Tap to Chant',
-                        style: TextStyle(
-                            color: Colors.white.withOpacity(0.8),
-                            fontSize: 18)),
-                    const SizedBox(height: 36),
-                  ],
+                      // --- BOTTOM UI ELEMENTS ---
+                      Text('Tap to Chant',
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 18)),
+                      const SizedBox(height: 36),
+                    ],
+                  ),
                 );
               },
             ),

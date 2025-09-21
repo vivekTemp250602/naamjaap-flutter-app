@@ -37,7 +37,9 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const NaamJaapApp());
+  runApp(
+    const NaamJaapApp(),
+  );
 }
 
 class NaamJaapApp extends StatelessWidget {

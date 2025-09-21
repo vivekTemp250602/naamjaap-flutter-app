@@ -10,9 +10,7 @@ import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';
 
 class MainAppScreens extends StatefulWidget {
-  // We receive the user object from the login/splash screen to ensure it's not null.
   final User user;
-
   const MainAppScreens({super.key, required this.user});
 
   @override
@@ -21,12 +19,8 @@ class MainAppScreens extends StatefulWidget {
 
 class _MainAppScreensState extends State<MainAppScreens> {
   int _currentIndex = 0;
-  // We can keep the list of screen widgets the same.
   late final List<Widget> _screens;
-
-  // MODIFIED: Changed from List<String> to List<Widget> for custom titles.
   late final List<Widget> _screenTitles;
-
   late final StreamSubscription<User?> _authSubscription;
 
   @override
@@ -42,14 +36,14 @@ class _MainAppScreensState extends State<MainAppScreens> {
     _screenTitles = [
       const Text('Home'),
       Row(
-        mainAxisSize: MainAxisSize.min, // Important to keep the Row compact
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.emoji_events_outlined, color: Colors.amber.shade300),
           const SizedBox(width: 8),
           const Text('Leaderboard'),
         ],
       ),
-      const Text('My Profile'), // Simple text for the Profile screen
+      const Text('My Profile'),
     ];
 
     NotificationService().initialize(widget.user.uid);
@@ -64,7 +58,6 @@ class _MainAppScreensState extends State<MainAppScreens> {
     });
   }
 
-  // dispose, _onTabTapped, and _signOut methods remain exactly the same...
   @override
   void dispose() {
     _authSubscription.cancel();
@@ -89,10 +82,10 @@ class _MainAppScreensState extends State<MainAppScreens> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.25),
+                color: Colors.black.withAlpha(60),
                 border: Border(
                   bottom: BorderSide(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withAlpha(20),
                     width: 1.0,
                   ),
                 ),
@@ -100,15 +93,11 @@ class _MainAppScreensState extends State<MainAppScreens> {
             ),
           ),
         ),
-
-        // ADDED: This ensures our custom Row widget is centered correctly.
         centerTitle: true,
-
-        // MODIFIED: The title property now directly uses the widget from our new list.
         title: DefaultTextStyle(
           style: const TextStyle(
               color: Colors.white,
-              fontSize: 20, // Default AppBar title font size
+              fontSize: 20,
               fontWeight: FontWeight.w500,
               shadows: [
                 Shadow(

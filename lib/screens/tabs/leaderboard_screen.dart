@@ -286,7 +286,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         title: Text(userData['name'] ?? 'Anonymous'),
-        subtitle: Text('${userData['total_japps'] ?? 0} japps'),
+        subtitle: Text('$jappsCount japps'),
         trailing: CircleAvatar(
           backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
         ),
@@ -349,7 +349,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
           ),
           subtitle: Text(
-            '${userData['total_japps'] ?? 0} japps',
+            '$jappsCount japps',
             style: TextStyle(color: Colors.white.withAlpha(200)),
           ),
           trailing: CircleAvatar(

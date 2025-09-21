@@ -10,40 +10,45 @@ class MalaPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius =
-        size.width / 2 - 25; // More padding for the glow and larger beads
+    // Padding to accommodate the new outer border
+    final radius = size.width / 2 - 25;
 
-    // --- 1. Define all our new, high-contrast paints ---
+    // --- 1. Define all our paints ---
 
-    // A thicker, more prominent connecting string
-    final stringPaint = Paint()
-      ..color = Colors.orange.shade900.withOpacity(0.8)
+    // A paint for the thick outer border with a shimmering gradient
+    final borderGradient = SweepGradient(
+      center: Alignment.center,
+      colors: [
+        Colors.brown.shade900,
+        Colors.amber.shade600,
+        Colors.brown.shade900,
+      ],
+      stops: const [0.0, 0.5, 1.0],
+    );
+    final borderPaint = Paint()
+      ..shader = borderGradient
+          .createShader(Rect.fromCircle(center: center, radius: radius + 15))
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0; // MODIFIED: Thicker string
+      ..strokeWidth = 4.0; // The thickness of the border
 
-    // A subtle, warm glow effect for the beads
-    final glowPaint = Paint()
-      ..color = Colors.amber.withOpacity(0.5)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0);
+    // A subtle connecting string
+    final stringPaint = Paint()
+      ..color = Colors.brown.shade800.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
 
-    // The beautiful gradient for a standard, inactive golden bead
+    // A paint for the "ghost" beads that show the full path
+    final ghostBeadPaint = Paint()
+      ..color = Colors.white.withOpacity(0.1)
+      ..style = PaintingStyle.fill;
+
+    // A beautiful, natural wood gradient for the completed beads
     final beadGradient = RadialGradient(
-      colors: [Colors.amber.shade200, Colors.deepOrange.shade900],
-      center:
-          const Alignment(-0.5, -0.5), // Moves the highlight to the top-left
-      radius: 0.8,
+      colors: [Colors.brown.shade400, Colors.brown.shade700],
+      center: const Alignment(0.3, -0.3),
     );
     final beadPaint = Paint()
       ..shader = beadGradient
-          .createShader(Rect.fromCircle(center: center, radius: radius));
-
-    // A brighter, more luminous gradient for the currently active bead
-    final activeBeadGradient = RadialGradient(
-      colors: [Colors.yellow.shade400, Colors.amber.shade600],
-      center: const Alignment(-0.5, -0.5),
-    );
-    final activeBeadPaint = Paint()
-      ..shader = activeBeadGradient
           .createShader(Rect.fromCircle(center: center, radius: radius));
 
     // A special, solid gold paint for the main "Guru" bead
@@ -51,39 +56,40 @@ class MalaPainter extends CustomPainter {
 
     // --- 2. Draw the components in the correct order (bottom to top) ---
 
-    // First, draw the connecting string.
+    // Draw the thick border FIRST, so it's behind everything.
+    canvas.drawCircle(center, radius + 15, borderPaint);
+
+    // Now, draw the connecting string.
     canvas.drawCircle(center, radius, stringPaint);
 
-    // Loop through and draw all 108 beads.
+    // Draw the full "ghost" mala in the background.
     for (int i = 0; i < beadCount; i++) {
       final angle = (i / beadCount) * 2 * pi - (pi / 2);
       final beadPosition = Offset(
         center.dx + radius * cos(angle),
         center.dy + radius * sin(angle),
       );
-
-      // We skip drawing bead #0 here; the Meru bead is drawn last.
+      // The Meru bead doesn't need a ghost as it's always visible.
       if (i != 0) {
-        final isBeadActive = i == activeBeadIndex;
-
-        // MODIFIED: Bead radius is now much larger for better visibility
-        const beadRadius = 12.0;
-
-        // First, draw the soft glow behind the bead
-        canvas.drawCircle(beadPosition, beadRadius, glowPaint);
-        // Then, draw the main bead on top of the glow
-        canvas.drawCircle(beadPosition, beadRadius,
-            isBeadActive ? activeBeadPaint : beadPaint);
+        canvas.drawCircle(beadPosition, 8, ghostBeadPaint);
       }
+    }
+
+    // Now, only draw the completed beads on top of the ghosts.
+    // The loop now only goes up to the current active bead.
+    for (int i = 1; i <= activeBeadIndex; i++) {
+      final angle = (i / beadCount) * 2 * pi - (pi / 2);
+      final beadPosition = Offset(
+        center.dx + radius * cos(angle),
+        center.dy + radius * sin(angle),
+      );
+      // Draw the solid, completed bead
+      canvas.drawCircle(beadPosition, 8, beadPaint);
     }
 
     // Finally, draw the Meru (Guru) bead on top of everything.
     final meruPosition = Offset(center.dx, center.dy - radius);
-    const meruRadius = 18.0; // MODIFIED: A much larger Guru bead
-
-    // Draw the glow and the main bead for the Meru
-    canvas.drawCircle(meruPosition, meruRadius, glowPaint);
-    canvas.drawCircle(meruPosition, meruRadius, meruBeadPaint);
+    canvas.drawCircle(meruPosition, 12, meruBeadPaint);
   }
 
   @override

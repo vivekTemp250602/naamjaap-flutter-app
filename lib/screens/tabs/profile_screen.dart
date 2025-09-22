@@ -2,10 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -425,6 +427,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
 
         const SizedBox(height: 20),
+
+        // Specific Mantra Japps
+        Card(
+          // A subtle gradient to give the card a soft, premium feel.
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+            side: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.background,
+                  Colors.white,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Mantra Totals",
+                      style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 16),
+                  if (userData['japps'] != null &&
+                      (userData['japps'] as Map).isNotEmpty)
+                    // We use a Column of custom-built Rows for an elegant, typographic look.
+                    Column(
+                      children: (userData['japps'] as Map<String, dynamic>)
+                          .entries
+                          .map((entry) {
+                        final mantraName = AppConstants.mantras.firstWhere(
+                          (m) =>
+                              m.toLowerCase().replaceAll(' ', '_') == entry.key,
+                          orElse: () => entry.key,
+                        );
+                        final mantraCount = entry.value as int;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  // The Mantra Name - clean and simple.
+                                  Text(
+                                    mantraName,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: Colors.grey.shade700,
+                                        ),
+                                  ),
+                                  const Spacer(), // Pushes the count to the right.
+                                  // The Count - BIG, BOLD, and GOLDEN.
+                                  Text(
+                                    mantraCount.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              // A delicate, almost invisible divider.
+                              Divider(color: Colors.grey.shade200, height: 1),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    )
+                  else
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("Start chanting to see your totals here!"),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(
+          height: 20,
+        ),
 
         Card(
           child: Padding(

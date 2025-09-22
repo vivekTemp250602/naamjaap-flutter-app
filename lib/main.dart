@@ -1,45 +1,46 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:naamjaap/screens/splash_screen.dart';
+import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  // This is the combined handler from the official documentation.
-  // It handles both Flutter framework errors and other asynchronous errors.
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
+    // Initialize services that don't depend on context.
+    await RemoteConfigService().initialize();
 
-  PlatformDispatcher.instance.onError = (error, stack) {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    // The Provider is now wrapping the entire app.
+    runApp(
+      ChangeNotifierProvider(
+        create: (context) => ConnectivityService(),
+        child: const NaamJaapApp(),
+      ),
+    );
+  }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-
-  // Initialize Remote Config
-  await RemoteConfigService().initialize();
-
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-
-  // Your existing app setup logic.
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
-  runApp(
-    const NaamJaapApp(),
-  );
+  });
 }
 
 class NaamJaapApp extends StatelessWidget {
@@ -54,7 +55,7 @@ class NaamJaapApp extends StatelessWidget {
         brightness: Brightness.light,
         primary: Colors.deepOrange.shade400,
         secondary: Colors.amber.shade600,
-        background: const Color(0xFFFFF8F0),
+        surface: const Color(0xFFFFF8F0),
       ),
       cardTheme: CardThemeData(
         elevation: 2,
@@ -77,7 +78,7 @@ class NaamJaapApp extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'NaamJaap',
+      title: 'Naam Jaap',
       theme: theme,
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),

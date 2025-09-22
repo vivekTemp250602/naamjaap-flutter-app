@@ -20,7 +20,6 @@ class FirestoreService {
         date.day == now.day;
   }
 
-  /// This is now the single, definitive method for updating a user's count.
   /// It atomically increments japps and handles the daily streak logic.
   Future<void> updateJappCount(String uid, String mantraKey) async {
     final userRef = _db.collection('users').doc(uid);
@@ -61,6 +60,30 @@ class FirestoreService {
       // Perform one single, efficient update with all the changes.
       transaction.update(userRef, updates);
     });
+  }
+
+  // Batch Sync Update
+  Future<void> batchIncrementJappCount({
+    required String uid,
+    required Map<String, int> pendingJapps,
+  }) async {
+    final userRef = _db.collection('users').doc(uid);
+    final int totalIncrement =
+        pendingJapps.values.fold(0, (sum, count) => sum + count);
+
+    final Map<String, Object> updates = {
+      'total_japps': FieldValue.increment(totalIncrement),
+      'weekly_total_japps': FieldValue.increment(totalIncrement),
+      'lastChantDate': FieldValue.serverTimestamp(),
+      'lastActive': FieldValue.serverTimestamp(),
+    };
+
+    pendingJapps.forEach((mantraKey, count) {
+      updates['japps.$mantraKey'] = FieldValue.increment(count);
+    });
+
+    // We use a batched write for safety, but a direct update is also efficient.
+    return userRef.update(updates);
   }
 
   // The rest of your service file is perfect and remains unchanged.

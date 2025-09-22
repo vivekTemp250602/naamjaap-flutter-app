@@ -8,6 +8,10 @@ import 'package:naamjaap/screens/tabs/leaderboard_screen.dart';
 import 'package:naamjaap/screens/tabs/profile_screen.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:naamjaap/services/connectivity_service.dart';
+import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/services/sync_service.dart';
 
 class MainAppScreens extends StatefulWidget {
   final User user;
@@ -22,6 +26,8 @@ class _MainAppScreensState extends State<MainAppScreens> {
   late final List<Widget> _screens;
   late final List<Widget> _screenTitles;
   late final StreamSubscription<User?> _authSubscription;
+  SyncService? _syncService;
+  bool _isSyncServiceInitialized = false;
 
   @override
   void initState() {
@@ -59,12 +65,36 @@ class _MainAppScreensState extends State<MainAppScreens> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // This check ensures it only runs once.
+    if (!_isSyncServiceInitialized) {
+      // This 'context' is now guaranteed to be inside the building.
+      _syncService = SyncService(
+        connectivityService:
+            Provider.of<ConnectivityService>(context, listen: false),
+        firestoreService: FirestoreService(),
+        uid: widget.user.uid,
+        onSyncComplete: () {
+          print("Sync complete! MainAppScreens notified.");
+        },
+      );
+      _isSyncServiceInitialized = true;
+    }
+  }
+
+  @override
   void dispose() {
+    _syncService?.dispose(); // This now correctly calls the dispose method.
     _authSubscription.cancel();
     super.dispose();
   }
 
   void _onTabTapped(int index) {
+    // If the user is leaving the HomeScreen, trigger a sync.
+    if (_currentIndex == 0 && index != 0) {
+      _syncService?.syncPendingData();
+    }
     setState(() {
       _currentIndex = index;
     });
@@ -82,10 +112,10 @@ class _MainAppScreensState extends State<MainAppScreens> {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.black.withAlpha(60),
+                color: Colors.black.withOpacity(0.25),
                 border: Border(
                   bottom: BorderSide(
-                    color: Colors.white.withAlpha(20),
+                    color: Colors.white.withOpacity(0.2),
                     width: 1.0,
                   ),
                 ),

@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isSigningIn = false;
+  bool _hasAgreedToTerms = false;
 
   Future<void> _signInWithGoogle() async {
     setState(() {
@@ -59,7 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
             'email': user.email,
             'photoURL': user.photoURL,
             'total_japps': 0,
-            'japps': {}, // Empty map for future detailed tracking
+            'japps': {},
+            'isPremium': false,
             'createdAt': FieldValue.serverTimestamp(),
           });
         }
@@ -90,16 +94,24 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // Helper methods to launch your legal pages.
+  void _launchURL(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Color textColor = Colors.brown.shade800;
     return Scaffold(
       body: Container(
-        // A beautiful gradient background
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Theme.of(context).colorScheme.primary.withOpacity(0.8),
-              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.primary.withAlpha(190),
+              Theme.of(context).colorScheme.surface,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -113,15 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                // Your App Logo
                 Image.asset(
                   'assets/images/app_logo.png',
                   height: 120,
-                  // Add a subtle shadow to the logo
-                  semanticLabel: 'Naam Jaap Logo',
                 ),
                 const SizedBox(height: 24),
-                // Welcome Text
                 Text(
                   'Welcome to Naam Jaap',
                   textAlign: TextAlign.center,
@@ -135,21 +143,74 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium
-                      ?.copyWith(color: Colors.white.withOpacity(0.9)),
+                      ?.copyWith(color: Colors.white.withAlpha(210)),
                 ),
                 const Spacer(),
-                // Sign-In Button
+
+                // NEW: The Terms and Conditions section.
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      value: _hasAgreedToTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          _hasAgreedToTerms = value ?? false;
+                        });
+                      },
+                      checkColor: Colors.white,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      side: BorderSide(color: textColor),
+                    ),
+                    Expanded(
+                      child: Text.rich(
+                        TextSpan(
+                          style: TextStyle(color: textColor, fontSize: 14),
+                          children: [
+                            const TextSpan(
+                                text: 'I have read and agree to the '),
+                            TextSpan(
+                              text: 'Terms & Conditions',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _launchURL(
+                                    'https://vivekTemp250602.github.io/naamjaap-legal/terms.html'),
+                            ),
+                            const TextSpan(text: ' and '),
+                            TextSpan(
+                              text: 'Privacy Policy',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _launchURL(
+                                    'https://vivekTemp250602.github.io/naamjaap-legal/privacy.html'),
+                            ),
+                            const TextSpan(text: '.'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // The Sign-In Button
                 _isSigningIn
                     ? const Center(
                         child: CircularProgressIndicator(color: Colors.white))
                     : ElevatedButton.icon(
                         icon: Image.asset('assets/images/google_logo.png',
-                            height: 24), // A nice Google logo
+                            height: 24),
                         label: const Text('Sign in with Google'),
-                        onPressed: _signInWithGoogle,
+                        // MODIFIED: The button is disabled if the user hasn't agreed.
+                        onPressed: _hasAgreedToTerms ? _signInWithGoogle : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black87,
+                          disabledBackgroundColor: Colors.white.withAlpha(129),
                           textStyle: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),

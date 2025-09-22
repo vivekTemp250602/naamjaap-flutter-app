@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,13 +10,13 @@ import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:naamjaap/services/storage_service.dart';
 import 'package:naamjaap/widgets/share_card.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/services/ad_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -29,10 +30,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final StorageService _storageService = StorageService();
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
+  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
 
   String _shareableName = '';
   bool _isUploading = false;
   int _shareableJapps = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load the ad. The `isTest: true` is crucial for development.
+    _adService.loadBannerAd(
+        onAdLoaded: (ad) {
+          if (mounted) {
+            setState(() {
+              _bannerAd = ad;
+            });
+          }
+        },
+        isTest: false);
+  }
+
+  @override
+  void dispose() {
+    _adService.dispose();
+    super.dispose();
+  }
 
   // The sign-out logic.
   Future<void> _signOut() async {
@@ -265,8 +289,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return const Center(child: Text("Could not load user data."));
                 }
 
-                return buildProfileView(
-                    userSnapshot.data!.data() as Map<String, dynamic>);
+                final userData =
+                    userSnapshot.data!.data() as Map<String, dynamic>;
+                final bool isPremium = userData['isPremium'] ?? false;
+
+                return Column(
+                  children: [
+                    Expanded(
+                      child: buildProfileView(userData, isPremium),
+                    ),
+                    if (_bannerAd != null && !isPremium)
+                      Container(
+                        alignment: Alignment.center,
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd!),
+                      ),
+                  ],
+                );
               },
             ),
           ],
@@ -275,10 +315,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget buildProfileView(Map<String, dynamic> userData) {
+  Widget buildProfileView(Map<String, dynamic> userData, bool isPremium) {
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
+        // Implement a Go Premium Icon Payment Gateway
+        // if (!isPremium)
+        //   Card(
+        //     color: Colors.amber.shade100,
+        //     child: ListTile(
+        //       leading: const Icon(Icons.workspace_premium_rounded),
+        //       title: const Text("Go Premium!"),
+        //       subtitle: const Text("Remove all ads and support our mission."),
+        //       trailing: const Icon(Icons.arrow_forward_ios),
+        //       onTap: () {
+        //         _firestoreService.grantPremiumAccess(_currentUser.uid);
+        //       },
+        //     ),
+        //   ),
+
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -440,7 +495,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               borderRadius: BorderRadius.circular(16.0),
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.background,
+                  Theme.of(context).colorScheme.surface,
                   Colors.white,
                 ],
                 begin: Alignment.topLeft,

@@ -1,8 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application
         android:label="Naam Jaap"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,7 +24,6 @@
             </intent-filter>
         </activity>
 
-        <!-- ADDED: This is required by the image_picker package for cropping functionality -->
         <activity 
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -33,30 +33,31 @@
             android:name="flutterEmbedding"
             android:value="2" />
             
-        <!-- ADDED: This is required for Firebase Cloud Messaging (Notifications) -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
             
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6393216612155655~6781716832"/>
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+            
     </application>
-
-    <!-- The <queries> block is required for package visibility on modern Android -->
     <queries>
-        <!-- This is the default Flutter query -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-        
-        <!-- ADDED: This is required by url_launcher to find UPI apps -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="upi" />
         </intent>
-
-        <package android:name="com.google.android.apps.nbu.paisa.user" /> 
-        <package android:name="net.one97.paytm" />                     
-        <package android:name="com.phonepe.app" />                    
-        <package android:name="in.org.npci.upiapp" /> 
+        <package android:name="com.google.android.apps.nbu.paisa.user" />
+        <package android:name="net.one97.paytm" />
+        <package android:name="com.phonepe.app" />
+        <package android:name="in.org.npci.upiapp" />
     </queries>
 </manifest>

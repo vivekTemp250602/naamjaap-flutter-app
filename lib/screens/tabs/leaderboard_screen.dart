@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:naamjaap/utils/constants.dart';
@@ -18,128 +20,191 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   LeaderboardType _selectedLeaderboard = LeaderboardType.allTime;
   final FirestoreService _firestoreService = FirestoreService();
   final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
+
+  @override
+  void initState() {
+    super.initState();
+    // Load the banner ad. The `isTest: true` is crucial for development.
+    // When you are ready to publish, you will change this to `isTest: false`.
+    _adService.loadBannerAd(
+        onAdLoaded: (ad) {
+          if (mounted) {
+            setState(() {
+              _bannerAd = ad;
+            });
+          }
+        },
+        isTest: false);
+  }
+
+  @override
+  void dispose() {
+    _adService.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            // The ToggleButtons UI for switching between views.
-            Card(
-              margin:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-              elevation: 4,
-              shadowColor: Colors.deepOrange.withOpacity(0.2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: ToggleButtons(
-                isSelected: [
-                  _selectedLeaderboard == LeaderboardType.allTime,
-                  _selectedLeaderboard == LeaderboardType.weekly,
-                ],
-                onPressed: (index) {
-                  setState(() {
-                    _selectedLeaderboard = index == 0
-                        ? LeaderboardType.allTime
-                        : LeaderboardType.weekly;
-                  });
-                },
-                borderRadius: BorderRadius.circular(12.0),
-                selectedBorderColor: Colors.deepOrange,
-                selectedColor: Colors.white,
-                fillColor: Colors.deepOrange.shade400,
-                color: Colors.deepOrange.shade400,
-                constraints: const BoxConstraints(minHeight: 48.0),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Text('All-Time',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Text('This Week',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ),
+        // NEW: We now wrap the main UI in a StreamBuilder to check if the user is premium.
+        child: StreamBuilder<DocumentSnapshot>(
+          stream: _firestoreService.getUserStatsStream(_currentUserId),
+          builder: (context, userSnapshot) {
+            // A simple loader while we check the user's premium status.
+            if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+            final bool isPremium = userData['isPremium'] ?? false;
 
-            // The StreamBuilder is wrapped in an Expanded widget to fill the remaining space.
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                // The stream is now chosen dynamically based on our state variable.
-                stream: _selectedLeaderboard == LeaderboardType.allTime
-                    ? _firestoreService.getLeaderboardStream()
-                    : _firestoreService.getWeeklyLeaderboardStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasError) {
-                    return const Center(child: Text('Something went wrong.'));
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('Leaderboard is empty.'));
-                  }
-
-                  final leaderboardDocs = snapshot.data!.docs;
-                  final double topPadding =
-                      kToolbarHeight + MediaQuery.of(context).padding.top;
-
-                  return Stack(
+            // The main UI is now in a Column to hold the content and the ad.
+            return Column(
+              children: [
+                // The existing leaderboard UI is now in an Expanded widget.
+                Expanded(
+                  child: Column(
                     children: [
-                      ListView.builder(
-                        padding: EdgeInsets.only(top: topPadding, bottom: 90.0),
-                        itemCount: leaderboardDocs.length,
-                        itemBuilder: (context, index) {
-                          final userDoc = leaderboardDocs[index];
-                          final userData =
-                              userDoc.data() as Map<String, dynamic>;
-                          final rank = index + 1;
-                          final bool isCurrentUser =
-                              userDoc.id == _currentUserId;
-
-                          // Decide which japps count to display based on the selected tab
-                          final jappsCount =
-                              _selectedLeaderboard == LeaderboardType.allTime
-                                  ? (userData['total_japps'] ?? 0)
-                                  : (userData['weekly_total_japps'] ?? 0);
-
-                          Widget card;
-                          if (rank <= 3) {
-                            card = _buildTopRankCard(context, rank, userData,
-                                isCurrentUser, jappsCount);
-                          } else {
-                            card = _buildStandardRankCard(context, rank,
-                                userData, isCurrentUser, jappsCount);
-                          }
-
-                          return GestureDetector(
-                            onTap: () =>
-                                _showUserProfileDialog(context, userData),
-                            child: card
-                                .animate()
-                                .fadeIn(duration: 500.ms)
-                                .slideY(begin: 0.5, curve: Curves.easeOut),
-                          );
-                        },
+                      Card(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 24.0),
+                        elevation: 4,
+                        shadowColor: Colors.deepOrange.withAlpha(45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: ToggleButtons(
+                          isSelected: [
+                            _selectedLeaderboard == LeaderboardType.allTime,
+                            _selectedLeaderboard == LeaderboardType.weekly,
+                          ],
+                          onPressed: (index) {
+                            setState(() {
+                              _selectedLeaderboard = index == 0
+                                  ? LeaderboardType.allTime
+                                  : LeaderboardType.weekly;
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(12.0),
+                          selectedBorderColor: Colors.deepOrange,
+                          selectedColor: Colors.white,
+                          fillColor: Colors.deepOrange.shade400,
+                          color: Colors.deepOrange.shade400,
+                          constraints: const BoxConstraints(minHeight: 48.0),
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Text('All-Time',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Text('This Week',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: _buildCurrentUserCard(
-                            _firestoreService, _currentUserId, leaderboardDocs),
+                      Expanded(
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: _selectedLeaderboard ==
+                                  LeaderboardType.allTime
+                              ? _firestoreService.getLeaderboardStream()
+                              : _firestoreService.getWeeklyLeaderboardStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            if (snapshot.hasError) {
+                              return const Center(
+                                  child: Text('Something went wrong.'));
+                            }
+                            if (!snapshot.hasData ||
+                                snapshot.data!.docs.isEmpty) {
+                              return const Center(
+                                  child: Text('Leaderboard is empty.'));
+                            }
+
+                            final leaderboardDocs = snapshot.data!.docs;
+
+                            return Stack(
+                              children: [
+                                ListView.builder(
+                                  padding: const EdgeInsets.only(bottom: 90.0),
+                                  itemCount: leaderboardDocs.length,
+                                  itemBuilder: (context, index) {
+                                    final userDoc = leaderboardDocs[index];
+                                    final userData =
+                                        userDoc.data() as Map<String, dynamic>;
+                                    final rank = index + 1;
+                                    final isCurrentUser =
+                                        userDoc.id == _currentUserId;
+
+                                    final jappsCount = _selectedLeaderboard ==
+                                            LeaderboardType.allTime
+                                        ? (userData['total_japps'] ?? 0)
+                                        : (userData['weekly_total_japps'] ?? 0);
+
+                                    Widget card;
+                                    if (rank <= 3) {
+                                      card = _buildTopRankCard(context, rank,
+                                          userData, isCurrentUser, jappsCount);
+                                    } else {
+                                      card = _buildStandardRankCard(
+                                          context,
+                                          rank,
+                                          userData,
+                                          isCurrentUser,
+                                          jappsCount);
+                                    }
+
+                                    return GestureDetector(
+                                      onTap: () => _showUserProfileDialog(
+                                          context, userData),
+                                      child: card
+                                          .animate()
+                                          .fadeIn(duration: 500.ms)
+                                          .slideY(
+                                              begin: 0.5,
+                                              curve: Curves.easeOut),
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: _buildCurrentUserCard(
+                                      _firestoreService,
+                                      _currentUserId,
+                                      leaderboardDocs),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                ),
+
+                // The Ad Banner (only shown for non-premium users)
+                if (_bannerAd != null && !isPremium)
+                  Container(
+                    alignment: Alignment.center,
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

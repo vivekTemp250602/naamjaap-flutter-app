@@ -165,4 +165,8 @@ class FirestoreService {
       SetOptions(merge: true),
     );
   }
+
+  Future<void> grantPremiumAccess(String uid) {
+    return _db.collection('users').doc(uid).update({'isPremium': true});
+  }
 }

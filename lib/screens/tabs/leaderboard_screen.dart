@@ -166,46 +166,69 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return Dialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          contentPadding:
-              const EdgeInsets.only(bottom: 24, left: 24, right: 24),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.background,
+                  Colors.white,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const SizedBox(height: 16),
-              Text(
-                userData['name'] ?? 'Anonymous',
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Chip(
-                avatar: Icon(Icons.star, color: Colors.amber.shade700),
-                label: Text('${userData['total_japps'] ?? 0} Total Chants'),
-              ),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.favorite, color: Colors.red),
-                title: const Text('Top Mantra'),
-                subtitle: Text(getTopMantra(userData['japps'])),
-              ),
-              ListTile(
-                leading: const Icon(Icons.shield, color: Colors.blue),
-                title: const Text('Badges'),
-                subtitle: Text((userData['badges'] as List?)?.isEmpty ?? true
-                    ? 'No badges yet'
-                    : (userData['badges'] as List).join(', ')),
-              ),
-            ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 45,
+                  backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  userData['name'] ?? 'Anonymous',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                // The new, beautiful stat chips
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    Chip(
+                      avatar: Icon(Icons.star, color: Colors.amber.shade700),
+                      label:
+                          Text('${userData['total_japps'] ?? 0} Total Japps'),
+                    ),
+                    Chip(
+                      avatar: Icon(Icons.local_fire_department,
+                          color: Colors.orange.shade800),
+                      label:
+                          Text('${userData['currentStreak'] ?? 0} Day Streak'),
+                    ),
+                    Chip(
+                      avatar: const Icon(Icons.favorite, color: Colors.red),
+                      label: Text(
+                          'Top Mantra: ${getTopMantra(userData['japps'])}'),
+                    ),
+                  ],
+                ),
+                ListTile(
+                  leading: const Icon(Icons.shield, color: Colors.blue),
+                  title: const Text('Badges'),
+                  subtitle: Text((userData['badges'] as List?)?.isEmpty ?? true
+                      ? 'No badges yet'
+                      : (userData['badges'] as List).join(', ')),
+                ),
+              ],
+            ),
           ),
         );
       },

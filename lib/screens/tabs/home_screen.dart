@@ -10,6 +10,7 @@ import 'package:naamjaap/services/achievements_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/services/mantra_info_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isPlaying = false;
   bool _isQuoteDismissedToday = false;
   bool _isLoading = true;
+  bool _isZenMode = false;
   Timer? _syncTimer;
 
   @override
@@ -228,6 +230,31 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _showMantraInfo() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(_selectedMantra),
+        content: Text(
+          MantraInfoService.getDescription(_selectedMantra),
+          style: const TextStyle(height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void toggleZenMode() {
+    setState(() {
+      _isZenMode = !_isZenMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final connectivityService = Provider.of<ConnectivityService>(context);
@@ -327,40 +354,48 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Row(
-                              children:
-                                  RemoteConfigService().mantras.map((mantra) {
-                                final isSelected = _selectedMantra == mantra;
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6.0),
-                                  child: GestureDetector(
-                                    onTap: () => _onMantraSelected(mantra),
-                                    child: AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? Colors.orange.withAlpha(210)
-                                            : Colors.black.withAlpha(70),
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                            color: isSelected
-                                                ? Colors.orange.shade300
-                                                : Colors.white.withAlpha(128),
-                                            width: 2),
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.info_outline,
+                                      color: Colors.white.withOpacity(0.8)),
+                                  onPressed: _showMantraInfo,
+                                  tooltip: 'About this mantra',
+                                ),
+                                ...RemoteConfigService().mantras.map((mantra) {
+                                  final isSelected = _selectedMantra == mantra;
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6.0),
+                                    child: GestureDetector(
+                                      onTap: () => _onMantraSelected(mantra),
+                                      child: AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 10),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? Colors.orange.withAlpha(210)
+                                              : Colors.black.withAlpha(70),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          border: Border.all(
+                                              color: isSelected
+                                                  ? Colors.orange.shade300
+                                                  : Colors.white.withAlpha(128),
+                                              width: 2),
+                                        ),
+                                        child: Text(mantra,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: isSelected
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal)),
                                       ),
-                                      child: Text(mantra,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal)),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
+                                  );
+                                }).toList(),
+                              ],
                             ),
                           ),
                         ),
@@ -370,6 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            // Online Status
                             Icon(
                               connectivityService.isOnline
                                   ? Icons.cloud_done_outlined
@@ -378,6 +414,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? Colors.green.shade300
                                   : Colors.red.shade300,
                             ),
+
+                            const SizedBox(
+                              width: 10,
+                            ),
+
+                            // Vibration Status
                             IconButton(
                               icon: Icon(_isVibrationEnabled
                                   ? Icons.vibration
@@ -389,6 +431,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? 'Vibration On'
                                   : 'Vibration Off',
                             ),
+
+                            // Sound Status
                             IconButton(
                               icon: Icon(_isMuted
                                   ? Icons.volume_off

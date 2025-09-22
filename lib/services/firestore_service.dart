@@ -86,6 +86,33 @@ class FirestoreService {
     return userRef.update(updates);
   }
 
+  /// Creates or updates a user's Japa Sankalpa.
+  Future<void> setSankalpa({
+    required String uid,
+    required String mantraKey,
+    required int targetCount,
+    required DateTime endDate,
+  }) {
+    final sankalpaData = {
+      'mantraKey': mantraKey,
+      'targetCount': targetCount,
+      'startDate': FieldValue.serverTimestamp(),
+      'endDate': Timestamp.fromDate(endDate),
+      'isActive': true,
+    };
+    return _db.collection('users').doc(uid).set(
+      {'sankalpa': sankalpaData},
+      SetOptions(merge: true),
+    );
+  }
+
+  /// Removes a user's Japa Sankalpa.
+  Future<void> removeSankalpa(String uid) {
+    return _db.collection('users').doc(uid).update({
+      'sankalpa': FieldValue.delete(),
+    });
+  }
+
   // The rest of your service file is perfect and remains unchanged.
   Stream<QuerySnapshot> getLeaderboardStream() {
     return _db

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "287482200316",
+    "project_id": "naamjaap-62958",
+    "storage_bucket": "naamjaap-62958.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287482200316:android:754fe392849a9928009779",
+        "android_client_info": {
+          "package_name": "com.vivek.naamjaap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287482200316-5lha4fedk44le6a8cesj9uvj9mh0jfvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivek.naamjaap",
+            "certificate_hash": "a74dfe7fc58c89b8593b40f5473074d94cee91db"
+          }
+        },
+        {
+          "client_id": "287482200316-p3hi5a76563v54buua0ij5qju87a7lkc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivek.naamjaap",
+            "certificate_hash": "331622c70a324087e59603712ef6e01b9dccf00c"
+          }
+        },
+        {
+          "client_id": "287482200316-mru5gla6vkcbt69v2jav81h4cjtj2s27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEfYadiVnyroGVJ_4Ic5EEF0K5NXQ0atY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287482200316-mru5gla6vkcbt69v2jav81h4cjtj2s27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

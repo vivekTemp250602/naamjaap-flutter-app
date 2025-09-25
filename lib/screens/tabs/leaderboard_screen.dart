@@ -21,32 +21,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final AdService _adService = AdService();
-  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
-    // Load the banner ad. The `isTest: true` is crucial for development.
-    // When you are ready to publish, you will change this to `isTest: false`.
-    _adService.loadBannerAd(
-        onAdLoaded: (ad) {
-          if (mounted) {
-            setState(() {
-              _bannerAd = ad;
-            });
-          }
-        },
-        isTest: true);
-  }
-
-  @override
-  void dispose() {
-    _adService.dispose();
-    super.dispose();
+    _adService.loadBannerAd();
   }
 
   @override
   Widget build(BuildContext context) {
+    final bannerAd = _adService.bannerAd;
+
     return Scaffold(
       body: SafeArea(
         // NEW: We now wrap the main UI in a StreamBuilder to check if the user is premium.
@@ -55,7 +40,32 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           builder: (context, userSnapshot) {
             // A simple loader while we check the user's premium status.
             if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-              return const Center(child: CircularProgressIndicator());
+              // This is the new, beautiful empty state.
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.emoji_events_outlined,
+                      size: 80,
+                      color: Colors.amber.shade300,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "The Journey Begins",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Be the first to grace the leaderboard!",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: Colors.grey.shade600,
+                          ),
+                    ),
+                  ],
+                ),
+              );
             }
             final userData = userSnapshot.data!.data() as Map<String, dynamic>;
             final bool isPremium = userData['isPremium'] ?? false;
@@ -67,6 +77,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 Expanded(
                   child: Column(
                     children: [
+                      // Toggle All-time and Weekly Leaderboard.
                       Card(
                         margin: const EdgeInsets.symmetric(
                             vertical: 12.0, horizontal: 24.0),
@@ -195,12 +206,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
 
                 // The Ad Banner (only shown for non-premium users)
-                if (_bannerAd != null && !isPremium)
+                if (bannerAd != null && !isPremium)
                   Container(
                     alignment: Alignment.center,
-                    width: _bannerAd!.size.width.toDouble(),
-                    height: _bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd!),
+                    width: bannerAd.size.width.toDouble(),
+                    height: bannerAd.size.height.toDouble(),
+                    child: AdWidget(ad: bannerAd),
                   ),
               ],
             );

@@ -8,10 +8,6 @@ import 'package:naamjaap/screens/tabs/leaderboard_screen.dart';
 import 'package:naamjaap/screens/tabs/profile_screen.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:naamjaap/services/connectivity_service.dart';
-import 'package:naamjaap/services/firestore_service.dart';
-import 'package:naamjaap/services/sync_service.dart';
 
 class MainAppScreens extends StatefulWidget {
   final User user;
@@ -26,13 +22,10 @@ class _MainAppScreensState extends State<MainAppScreens> {
   late final List<Widget> _screens;
   late final List<Widget> _screenTitles;
   late final StreamSubscription<User?> _authSubscription;
-  SyncService? _syncService;
-  bool _isSyncServiceInitialized = false;
 
   @override
   void initState() {
     super.initState();
-
     _screens = const [
       HomeScreen(),
       LeaderboardScreen(),
@@ -56,6 +49,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
 
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null && mounted) {
+        // If the user signs out, navigate back to the LoginScreen.
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (Route<dynamic> route) => false,
@@ -65,36 +59,12 @@ class _MainAppScreensState extends State<MainAppScreens> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // This check ensures it only runs once.
-    if (!_isSyncServiceInitialized) {
-      // This 'context' is now guaranteed to be inside the building.
-      _syncService = SyncService(
-        connectivityService:
-            Provider.of<ConnectivityService>(context, listen: false),
-        firestoreService: FirestoreService(),
-        uid: widget.user.uid,
-        onSyncComplete: () {
-          print("Sync complete! MainAppScreens notified.");
-        },
-      );
-      _isSyncServiceInitialized = true;
-    }
-  }
-
-  @override
   void dispose() {
-    _syncService?.dispose(); // This now correctly calls the dispose method.
     _authSubscription.cancel();
     super.dispose();
   }
 
   void _onTabTapped(int index) {
-    // If the user is leaving the HomeScreen, trigger a sync.
-    if (_currentIndex == 0 && index != 0) {
-      _syncService?.syncPendingData();
-    }
     setState(() {
       _currentIndex = index;
     });

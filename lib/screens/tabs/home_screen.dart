@@ -16,9 +16,13 @@ import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
 import 'package:naamjaap/widgets/quote_card.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:showcaseview/showcaseview.dart';
+
+enum InfoLanguage { english, hindi, sanskrit }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   late final String _uid;
   late StreamSubscription<PlayerState> _playerStateSubscription;
-  final AchievementsService _achievementsService = AchievementsService();
+  // final AchievementsService _achievementsService = AchievementsService();
   late ConfettiController _malaConfettiController;
   SyncService? _syncService;
 
@@ -187,7 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _malaConfettiController.play();
       _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
-      _achievementsService.checkAndAwardBadges(_uid);
     }
 
     if (!_isPlaying) {
@@ -231,21 +234,82 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showMantraInfo() {
+    final descriptions = MantraInfoService.getDescription(_selectedMantra);
+    InfoLanguage selectedLanguage = InfoLanguage.english;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(_selectedMantra),
-        content: Text(
-          MantraInfoService.getDescription(_selectedMantra),
-          style: const TextStyle(height: 1.5),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("Close"),
-          ),
-        ],
-      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            String displayText;
+            switch (selectedLanguage) {
+              case InfoLanguage.hindi:
+                displayText = descriptions['hi']!;
+                break;
+              case InfoLanguage.sanskrit:
+                displayText = descriptions['sa']!;
+                break;
+              case InfoLanguage.english:
+                displayText = descriptions['en']!;
+            }
+
+            return AlertDialog(
+              title: Text(_selectedMantra),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 200,
+                      child: SingleChildScrollView(
+                        child: Text(
+                          displayText,
+                          style: const TextStyle(height: 1.5),
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      height: 24,
+                    ),
+                    ToggleButtons(
+                      isSelected: [
+                        selectedLanguage == InfoLanguage.english,
+                        selectedLanguage == InfoLanguage.hindi,
+                        selectedLanguage == InfoLanguage.sanskrit,
+                      ],
+                      onPressed: (index) {
+                        setDialogState(() {
+                          selectedLanguage = InfoLanguage.values[index];
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(8.0),
+                      children: const [
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text('English')),
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text('हिन्दी')),
+                        Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text('Sanskrit')),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Close"),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
@@ -344,6 +408,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.white.withAlpha(190),
                         elevation: 4,
                       ),
+
+                      // Mantra Selector
                       Padding(
                         padding: const EdgeInsets.only(top: 16.0),
                         child: SizedBox(
@@ -355,12 +421,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Row(
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.info_outline,
-                                      color: Colors.white.withOpacity(0.8)),
-                                  onPressed: _showMantraInfo,
-                                  tooltip: 'About this mantra',
-                                ),
                                 ...RemoteConfigService().mantras.map((mantra) {
                                   final isSelected = _selectedMantra == mantra;
                                   return Padding(
@@ -400,6 +460,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+
+                      // Mantra Info Button
+                      TextButton.icon(
+                        onPressed: _showMantraInfo,
+                        icon: const Icon(Icons.info_outline),
+                        label: const Text("Mantra Info"),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white.withAlpha(220),
+                        ),
+                      ),
+
+                      // Internet Status - Vibration - Sound
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0, right: 16.0),
                         child: Row(
@@ -445,6 +517,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+
+                      // Tap to Chant Button
                       Expanded(
                         child: Stack(
                           alignment: Alignment.center,
@@ -544,6 +618,19 @@ class _HomeScreenState extends State<HomeScreen> {
           alignment: Alignment.topCenter,
           child: ConfettiWidget(
             confettiController: _malaConfettiController,
+            emissionFrequency: 0,
+            numberOfParticles: 60,
+            maxBlastForce: 50,
+            minBlastForce: 20,
+            gravity: 0.1,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.orange,
+              Colors.amber,
+              Colors.yellow,
+              Colors.white,
+            ],
           ),
         ),
       ],

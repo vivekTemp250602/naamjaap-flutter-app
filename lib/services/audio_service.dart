@@ -2,14 +2,13 @@ import 'package:audioplayers/audioplayers.dart';
 
 class AudioService {
   // A single audioplayer for whole app
-
   static final AudioService _instance = AudioService._internal();
-  final AudioPlayer _soundEffectPlayer = AudioPlayer();
-
   factory AudioService() => _instance;
   AudioService._internal();
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _soundEffectPlayer = AudioPlayer();
+  final AudioPlayer _ambientPlayer = AudioPlayer();
 
   Future<void> play(String assetPath) async {
     await stop();
@@ -42,6 +41,18 @@ class AudioService {
     await _audioPlayer.setVolume(isMuted ? 0.0 : 1.0);
   }
 
+  // Ambient Sound Methods ---
+  Future<void> startAmbientSound(String assetPath) async {
+    await _ambientPlayer.setReleaseMode(ReleaseMode.loop);
+    await _ambientPlayer.setVolume(0.15); // Keep it very subtle
+    await _ambientPlayer
+        .play(AssetSource(assetPath.replaceFirst('assets/', '')));
+  }
+
+  Future<void> stopAmbientSound() async {
+    await _ambientPlayer.stop();
+  }
+
   // Expose the player's state stream for the UI to listen to.
   Stream<PlayerState> get onPlayerStateChanged =>
       _audioPlayer.onPlayerStateChanged;
@@ -49,5 +60,6 @@ class AudioService {
   void dispose() {
     _audioPlayer.dispose();
     _soundEffectPlayer.dispose();
+    _ambientPlayer.dispose();
   }
 }

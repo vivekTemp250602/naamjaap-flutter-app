@@ -6,9 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/rendering.dart';
 import 'package:naamjaap/services/storage_service.dart';
@@ -31,31 +33,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
   final AdService _adService = AdService();
-  BannerAd? _bannerAd;
 
   String _shareableName = '';
-  bool _isUploading = false;
   int _shareableJapps = 0;
+  bool _isUploading = false;
+  bool _isAmbianceEnabled = false;
 
   @override
   void initState() {
     super.initState();
     // Load the ad. The `isTest: true` is crucial for development.
-    _adService.loadBannerAd(
-        onAdLoaded: (ad) {
-          if (mounted) {
-            setState(() {
-              _bannerAd = ad;
-            });
-          }
-        },
-        isTest: true);
-  }
-
-  @override
-  void dispose() {
-    _adService.dispose();
-    super.dispose();
+    _adService.loadBannerAd();
+    _loadAmbiancePreference();
   }
 
   // The sign-out logic.
@@ -63,6 +52,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await AudioService().stop();
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
+  }
+
+  // Grand Achievement Dialog
+  void _showAchievementsDialog(List<dynamic> badges) {
+    // A map to give our badges beautiful, thematic icons.
+    final Map<String, IconData> badgeIcons = {
+      // Japa Count Badges
+      'First Mala': Icons.filter_vintage_rounded,
+      'Sahasranama': Icons.whatshot_rounded,
+      'Ten Thousand Steps': Icons.local_florist_rounded,
+      'Lakshya Chanter': Icons.star_rounded,
+      'Millionaire of Faith': Icons.diamond_rounded,
+      // Streak Badges
+      '7-Day Sadhana': Icons.calendar_view_week_rounded,
+      '30-Day Devotion': Icons.calendar_month_rounded,
+      'Sacred Centurion': Icons.looks_one_rounded,
+      'Solar Cycle of Faith': Icons.wb_sunny_rounded,
+      // Mala Completion Badges
+      'Ekadashi Mala': Icons.spa_rounded,
+      'Mala Master': Icons.school_rounded,
+    };
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Your Achievements'),
+        // The content is now a scrollable grid.
+        content: SizedBox(
+          width: double.maxFinite,
+          child: GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 2.5, // Adjusts the shape of the tiles
+            ),
+            itemCount: badges.length,
+            itemBuilder: (context, index) {
+              final badge = badges[index].toString();
+              return Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.secondary.withAlpha(20),
+                      Theme.of(context).colorScheme.surface.withAlpha(125),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(badgeIcons[badge] ?? Icons.shield_rounded,
+                        color: Theme.of(context).colorScheme.secondary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                        child: Text(badge,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold))),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   // Upload Profile Image
@@ -154,6 +221,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SnackBar(content: Text('Could not share progress: ${e.toString()}')),
         );
       }
+    }
+  }
+
+  // To know user's choice of ambience sound
+  Future _loadAmbiancePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isAmbianceEnabled = prefs.getBool('isAmbianceEnabled') ?? false;
+    });
+  }
+
+  // Toggle Ambient Sound.
+  Future<void> _toggleAmbiance(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isAmbianceEnabled', value);
+    setState(() {
+      _isAmbianceEnabled = value;
+    });
+    if (value) {
+      AudioService().startAmbientSound('assets/audio/temple_bells.mp3');
+    } else {
+      AudioService().stopAmbientSound();
     }
   }
 
@@ -261,8 +350,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  // Trigger the "Rate the App" prompt.
+  Future<void> _requestReview() async {
+    final InAppReview inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      inAppReview.requestReview();
+    }
+  }
+
+  // Share the app link.
+  Future<void> _shareApp() async {
+    // This is the link that you will replace after your app is live.
+    const String appLink =
+        "https://play.google.com/store/apps/details?id=com.vivek.naamjaap";
+    const String message =
+        "Come join me on a sacred journey with the Naam Jaap app! Download it here: $appLink";
+
+    await Share.share(message);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bannerAd = _adService.bannerAd;
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -298,12 +408,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Expanded(
                       child: buildProfileView(userData, isPremium),
                     ),
-                    if (_bannerAd != null && !isPremium)
+                    if (bannerAd != null && !isPremium)
                       Container(
                         alignment: Alignment.center,
-                        width: _bannerAd!.size.width.toDouble(),
-                        height: _bannerAd!.size.height.toDouble(),
-                        child: AdWidget(ad: _bannerAd!),
+                        width: bannerAd.size.width.toDouble(),
+                        height: bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: bannerAd),
                       ),
                   ],
                 );
@@ -316,6 +426,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildProfileView(Map<String, dynamic> userData, bool isPremium) {
+    final List<dynamic> badges = userData['badges'] ?? [];
+
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
@@ -345,7 +457,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     alignment: Alignment.bottomRight,
                     children: [
                       CircleAvatar(
-                        // INCREASED: Avatar radius is now larger.
                         radius: 60,
                         backgroundImage:
                             NetworkImage(userData['photoURL'] ?? ''),
@@ -375,7 +486,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
+                // USer Profile Contents
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -442,7 +556,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
-                // FIXED: This now fetches the live leaderboard to calculate the real rank.
+                // Live leaderboard to calculate the real rank.
                 StreamBuilder<QuerySnapshot>(
                   stream: _firestoreService.getLeaderboardStream(),
                   builder: (context, leaderboardSnapshot) {
@@ -581,6 +695,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: 20,
         ),
 
+        // Daily Reminder Toggle Button
         Card(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -600,14 +715,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const SizedBox(height: 20),
 
-        // Share your progress
+        // Ambiance settings card
         Card(
-          child: ListTile(
-            onTap: _triggerShare, // This now works!
-            leading:
-                Icon(Icons.share, color: Theme.of(context).colorScheme.primary),
-            title: const Text("Share Your Progress"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          child: SwitchListTile(
+            title: const Text("Temple Ambiance"),
+            subtitle: const Text("Play subtle background temple sounds."),
+            secondary: const Icon(Icons.waves_rounded),
+            value: _isAmbianceEnabled,
+            onChanged: _toggleAmbiance,
+          ),
+        ),
+
+        const SizedBox(
+          height: 20,
+        ),
+
+        // Share your progress - Share Naam Jaap - Rate Our App
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                onTap: _triggerShare, // This is your existing "Share Progress"
+                leading: Icon(Icons.photo_camera_front_outlined,
+                    color: Theme.of(context).colorScheme.primary),
+                title: const Text("Share Your Progress"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              ),
+              const Divider(height: 1, indent: 16, endIndent: 16),
+              ListTile(
+                onTap: _shareApp, // This is the new "Share the App"
+                leading: Icon(Icons.share, color: Colors.blue.shade600),
+                title: const Text("Share Naam Jaap"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              ),
+              const Divider(height: 1, indent: 16, endIndent: 16),
+              ListTile(
+                onTap: _requestReview, // This is the new "Rate the App"
+                leading: Icon(Icons.star_outline_rounded,
+                    color: Colors.amber.shade800),
+                title: const Text("Rate Our App"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              ),
+            ],
           ),
         ),
 
@@ -628,38 +777,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         // Badge Card
         Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Achievements",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Divider(
-                  height: 24,
-                ),
-                if ((userData['badges'] as List?)?.isEmpty ?? true)
-                  const Text("Chant more to earn badges")
-                else
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 8.0,
-                    children:
-                        (userData['badges'] as List<dynamic>).map((badge) {
-                      return Chip(
-                        avatar: Icon(Icons.shield,
-                            color: Theme.of(context).colorScheme.secondary),
-                        label: Text(badge.toString()),
-                        backgroundColor: Theme.of(context)
-                            .colorScheme
-                            .secondaryContainer
-                            .withAlpha(160),
-                      );
-                    }).toList(),
+          child: InkWell(
+            // InkWell provides the tap effect
+            onTap: () {
+              if (badges.isNotEmpty) {
+                _showAchievementsDialog(badges);
+              }
+            },
+            borderRadius: BorderRadius.circular(16.0),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text("Achievements",
+                          style: Theme.of(context).textTheme.titleLarge),
+                      const Spacer(),
+                      if (badges.isNotEmpty)
+                        const Icon(Icons.arrow_forward_ios,
+                            size: 16, color: Colors.grey),
+                    ],
                   ),
-              ],
+                  const SizedBox(height: 16),
+                  if (badges.isEmpty)
+                    const Center(
+                        child: Text("Start chanting to earn your first badge!"))
+                  else
+                    // The "Preview Shelf" shows the 3 most recent badges.
+                    Row(
+                      children: [
+                        ...badges.reversed.take(3).map((badge) => Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Chip(
+                                avatar: Icon(Icons.shield_rounded,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                                label: Text(badge.toString()),
+                              ),
+                            )),
+                        if (badges.length > 3)
+                          Chip(
+                            label: Text('+${badges.length - 3} more...'),
+                          ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -687,6 +853,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const Divider(height: 1, indent: 16, endIndent: 16),
 
+        // Privacy Policy Button
         ListTile(
           onTap: _launchPrivacyPolicy,
           leading: const Icon(Icons.privacy_tip_outlined, color: Colors.green),
@@ -696,6 +863,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         const Divider(height: 1, indent: 16, endIndent: 16),
 
+        // Terms and Conditions Button
         ListTile(
           onTap: _launchTerms,
           leading: const Icon(Icons.gavel_outlined, color: Colors.black54),

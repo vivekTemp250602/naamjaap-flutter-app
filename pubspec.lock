@@ -693,6 +693,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.4+1"
+  in_app_review:
+    dependency: "direct main"
+    description:
+      name: in_app_review
+      sha256: ab26ac54dbd802896af78c670b265eaeab7ecddd6af4d0751e9604b60574817f
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.11"
+  in_app_review_platform_interface:
+    dependency: transitive
+    description:
+      name: in_app_review_platform_interface
+      sha256: fed2c755f2125caa9ae10495a3c163aa7fab5af3585a9c62ef4a6920c5b45f10
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   intl:
     dependency: transitive
     description:
@@ -789,6 +805,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  overlay_support:
+    dependency: "direct main"
+    description:
+      name: overlay_support
+      sha256: fc39389bfd94e6985e1e13b2a88a125fc4027608485d2d4e2847afe1b2bb339c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   path:
     dependency: transitive
     description:
@@ -957,6 +981,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  showcaseview:
+    dependency: "direct main"
+    description:
+      name: showcaseview
+      sha256: f236c1f44b286e1ba888f8701adca067af92c33e29ea937d0fe9b4a29d4cd41e
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

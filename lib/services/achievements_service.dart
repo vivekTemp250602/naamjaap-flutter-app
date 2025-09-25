@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AchievementsService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final _newBadgeStreamController = StreamController<String>.broadcast();
+  Stream<String> get newBadgeStream => _newBadgeStreamController.stream;
 
   Future<void> checkAndAwardBadges(String uid) async {
     final userRef = _db.collection('users').doc(uid);
@@ -12,35 +16,52 @@ class AchievementsService {
     final userData = snapshot.data() as Map<String, dynamic>;
     List<String> currentBadges = List<String>.from(userData['badges'] ?? []);
     List<String> newBadges = [];
-    int totalJapps = userData['total_japps'] ?? 0;
 
-    // --- Define and check for badges ---
+    final totalJapps = userData['total_japps'] ?? 0;
+    final currentStreak = userData['currentStreak'] ?? 0;
+    final totalMalas = (totalJapps / 108).floor();
 
-    // Milestone Badges
+    // --- 1. Japa Count Milestones ---
     if (totalJapps >= 108 && !currentBadges.contains('First Mala')) {
       newBadges.add('First Mala');
     }
-    if (totalJapps >= 1008 && !currentBadges.contains('Pious Chanter')) {
-      newBadges.add('Pious Chanter');
+    if (totalJapps >= 1008 && !currentBadges.contains('Sahasranama')) {
+      newBadges.add('Sahasranama');
     }
-    if (totalJapps >= 10008 && !currentBadges.contains('Devout Follower')) {
-      newBadges.add('Devout Follower');
+    if (totalJapps >= 10000 && !currentBadges.contains('Ten Thousand Steps')) {
+      newBadges.add('Ten Thousand Steps');
+    }
+    if (totalJapps >= 100000 && !currentBadges.contains('Lakshya Chanter')) {
+      newBadges.add('Lakshya Chanter');
+    }
+    if (totalJapps >= 1000000 &&
+        !currentBadges.contains('Millionaire of Faith')) {
+      newBadges.add('Millionaire of Faith');
     }
 
-    // --- 2. NEW: Check for Daily Streak Milestones ---
-    int currentStreak = userData['currentStreak'] ?? 0;
-
-    if (currentStreak >= 7 && !currentBadges.contains('7-Day Streak')) {
-      newBadges.add('7-Day Streak');
+    // --- 2. Daily Streak Milestones ---
+    if (currentStreak >= 7 && !currentBadges.contains('7-Day Sadhana')) {
+      newBadges.add('7-Day Sadhana');
     }
     if (currentStreak >= 30 && !currentBadges.contains('30-Day Devotion')) {
       newBadges.add('30-Day Devotion');
     }
-    if (currentStreak >= 108 && !currentBadges.contains('108-Day Pilgrim')) {
-      newBadges.add('108-Day Pilgrim');
+    if (currentStreak >= 108 && !currentBadges.contains('Sacred Centurion')) {
+      newBadges.add('Sacred Centurion');
+    }
+    if (currentStreak >= 365 &&
+        !currentBadges.contains('Solar Cycle of Faith')) {
+      newBadges.add('Solar Cycle of Faith');
     }
 
-    // If new badges were earned, update them in Firestore
+    // --- 3. Mala Completion Milestones ---
+    if (totalMalas >= 11 && !currentBadges.contains('Ekadashi Mala')) {
+      newBadges.add('Ekadashi Mala');
+    }
+    if (totalMalas >= 108 && !currentBadges.contains('Mala Master')) {
+      newBadges.add('Mala Master');
+    }
+
     if (newBadges.isNotEmpty) {
       await userRef.update({
         'badges': FieldValue.arrayUnion(newBadges),

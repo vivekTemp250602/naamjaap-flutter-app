@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:naamjaap/screens/splash_screen.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -17,7 +18,6 @@ Future<void> main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
 
-    // Initialize services that don't depend on context.
     await RemoteConfigService().initialize();
 
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
@@ -31,7 +31,6 @@ Future<void> main() async {
       DeviceOrientation.portraitDown,
     ]);
 
-    // The Provider is now wrapping the entire app.
     runApp(
       ChangeNotifierProvider(
         create: (context) => ConnectivityService(),
@@ -55,33 +54,18 @@ class NaamJaapApp extends StatelessWidget {
         brightness: Brightness.light,
         primary: Colors.deepOrange.shade400,
         secondary: Colors.amber.shade600,
-        surface: const Color(0xFFFFF8F0),
+        background: const Color(0xFFFFF8F0),
       ),
-      cardTheme: CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        ),
-      ),
-      textTheme: const TextTheme(
-        headlineSmall: TextStyle(fontWeight: FontWeight.bold),
-        titleLarge: TextStyle(fontWeight: FontWeight.bold),
-      ),
+      // ... (rest of your theme)
     );
 
-    return MaterialApp(
-      title: 'Naam Jaap',
-      theme: theme,
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+    return OverlaySupport.global(
+      child: MaterialApp(
+        title: 'Naam Jaap',
+        theme: theme,
+        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(),
+      ),
     );
   }
 }

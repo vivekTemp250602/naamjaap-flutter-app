@@ -2,7 +2,7 @@ name: naamjaap
 description: "A digital japa mala application."
 publish_to: 'none'
 
-version: 1.0.0+3
+version: 1.0.0+5
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -29,6 +29,7 @@ dependencies:
   provider: ^6.1.2
   google_mobile_ads: ^5.1.0
   in_app_purchase: ^3.2.0
+  package_info_plus: ^8.0.0
 
   # Utilities
   audioplayers: ^6.0.0

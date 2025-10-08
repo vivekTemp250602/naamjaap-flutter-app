@@ -10,7 +10,6 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/rendering.dart';
 import 'package:naamjaap/services/storage_service.dart';
@@ -37,21 +36,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _shareableName = '';
   int _shareableJapps = 0;
   bool _isUploading = false;
-  bool _isAmbianceEnabled = false;
 
   @override
   void initState() {
     super.initState();
     // Load the ad. The `isTest: true` is crucial for development.
     _adService.loadBannerAd();
-    _loadAmbiancePreference();
-  }
-
-  // The sign-out logic.
-  Future<void> _signOut() async {
-    await AudioService().stop();
-    await GoogleSignIn().signOut();
-    await FirebaseAuth.instance.signOut();
   }
 
   // Grand Achievement Dialog
@@ -137,41 +127,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final ImagePicker picker = ImagePicker();
     final XFile? image =
         await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
-
-    if (image == null) return; // User cancelled the picker
-
-    setState(() {
-      _isUploading = true;
-    });
-
+    if (image == null) return;
+    setState(() => _isUploading = true);
     try {
-      // 1. Upload the image to Firebase Storage
       final String downloadUrl =
           await _storageService.uploadProfilePicture(_currentUser.uid, image);
-
-      // 2. Update the user's document in Firestore with the new URL
       await _firestoreService.updateUserProfilePicture(
           _currentUser.uid, downloadUrl);
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Profile picture updated successfully!')),
-        );
+            const SnackBar(content: Text('Profile picture updated!')));
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Failed to upload image. Please try again.')),
-        );
+            const SnackBar(content: Text('Failed to upload image.')));
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isUploading = false;
-        });
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -223,41 +196,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
-
-  // To know user's choice of ambience sound
-  Future _loadAmbiancePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isAmbianceEnabled = prefs.getBool('isAmbianceEnabled') ?? false;
-    });
-  }
-
-  // Toggle Ambient Sound.
-  Future<void> _toggleAmbiance(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isAmbianceEnabled', value);
-    setState(() {
-      _isAmbianceEnabled = value;
-    });
-    if (value) {
-      AudioService().startAmbientSound('assets/audio/temple_bells.mp3');
-    } else {
-      AudioService().stopAmbientSound();
-    }
-  }
-
-  // Method to handle picking an image from the gallery.
-  // Future<void> _pickImage() async {
-  //   final ImagePicker picker = ImagePicker();
-  //   final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-  //   if (image != null && mounted) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //           content: Text('Image selected ! Upload feature coming soon.')),
-  //     );
-  //   }
-  // }
 
   // Method to show the dialog for editing the user's name.
   Future<void> _showEditNameDialog(String currentName) async {
@@ -317,47 +255,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Add the function to launch the Google Form URL.
-  Future<void> _launchFeedbackForm() async {
-    // IMPORTANT: Replace the URL below with the actual link to YOUR Google Form.
-    final Uri feedbackUri = Uri.parse(
-        'https://docs.google.com/forms/d/e/1FAIpQLSemtDuaiggPyF-cvUgKQqS3NxlB6LZyHFBc_cvXN6ZIbVLr_w/viewform?usp=header');
-
-    if (!await launchUrl(feedbackUri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open feedback form.')),
-        );
-      }
-    }
-  }
-
-  //  Privacy pages.
-  Future<void> _launchPrivacyPolicy() async {
-    final Uri url = Uri.parse(
-        'https://vivekTemp250602.github.io/naamjaap-legal/privacy.html');
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-      // Handle error
-    }
-  }
-
-  // Terms and conditions pages
-  Future<void> _launchTerms() async {
-    final Uri url = Uri.parse(
-        'https://vivekTemp250602.github.io/naamjaap-legal/terms.html');
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-      // Handle error
-    }
-  }
-
-  // Trigger the "Rate the App" prompt.
-  Future<void> _requestReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
-    }
-  }
-
   // Share the app link.
   Future<void> _shareApp() async {
     // This is the link that you will replace after your app is live.
@@ -367,6 +264,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         "Come join me on a sacred journey with the Naam Jaap app! Download it here: $appLink";
 
     await Share.share(message);
+  }
+
+  Future<void> _signOut() async {
+    await AudioService().stop();
+    await GoogleSignIn().signOut();
+    await FirebaseAuth.instance.signOut();
+  }
+
+  // Trigger the "Rate the App" prompt.
+  Future<void> _requestReview() async {
+    final InAppReview inAppReview = InAppReview.instance;
+    if (await inAppReview.isAvailable()) {
+      inAppReview.requestReview();
+    }
   }
 
   @override
@@ -695,45 +606,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: 20,
         ),
 
-        // Daily Reminder Toggle Button
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: SwitchListTile(
-              title: const Text("Daily Remainders"),
-              subtitle: const Text(
-                  "Get a notification if you haven't chanted today."),
-              secondary: const Icon(Icons.notifications_outlined),
-              value: userData['settings']?['enableReminders'] ?? false,
-              onChanged: (bool value) {
-                _firestoreService.updateReminderSetting(
-                    _currentUser.uid, value);
-              },
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // Ambiance settings card
-        Card(
-          child: SwitchListTile(
-            title: const Text("Temple Ambiance"),
-            subtitle: const Text("Play subtle background temple sounds."),
-            secondary: const Icon(Icons.waves_rounded),
-            value: _isAmbianceEnabled,
-            onChanged: _toggleAmbiance,
-          ),
-        ),
-
-        const SizedBox(
-          height: 20,
-        ),
-
         // Share your progress - Share Naam Jaap - Rate Our App
         Card(
           child: Column(
             children: [
+              // Share Progress
               ListTile(
                 onTap: _triggerShare, // This is your existing "Share Progress"
                 leading: Icon(Icons.photo_camera_front_outlined,
@@ -741,14 +618,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text("Share Your Progress"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
+
               const Divider(height: 1, indent: 16, endIndent: 16),
+
+              // Share
               ListTile(
                 onTap: _shareApp, // This is the new "Share the App"
                 leading: Icon(Icons.share, color: Colors.blue.shade600),
                 title: const Text("Share Naam Jaap"),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
+
+              // Divider
               const Divider(height: 1, indent: 16, endIndent: 16),
+
+              // Request Review
               ListTile(
                 onTap: _requestReview, // This is the new "Rate the App"
                 leading: Icon(Icons.star_outline_rounded,
@@ -828,51 +712,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-        ),
-
-        const SizedBox(
-          height: 24,
-        ),
-
-        // ---- FeedBack Form ------
-        Card(
-          child: ListTile(
-            onTap: _launchFeedbackForm,
-            leading: const Icon(
-              Icons.feedback_outlined,
-              color: Colors.blueGrey,
-            ),
-            title: const Text("Feedback & Support"),
-            subtitle: const Text("Report a bug or suggest a feature"),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 15,
-            ),
-          ),
-        ),
-
-        const Divider(height: 1, indent: 16, endIndent: 16),
-
-        // Privacy Policy Button
-        ListTile(
-          onTap: _launchPrivacyPolicy,
-          leading: const Icon(Icons.privacy_tip_outlined, color: Colors.green),
-          title: const Text("Privacy Policy"),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        ),
-
-        const Divider(height: 1, indent: 16, endIndent: 16),
-
-        // Terms and Conditions Button
-        ListTile(
-          onTap: _launchTerms,
-          leading: const Icon(Icons.gavel_outlined, color: Colors.black54),
-          title: const Text("Terms & Conditions"),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-        ),
-
-        const SizedBox(
-          height: 24,
         ),
 
         // ----- Sign Out Button -------

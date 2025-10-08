@@ -1,11 +1,14 @@
 {
     "cSpell.words": [
+        "cupertino",
         "Ekadashi",
         "Japa",
         "Lakshya",
         "Malas",
         "Sadhana",
         "Sahasranama",
+        "showcaseview",
         "हिन्दी"
-    ]
+    ],
+    "cmake.ignoreCMakeListsMissing": true
 }

@@ -32,4 +32,17 @@ class StorageService {
       rethrow; // Rethrow the error to be handled by the UI
     }
   }
+
+  Future<void> deleteUserProfilePicture(String uid) async {
+    try {
+      final ref = _storage
+          .ref()
+          .child('profile_pictures')
+          .child(uid)
+          .child('profile.jpg');
+      await ref.delete();
+    } catch (e) {
+      print("Could not delete profile picture (it may not have existed): $e");
+    }
+  }
 }

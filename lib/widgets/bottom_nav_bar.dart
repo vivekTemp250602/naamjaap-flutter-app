@@ -32,6 +32,11 @@ class BottomNavBar extends StatelessWidget {
           label: 'Leaderboard',
         ),
         BottomNavigationBarItem(
+          icon: Icon(Icons.auto_stories_outlined),
+          activeIcon: Icon(Icons.auto_stories),
+          label: 'Wisdom',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person_outline),
           activeIcon: Icon(Icons.person),
           label: 'Profile',

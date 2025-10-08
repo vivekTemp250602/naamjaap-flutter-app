@@ -6,7 +6,6 @@ import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naamjaap/services/achievements_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
@@ -15,12 +14,8 @@ import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
-import 'package:naamjaap/widgets/quote_card.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
@@ -50,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
-  bool _isQuoteDismissedToday = false;
   bool _isLoading = true;
   bool _isZenMode = false;
   Timer? _syncTimer;
@@ -95,10 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _initializeScreen() async {
     setState(() => _isLoading = true);
     final prefs = await SharedPreferences.getInstance();
-
-    // Load user preferences
-    final lastDismissedDate = prefs.getString('lastQuoteDismissedDate') ?? '';
-    final todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final selectedMantra =
         prefs.getString(AppConstants.prefsKeySelectedMantra) ??
             AppConstants.hareKrishna;
@@ -117,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (mounted) {
       setState(() {
-        _isQuoteDismissedToday = lastDismissedDate == todayDate;
         _selectedMantra = selectedMantra;
         _isMuted = isMuted;
         _isVibrationEnabled = isVibrationEnabled;
@@ -220,17 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.prefsKeyVibrationEnabled, newStatus);
-  }
-
-  Future<void> _dismissQuote() async {
-    final prefs = await SharedPreferences.getInstance();
-    final todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    await prefs.setString('lastQuoteDismissedDate', todayDate);
-    if (mounted) {
-      setState(() {
-        _isQuoteDismissedToday = true;
-      });
-    }
   }
 
   void _showMantraInfo() {
@@ -361,44 +339,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CircularProgressIndicator(color: Colors.white))
                 : Column(
                     children: [
-                      if (!_isQuoteDismissedToday)
-                        StreamBuilder<DocumentSnapshot>(
-                          stream: _firestoreService.getDailyQuoteStream(),
-                          builder: (context, quoteSnapshot) {
-                            if (quoteSnapshot.hasError ||
-                                !quoteSnapshot.hasData ||
-                                !quoteSnapshot.data!.exists) {
-                              return QuoteCard(
-                                textEN: AppConstants.defaultQuote['text_en']!,
-                                textHI: AppConstants.defaultQuote['text_hi']!,
-                                textSA: AppConstants.defaultQuote['text_sa']!,
-                                source: AppConstants.defaultQuote['source']!,
-                              );
-                            }
-                            final quoteData = quoteSnapshot.data!.data()
-                                as Map<String, dynamic>;
-                            if (!quoteData.containsKey('text_en') ||
-                                !quoteData.containsKey('text_hi') ||
-                                !quoteData.containsKey('text_sa')) {
-                              return QuoteCard(
-                                textEN: AppConstants.defaultQuote['text_en']!,
-                                textHI: AppConstants.defaultQuote['text_hi']!,
-                                textSA: AppConstants.defaultQuote['text_sa']!,
-                                source: AppConstants.defaultQuote['source']!,
-                              );
-                            }
-                            return Dismissible(
-                              key: ValueKey(quoteData['source']),
-                              onDismissed: (direction) => _dismissQuote(),
-                              child: QuoteCard(
-                                textEN: quoteData['text_en'] ?? '...',
-                                textHI: quoteData['text_hi'] ?? '...',
-                                textSA: quoteData['text_sa'] ?? '...',
-                                source: quoteData['source'] ?? '...',
-                              ),
-                            );
-                          },
-                        ),
                       Chip(
                         avatar: Icon(Icons.local_fire_department,
                             color: Colors.orange.shade800),

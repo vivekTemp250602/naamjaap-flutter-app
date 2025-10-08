@@ -31,7 +31,7 @@ class FirestoreService {
       }
 
       final data = snapshot.data() as Map<String, dynamic>;
-      // int currentStreak = data['currentStreak'] ?? 0;
+      int currentStreak = data['currentStreak'] ?? 0;
       Timestamp? lastChantTimestamp = data['lastChantDate'];
       DateTime? lastChantDate = lastChantTimestamp?.toDate();
 
@@ -41,13 +41,10 @@ class FirestoreService {
       // --- Streak Logic ---
       if (lastChantDate == null || !_isToday(lastChantDate)) {
         if (lastChantDate != null && _isYesterday(lastChantDate)) {
-          // The streak continues.
           updates['currentStreak'] = FieldValue.increment(1);
         } else {
-          // The streak was broken, so reset to 1.
           updates['currentStreak'] = 1;
         }
-        // Always update the last chant date on the first chant of a new day.
         updates['lastChantDate'] = FieldValue.serverTimestamp();
       }
 
@@ -168,5 +165,10 @@ class FirestoreService {
 
   Future<void> grantPremiumAccess(String uid) {
     return _db.collection('users').doc(uid).update({'isPremium': true});
+  }
+
+  // Delete Account
+  Future<void> deleteUser(String uid) {
+    return _db.collection('users').doc(uid).delete();
   }
 }

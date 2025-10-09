@@ -171,4 +171,12 @@ class FirestoreService {
   Future<void> deleteUser(String uid) {
     return _db.collection('users').doc(uid).delete();
   }
+
+  // A dedicated method to increment the total malas count.
+  Future<void> incrementTotalMalas(String uid) {
+    final userRef = _db.collection('users').doc(uid);
+    return userRef.update({
+      'total_malas': FieldValue.increment(1),
+    });
+  }
 }

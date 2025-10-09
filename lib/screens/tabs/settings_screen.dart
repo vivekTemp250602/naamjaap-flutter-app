@@ -17,21 +17,37 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen>
+    with AutomaticKeepAliveClientMixin {
   final FirestoreService _firestoreService = FirestoreService();
   final StorageService _storageService = StorageService();
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
   bool _isDeleting = false;
-  BannerAd? _bannerAd;
+
+  static const String _screenName = 'setting';
+  final AdService _adService = AdService();
 
   @override
   void initState() {
     super.initState();
-    _bannerAd = AdService.createBannerAd();
+    _adService.loadAdForScreen(
+        screenName: _screenName,
+        onAdLoaded: () {
+          if (mounted) setState(() {});
+        });
     _loadSettings();
   }
+
+  @override
+  void dispose() {
+    _adService.disposeAdForScreen(_screenName);
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -178,6 +194,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final bannerAd = _adService.getAdForScreen(_screenName);
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
@@ -325,12 +345,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
 
-                  if (_bannerAd != null && !isPremium)
+                  if (bannerAd != null &&
+                      !isPremium &&
+                      _adService.isAdLoadedForScreen(_screenName))
                     Container(
                       alignment: Alignment.center,
-                      width: _bannerAd!.size.width.toDouble(),
-                      height: _bannerAd!.size.height.toDouble(),
-                      child: AdWidget(ad: _bannerAd!),
+                      width: bannerAd.size.width.toDouble(),
+                      height: bannerAd.size.height.toDouble(),
+                      child: AdWidget(ad: bannerAd),
                     ),
                 ],
               );

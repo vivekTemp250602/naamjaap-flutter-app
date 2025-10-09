@@ -28,7 +28,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   // Services and controllers
   final AudioService _audioService = AudioService();
   final FirestoreService _firestoreService = FirestoreService();
@@ -37,7 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // final AchievementsService _achievementsService = AchievementsService();
   late ConfettiController _malaConfettiController;
   SyncService? _syncService;
-  BannerAd? _bannerAd;
+
+  // Ad Services variables
+  static const String _screenName = 'home';
+  final AdService _adService = AdService();
 
   // State variables - The UI is now driven by this fast, local state.
   int _totalMantraCount = 0; // The last known total from Firestore
@@ -54,7 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _bannerAd = AdService.createBannerAd();
+    _adService.loadAdForScreen(
+        screenName: _screenName,
+        onAdLoaded: () {
+          if (mounted) setState(() {});
+        });
     _uid = FirebaseAuth.instance.currentUser!.uid;
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
@@ -78,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _adService.disposeAdForScreen(_screenName);
     _syncTimer?.cancel();
     _syncService?.syncPendingData();
     _syncService?.dispose();
@@ -86,6 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _audioService.dispose();
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   // --- Helper Methods ---
 
@@ -181,6 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _malaConfettiController.play();
       _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
+      _firestoreService.incrementTotalMalas(_uid);
     }
 
     if (!_isPlaying) {
@@ -300,6 +313,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final bannerAd = _adService.getAdForScreen(_screenName);
+
     final connectivityService = Provider.of<ConnectivityService>(context);
     final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');
     final pendingCount = _pendingJappsLedger[mantraKey] ?? 0;
@@ -553,12 +570,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.white.withAlpha(190), fontSize: 18)),
                     const SizedBox(height: 36),
 
-                    if (_bannerAd != null && !isPremium)
+                    if (bannerAd != null &&
+                        !isPremium &&
+                        _adService.isAdLoadedForScreen(_screenName))
                       Container(
                         alignment: Alignment.center,
-                        width: _bannerAd!.size.width.toDouble(),
-                        height: _bannerAd!.size.height.toDouble(),
-                        child: AdWidget(ad: _bannerAd!),
+                        width: bannerAd.size.width.toDouble(),
+                        height: bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: bannerAd),
                       ),
                   ],
                 );

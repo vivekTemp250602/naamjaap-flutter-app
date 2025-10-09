@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:naamjaap/screens/garden_screen.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
@@ -26,12 +27,15 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>
+    with AutomaticKeepAliveClientMixin {
   final FirestoreService _firestoreService = FirestoreService();
   final StorageService _storageService = StorageService();
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
-  BannerAd? _bannerAd;
+
+  static const String _screenName = 'profile';
+  final AdService _adService = AdService();
 
   String _shareableName = '';
   int _shareableJapps = 0;
@@ -40,9 +44,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Load the ad. The `isTest: true` is crucial for development.
-    _bannerAd = AdService.createBannerAd();
+    _adService.loadAdForScreen(
+        screenName: _screenName,
+        onAdLoaded: () {
+          if (mounted) setState(() {});
+        });
   }
+
+  @override
+  void dispose() {
+    _adService.disposeAdForScreen(_screenName);
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 
   // Grand Achievement Dialog
   void _showAchievementsDialog(List<dynamic> badges) {
@@ -282,6 +298,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final bannerAd = _adService.getAdForScreen(_screenName);
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -317,12 +337,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Expanded(
                       child: buildProfileView(userData, isPremium),
                     ),
-                    if (_bannerAd != null && !isPremium)
+                    if (bannerAd != null &&
+                        !isPremium &&
+                        _adService.isAdLoadedForScreen(_screenName))
                       Container(
                         alignment: Alignment.center,
-                        width: _bannerAd!.size.width.toDouble(),
-                        height: _bannerAd!.size.height.toDouble(),
-                        child: AdWidget(ad: _bannerAd!),
+                        width: bannerAd.size.width.toDouble(),
+                        height: bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: bannerAd),
                       ),
                   ],
                 );
@@ -335,6 +357,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget buildProfileView(Map<String, dynamic> userData, bool isPremium) {
+    final int totalMalas = userData['total_malas'] ?? 0;
     final List<dynamic> badges = userData['badges'] ?? [];
 
     return ListView(
@@ -355,6 +378,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
         //     ),
         //   ),
 
+        // Garden Card
+        Card(
+          elevation: 4,
+          shadowColor: Colors.green.withAlpha(80),
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GardenScreen()));
+            },
+            borderRadius: BorderRadius.circular(16.0),
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.green.shade50,
+                    Colors.lightGreen.shade50,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.park_rounded,
+                    size: 40,
+                    color: Colors.green.shade800,
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("My Bodhi Tree",
+                            style: Theme.of(context).textTheme.titleLarge),
+                        const Text("A visual testament to your devotion."),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    totalMalas.toString(),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Colors.green.shade900,
+                          fontWeight: FontWeight.w900,
+                        ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.energy_savings_leaf, color: Colors.green.shade700),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(
+          height: 20,
+        ),
+
+        // User Profile Pic
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

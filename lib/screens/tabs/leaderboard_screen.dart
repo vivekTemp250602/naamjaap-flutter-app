@@ -16,20 +16,40 @@ class LeaderboardScreen extends StatefulWidget {
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
 }
 
-class _LeaderboardScreenState extends State<LeaderboardScreen> {
+class _LeaderboardScreenState extends State<LeaderboardScreen>
+    with AutomaticKeepAliveClientMixin {
   LeaderboardType _selectedLeaderboard = LeaderboardType.allTime;
   final FirestoreService _firestoreService = FirestoreService();
   final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  BannerAd? _bannerAd;
+
+  static const String _screenName = 'leader';
+  final AdService _adService = AdService();
 
   @override
   void initState() {
+    _adService.loadAdForScreen(
+        screenName: _screenName,
+        onAdLoaded: () {
+          if (mounted) setState(() {});
+        });
     super.initState();
-    _bannerAd = AdService.createBannerAd();
   }
 
   @override
+  void dispose() {
+    _adService.disposeAdForScreen(_screenName);
+    super.dispose();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final bannerAd = _adService.getAdForScreen(_screenName);
+
     return Scaffold(
       body: SafeArea(
         // NEW: We now wrap the main UI in a StreamBuilder to check if the user is premium.
@@ -204,12 +224,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
 
                 // The Ad Banner (only shown for non-premium users)
-                if (_bannerAd != null && !isPremium)
+                if (bannerAd != null &&
+                    !isPremium &&
+                    _adService.isAdLoadedForScreen(_screenName))
                   Container(
                     alignment: Alignment.center,
-                    width: _bannerAd!.size.width.toDouble(),
-                    height: _bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd!),
+                    width: bannerAd.size.width.toDouble(),
+                    height: bannerAd.size.height.toDouble(),
+                    child: AdWidget(ad: bannerAd),
                   ),
               ],
             );

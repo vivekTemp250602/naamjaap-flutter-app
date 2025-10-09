@@ -16,23 +16,34 @@ class WisdomScreen extends StatefulWidget {
   State<WisdomScreen> createState() => _WisdomScreenState();
 }
 
-class _WisdomScreenState extends State<WisdomScreen> {
+class _WisdomScreenState extends State<WisdomScreen>
+    with AutomaticKeepAliveClientMixin {
   final FirestoreService _firestoreService = FirestoreService();
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
   bool _isQuoteDismissedToday = false;
-  BannerAd? _bannerAd;
+
+  static const String _screenName = 'profile';
+  final AdService _adService = AdService();
 
   @override
   void initState() {
     super.initState();
-    _bannerAd = AdService.createBannerAd();
+    _adService.loadAdForScreen(
+        screenName: _screenName,
+        onAdLoaded: () {
+          if (mounted) setState(() {});
+        });
     _loadDismissalStatus();
   }
 
   @override
   void dispose() {
+    _adService.disposeAdForScreen(_screenName);
     super.dispose();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> _loadDismissalStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -58,6 +69,10 @@ class _WisdomScreenState extends State<WisdomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final bannerAd = _adService.getAdForScreen(_screenName);
+
     return Scaffold(
         body: SafeArea(
       child: StreamBuilder<DocumentSnapshot>(
@@ -82,8 +97,8 @@ class _WisdomScreenState extends State<WisdomScreen> {
                               !quoteSnapshot.hasData ||
                               !quoteSnapshot.data!.exists) {
                             return QuoteCard(
-                              textEN: AppConstants.defaultQuote['text_en']!,
                               textHI: AppConstants.defaultQuote['text_hi']!,
+                              textEN: AppConstants.defaultQuote['text_en']!,
                               textSA: AppConstants.defaultQuote['text_sa']!,
                               source: AppConstants.defaultQuote['source']!,
                             );
@@ -94,8 +109,8 @@ class _WisdomScreenState extends State<WisdomScreen> {
                             key: ValueKey(quoteData['source']),
                             onDismissed: (direction) => _dismissQuote(),
                             child: QuoteCard(
-                              textEN: quoteData['text_en'] ?? '...',
                               textHI: quoteData['text_hi'] ?? '...',
+                              textEN: quoteData['text_en'] ?? '...',
                               textSA: quoteData['text_sa'] ?? '...',
                               source: quoteData['source'] ?? '...',
                             ),
@@ -120,12 +135,14 @@ class _WisdomScreenState extends State<WisdomScreen> {
                   ],
                 ),
               ),
-              if (_bannerAd != null && !isPremium)
+              if (bannerAd != null &&
+                  !isPremium &&
+                  _adService.isAdLoadedForScreen(_screenName))
                 Container(
                   alignment: Alignment.center,
-                  width: _bannerAd!.size.width.toDouble(),
-                  height: _bannerAd!.size.height.toDouble(),
-                  child: AdWidget(ad: _bannerAd!),
+                  width: bannerAd.size.width.toDouble(),
+                  height: bannerAd.size.height.toDouble(),
+                  child: AdWidget(ad: bannerAd),
                 ),
             ],
           );

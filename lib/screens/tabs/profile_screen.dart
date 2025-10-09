@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final StorageService _storageService = StorageService();
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
-  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
 
   String _shareableName = '';
   int _shareableJapps = 0;
@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     // Load the ad. The `isTest: true` is crucial for development.
-    _adService.loadBannerAd();
+    _bannerAd = AdService.createBannerAd();
   }
 
   // Grand Achievement Dialog
@@ -282,8 +282,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bannerAd = _adService.bannerAd;
-
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -319,12 +317,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Expanded(
                       child: buildProfileView(userData, isPremium),
                     ),
-                    if (bannerAd != null && !isPremium)
+                    if (_bannerAd != null && !isPremium)
                       Container(
                         alignment: Alignment.center,
-                        width: bannerAd.size.width.toDouble(),
-                        height: bannerAd.size.height.toDouble(),
-                        child: AdWidget(ad: bannerAd),
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd!),
                       ),
                   ],
                 );

@@ -20,18 +20,17 @@ class _WisdomScreenState extends State<WisdomScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
   bool _isQuoteDismissedToday = false;
-  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
-    _adService.loadBannerAd();
+    _bannerAd = AdService.createBannerAd();
     _loadDismissalStatus();
   }
 
   @override
   void dispose() {
-    _adService.dispose();
     super.dispose();
   }
 
@@ -59,8 +58,6 @@ class _WisdomScreenState extends State<WisdomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bannerAd = _adService.bannerAd;
-
     return Scaffold(
         body: SafeArea(
       child: StreamBuilder<DocumentSnapshot>(
@@ -123,12 +120,12 @@ class _WisdomScreenState extends State<WisdomScreen> {
                   ],
                 ),
               ),
-              if (bannerAd != null && !isPremium)
+              if (_bannerAd != null && !isPremium)
                 Container(
                   alignment: Alignment.center,
-                  width: bannerAd.size.width.toDouble(),
-                  height: bannerAd.size.height.toDouble(),
-                  child: AdWidget(ad: bannerAd),
+                  width: _bannerAd!.size.width.toDouble(),
+                  height: _bannerAd!.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd!),
                 ),
             ],
           );

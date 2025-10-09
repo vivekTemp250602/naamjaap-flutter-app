@@ -6,6 +6,8 @@ import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
@@ -35,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // final AchievementsService _achievementsService = AchievementsService();
   late ConfettiController _malaConfettiController;
   SyncService? _syncService;
+  BannerAd? _bannerAd;
 
   // State variables - The UI is now driven by this fast, local state.
   int _totalMantraCount = 0; // The last known total from Firestore
@@ -45,13 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
-  bool _isLoading = true;
   bool _isZenMode = false;
   Timer? _syncTimer;
 
   @override
   void initState() {
     super.initState();
+    _bannerAd = AdService.createBannerAd();
     _uid = FirebaseAuth.instance.currentUser!.uid;
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
@@ -87,7 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
   // --- Helper Methods ---
 
   Future<void> _initializeScreen() async {
-    setState(() => _isLoading = true);
     final prefs = await SharedPreferences.getInstance();
     final selectedMantra =
         prefs.getString(AppConstants.prefsKeySelectedMantra) ??
@@ -111,7 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _isMuted = isMuted;
         _isVibrationEnabled = isVibrationEnabled;
         _pendingJappsLedger = pendingJappsLedger;
-        _isLoading = false;
       });
       await _audioService.setMuted(_isMuted);
     }
@@ -334,224 +335,235 @@ class _HomeScreenState extends State<HomeScreen> {
         Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            child: _isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(color: Colors.white))
-                : Column(
-                    children: [
-                      Chip(
-                        avatar: Icon(Icons.local_fire_department,
-                            color: Colors.orange.shade800),
-                        label: Text('$_streakCount Day Streak',
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold)),
-                        backgroundColor: Colors.white.withAlpha(190),
-                        elevation: 4,
-                      ),
+            child: StreamBuilder<DocumentSnapshot>(
+              stream: _firestoreService.getUserStatsStream(_uid),
+              builder: (context, userSnapshot) {
+                if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final userData =
+                    userSnapshot.data!.data() as Map<String, dynamic>;
+                final bool isPremium = userData['isPremium'] ?? false;
 
-                      // Mantra Selector
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: SizedBox(
-                          height: 50,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              children: [
-                                ...RemoteConfigService().mantras.map((mantra) {
-                                  final isSelected = _selectedMantra == mantra;
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6.0),
-                                    child: GestureDetector(
-                                      onTap: () => _onMantraSelected(mantra),
-                                      child: AnimatedContainer(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 10),
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? Colors.orange.withAlpha(210)
-                                              : Colors.black.withAlpha(70),
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          border: Border.all(
-                                              color: isSelected
-                                                  ? Colors.orange.shade300
-                                                  : Colors.white.withAlpha(128),
-                                              width: 2),
-                                        ),
-                                        child: Text(mantra,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: isSelected
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal)),
+                return Column(
+                  children: [
+                    Chip(
+                      avatar: Icon(Icons.local_fire_department,
+                          color: Colors.orange.shade800),
+                      label: Text('$_streakCount Day Streak',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      backgroundColor: Colors.white.withAlpha(190),
+                      elevation: 4,
+                    ),
+
+                    // Mantra Selector
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: SizedBox(
+                        height: 50,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            children: [
+                              ...RemoteConfigService().mantras.map((mantra) {
+                                final isSelected = _selectedMantra == mantra;
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0),
+                                  child: GestureDetector(
+                                    onTap: () => _onMantraSelected(mantra),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Colors.orange.withAlpha(210)
+                                            : Colors.black.withAlpha(70),
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                            color: isSelected
+                                                ? Colors.orange.shade300
+                                                : Colors.white.withAlpha(128),
+                                            width: 2),
                                       ),
+                                      child: Text(mantra,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal)),
                                     ),
-                                  );
-                                }).toList(),
-                              ],
-                            ),
+                                  ),
+                                );
+                              }).toList(),
+                            ],
                           ),
                         ),
                       ),
+                    ),
 
-                      // Mantra Info Button
-                      TextButton.icon(
-                        onPressed: _showMantraInfo,
-                        icon: const Icon(Icons.info_outline),
-                        label: const Text("Mantra Info"),
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white.withAlpha(220),
-                        ),
+                    // Mantra Info Button
+                    TextButton.icon(
+                      onPressed: _showMantraInfo,
+                      icon: const Icon(Icons.info_outline),
+                      label: const Text("Mantra Info"),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white.withAlpha(220),
                       ),
+                    ),
 
-                      // Internet Status - Vibration - Sound
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // Online Status
-                            Icon(
-                              connectivityService.isOnline
-                                  ? Icons.cloud_done_outlined
-                                  : Icons.cloud_off_outlined,
-                              color: connectivityService.isOnline
-                                  ? Colors.green.shade300
-                                  : Colors.red.shade300,
-                            ),
+                    // Internet Status - Vibration - Sound
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // Online Status
+                          Icon(
+                            connectivityService.isOnline
+                                ? Icons.cloud_done_outlined
+                                : Icons.cloud_off_outlined,
+                            color: connectivityService.isOnline
+                                ? Colors.green.shade300
+                                : Colors.red.shade300,
+                          ),
 
-                            const SizedBox(
-                              width: 10,
-                            ),
+                          const SizedBox(
+                            width: 10,
+                          ),
 
-                            // Vibration Status
-                            IconButton(
-                              icon: Icon(_isVibrationEnabled
-                                  ? Icons.vibration
-                                  : Icons.mobile_off_rounded),
-                              iconSize: 28,
-                              color: Colors.white.withAlpha(210),
-                              onPressed: _toggleVibration,
-                              tooltip: _isVibrationEnabled
-                                  ? 'Vibration On'
-                                  : 'Vibration Off',
-                            ),
+                          // Vibration Status
+                          IconButton(
+                            icon: Icon(_isVibrationEnabled
+                                ? Icons.vibration
+                                : Icons.mobile_off_rounded),
+                            iconSize: 28,
+                            color: Colors.white.withAlpha(210),
+                            onPressed: _toggleVibration,
+                            tooltip: _isVibrationEnabled
+                                ? 'Vibration On'
+                                : 'Vibration Off',
+                          ),
 
-                            // Sound Status
-                            IconButton(
-                              icon: Icon(_isMuted
-                                  ? Icons.volume_off
-                                  : Icons.volume_up),
-                              iconSize: 28,
-                              color: Colors.white.withAlpha(210),
-                              onPressed: _toggleMute,
-                              tooltip: _isMuted ? 'Sound Off' : 'Sound On',
-                            ),
-                          ],
-                        ),
+                          // Sound Status
+                          IconButton(
+                            icon: Icon(
+                                _isMuted ? Icons.volume_off : Icons.volume_up),
+                            iconSize: 28,
+                            color: Colors.white.withAlpha(210),
+                            onPressed: _toggleMute,
+                            tooltip: _isMuted ? 'Sound Off' : 'Sound On',
+                          ),
+                        ],
                       ),
+                    ),
 
-                      // Tap to Chant Button
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              width: 340,
-                              height: 340,
-                              child: CustomPaint(
-                                painter: MalaPainter(
-                                  beadCount: 108,
-                                  activeBeadIndex: malaProgressCounter,
-                                ),
+                    // Tap to Chant Button
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: 340,
+                            height: 340,
+                            child: CustomPaint(
+                              painter: MalaPainter(
+                                beadCount: 108,
+                                activeBeadIndex: malaProgressCounter,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: _incrementCounter,
-                              child: Container(
-                                width: 260,
-                                height: 260,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.orange.shade700,
-                                  gradient: RadialGradient(colors: [
-                                    Colors.orange.shade500,
-                                    Colors.orange.shade800
-                                  ]),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.orange.shade900
-                                            .withAlpha(160),
-                                        spreadRadius: 2,
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 10)),
-                                    BoxShadow(
-                                        color: Colors.black.withAlpha(129),
-                                        spreadRadius: 10,
-                                        blurRadius: 40),
+                          ),
+                          GestureDetector(
+                            onTap: _incrementCounter,
+                            child: Container(
+                              width: 260,
+                              height: 260,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.orange.shade700,
+                                gradient: RadialGradient(colors: [
+                                  Colors.orange.shade500,
+                                  Colors.orange.shade800
+                                ]),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color:
+                                          Colors.orange.shade900.withAlpha(160),
+                                      spreadRadius: 2,
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 10)),
+                                  BoxShadow(
+                                      color: Colors.black.withAlpha(129),
+                                      spreadRadius: 10,
+                                      blurRadius: 40),
+                                ],
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      transitionBuilder: (Widget child,
+                                          Animation<double> animation) {
+                                        return ScaleTransition(
+                                            scale: animation, child: child);
+                                      },
+                                      child: Text(
+                                        (malaProgressCounter == 0 &&
+                                                displayTotal > 0)
+                                            ? "108"
+                                            : (malaProgressCounter).toString(),
+                                        key: ValueKey<int>(displayTotal),
+                                        style: const TextStyle(
+                                          fontSize: 72,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(
+                                                blurRadius: 10.0,
+                                                color: Colors.black54,
+                                                offset: Offset(2.0, 2.0))
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Total: ${displayTotal.toString()}',
+                                      style: TextStyle(
+                                        color: Colors.white.withAlpha(170),
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        transitionBuilder: (Widget child,
-                                            Animation<double> animation) {
-                                          return ScaleTransition(
-                                              scale: animation, child: child);
-                                        },
-                                        child: Text(
-                                          (malaProgressCounter == 0 &&
-                                                  displayTotal > 0)
-                                              ? "108"
-                                              : (malaProgressCounter)
-                                                  .toString(),
-                                          key: ValueKey<int>(displayTotal),
-                                          style: const TextStyle(
-                                            fontSize: 72,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            shadows: [
-                                              Shadow(
-                                                  blurRadius: 10.0,
-                                                  color: Colors.black54,
-                                                  offset: Offset(2.0, 2.0))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        'Total: ${displayTotal.toString()}',
-                                        style: TextStyle(
-                                          color: Colors.white.withAlpha(170),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Text('Tap to Chant',
-                          style: TextStyle(
-                              color: Colors.white.withAlpha(190),
-                              fontSize: 18)),
-                      const SizedBox(height: 36),
-                    ],
-                  ),
+                    ),
+                    Text('Tap to Chant',
+                        style: TextStyle(
+                            color: Colors.white.withAlpha(190), fontSize: 18)),
+                    const SizedBox(height: 36),
+
+                    if (_bannerAd != null && !isPremium)
+                      Container(
+                        alignment: Alignment.center,
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd!),
+                      ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
         Align(

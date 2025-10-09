@@ -20,18 +20,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   LeaderboardType _selectedLeaderboard = LeaderboardType.allTime;
   final FirestoreService _firestoreService = FirestoreService();
   final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
-    _adService.loadBannerAd();
+    _bannerAd = AdService.createBannerAd();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bannerAd = _adService.bannerAd;
-
     return Scaffold(
       body: SafeArea(
         // NEW: We now wrap the main UI in a StreamBuilder to check if the user is premium.
@@ -206,12 +204,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
 
                 // The Ad Banner (only shown for non-premium users)
-                if (bannerAd != null && !isPremium)
+                if (_bannerAd != null && !isPremium)
                   Container(
                     alignment: Alignment.center,
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
                   ),
               ],
             );

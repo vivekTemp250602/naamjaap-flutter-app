@@ -24,12 +24,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
   bool _isDeleting = false;
-  final AdService _adService = AdService();
+  BannerAd? _bannerAd;
 
   @override
   void initState() {
     super.initState();
-    _adService.loadBannerAd();
+    _bannerAd = AdService.createBannerAd();
     _loadSettings();
   }
 
@@ -178,8 +178,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bannerAd = _adService.bannerAd;
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
@@ -327,12 +325,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
 
-                  if (bannerAd != null && !isPremium)
+                  if (_bannerAd != null && !isPremium)
                     Container(
                       alignment: Alignment.center,
-                      width: bannerAd.size.width.toDouble(),
-                      height: bannerAd.size.height.toDouble(),
-                      child: AdWidget(ad: bannerAd),
+                      width: _bannerAd!.size.width.toDouble(),
+                      height: _bannerAd!.size.height.toDouble(),
+                      child: AdWidget(ad: _bannerAd!),
                     ),
                 ],
               );

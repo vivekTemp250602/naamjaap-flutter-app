@@ -19,10 +19,28 @@ class AppConstants {
   };
 
   // Map of mantra names to their background image paths
-  static const Map<String, String> mantraImagePaths = {
-    hareKrishna: 'assets/images/hare_krishna.png',
-    radhaRadha: 'assets/images/radha_radha.png',
-    ramRam: 'assets/images/ram_ram.png',
+  static const Map<String, List<String>> mantraImagePaths = {
+    hareKrishna: [
+      'assets/images/hare_krishna_1.png',
+      'assets/images/hare_krishna_2.png',
+      'assets/images/hare_krishna_3.png',
+      'assets/images/hare_krishna_4.png',
+      'assets/images/hare_krishna_5.png',
+    ],
+    radhaRadha: [
+      'assets/images/radha_radha_1.png',
+      'assets/images/radha_radha_2.png',
+      'assets/images/radha_radha_3.png',
+      'assets/images/radha_radha_4.png',
+      'assets/images/radha_radha_5.png',
+    ],
+    ramRam: [
+      'assets/images/ram_ram_1.png',
+      'assets/images/ram_ram_2.png',
+      'assets/images/ram_ram_3.png',
+      'assets/images/ram_ram_4.png',
+      'assets/images/ram_ram_5.png',
+    ],
   };
 
   // A default quote to show on first launch or if the server is unavailable.

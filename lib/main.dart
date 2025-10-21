@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naamjaap/screens/splash_screen.dart';
+import 'package:naamjaap/screens/animated_splash_screen.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -54,7 +54,7 @@ class NaamJaapApp extends StatelessWidget {
         brightness: Brightness.light,
         primary: Colors.deepOrange.shade400,
         secondary: Colors.amber.shade600,
-        background: const Color(0xFFFFF8F0),
+        surface: const Color(0xFFFFF8F0),
       ),
       // ... (rest of your theme)
     );
@@ -64,7 +64,7 @@ class NaamJaapApp extends StatelessWidget {
         title: 'Naam Jaap',
         theme: theme,
         debugShowCheckedModeBanner: false,
-        home: const SplashScreen(),
+        home: const AnimatedSplashScreen(),
       ),
     );
   }

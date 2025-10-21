@@ -29,10 +29,14 @@ class _MainAppScreensState extends State<MainAppScreens> {
   late final List<Widget> _screens;
   late final List<Widget> _screenTitles;
   late final StreamSubscription<User?> _authSubscription;
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+
+    _pageController = PageController();
+
     _screens = const [
       HomeScreen(),
       LeaderboardScreen(),
@@ -53,8 +57,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
       Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('assets/images/peacock_feather.png',
-              height: 24), // Assuming you have a feather icon
+          Image.asset('assets/images/peacock_feather.png', height: 24),
           const SizedBox(width: 8),
           const Text('Wisdom'),
         ],
@@ -77,11 +80,18 @@ class _MainAppScreensState extends State<MainAppScreens> {
 
   @override
   void dispose() {
+    _pageController.dispose();
     _authSubscription.cancel();
     super.dispose();
   }
 
   void _onTabTapped(int index) {
+    _pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic);
+  }
+
+  void _onPageChanged(int index) {
     setState(() {
       _currentIndex = index;
     });
@@ -159,8 +169,11 @@ class _MainAppScreensState extends State<MainAppScreens> {
               ),
           ],
         ),
-        body: IndexedStack(
-          index: _currentIndex,
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
           children: _screens,
         ),
         bottomNavigationBar: BottomNavBar(

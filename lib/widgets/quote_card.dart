@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 // An enum to make our language state clear and readable.
-enum QuoteLanguage { english, hindi, sanskrit }
+enum QuoteLanguage { hindi, english, sanskrit }
 
 class QuoteCard extends StatefulWidget {
-  final String textEN;
   final String textHI;
+  final String textEN;
   final String textSA;
   final String source;
 
   const QuoteCard({
     super.key,
-    required this.textEN,
     required this.textHI,
+    required this.textEN,
     required this.textSA,
     required this.source,
   });
@@ -41,7 +41,7 @@ class _QuoteCardState extends State<QuoteCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      shadowColor: Colors.black.withOpacity(0.3),
+      shadowColor: Colors.black.withAlpha(45),
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Container(
         padding: const EdgeInsets.all(20.0),
@@ -50,7 +50,7 @@ class _QuoteCardState extends State<QuoteCard> {
           gradient: LinearGradient(
             colors: [
               Colors.amber.shade100,
-              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.surface,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -97,8 +97,8 @@ class _QuoteCardState extends State<QuoteCard> {
             // The new language toggle buttons.
             ToggleButtons(
               isSelected: [
-                _selectedLanguage == QuoteLanguage.english,
                 _selectedLanguage == QuoteLanguage.hindi,
+                _selectedLanguage == QuoteLanguage.english,
                 _selectedLanguage == QuoteLanguage.sanskrit,
               ],
               onPressed: (index) {
@@ -115,10 +115,10 @@ class _QuoteCardState extends State<QuoteCard> {
               children: const [
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text('English')),
+                    child: Text('हिन्दी')),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text('हिन्दी')),
+                    child: Text('English')),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.0),
                     child: Text('Sanskrit')),

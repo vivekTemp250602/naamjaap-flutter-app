@@ -21,6 +21,57 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
+class AnimatedBackground extends StatefulWidget {
+  final List<String> imagePaths;
+
+  const AnimatedBackground({super.key, required this.imagePaths});
+
+  @override
+  State<AnimatedBackground> createState() => _AnimatedBackgroundState();
+}
+
+class _AnimatedBackgroundState extends State<AnimatedBackground> {
+  int _currentIndex = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.imagePaths.length > 1) {
+      _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
+        if (mounted) {
+          setState(() {
+            _currentIndex = (_currentIndex + 1) % widget.imagePaths.length;
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(seconds: 2),
+      child: Container(
+        key: ValueKey<String>(widget.imagePaths[_currentIndex]),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(widget.imagePaths[_currentIndex]),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -311,6 +362,22 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  void _onMantraSwiped(DragEndDetails details) {
+    if (details.primaryVelocity == null) return;
+
+    final List<String> mantras = RemoteConfigService().mantras;
+    final int currentIndex = mantras.indexOf(_selectedMantra);
+
+    if (details.primaryVelocity! < 0) {
+      final int nextIndex = (currentIndex + 1) % mantras.length;
+      _onMantraSelected(mantras[nextIndex]);
+    } else if (details.primaryVelocity! > 0) {
+      final int nextIndex =
+          (currentIndex - 1 + mantras.length) % mantras.length;
+      _onMantraSelected(mantras[nextIndex]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -329,15 +396,9 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 700),
-          child: Container(
+          child: AnimatedBackground(
             key: ValueKey<String>(_selectedMantra),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image:
-                    AssetImage(AppConstants.mantraImagePaths[_selectedMantra]!),
-                fit: BoxFit.cover,
-              ),
-            ),
+            imagePaths: AppConstants.mantraImagePaths[_selectedMantra]!,
           ),
         ),
         Container(
@@ -439,16 +500,6 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // Online Status
-                          Icon(
-                            connectivityService.isOnline
-                                ? Icons.cloud_done_outlined
-                                : Icons.cloud_off_outlined,
-                            color: connectivityService.isOnline
-                                ? Colors.green.shade300
-                                : Colors.red.shade300,
-                          ),
-
                           const SizedBox(
                             width: 10,
                           ),
@@ -481,88 +532,92 @@ class _HomeScreenState extends State<HomeScreen>
 
                     // Tap to Chant Button
                     Expanded(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: 340,
-                            height: 340,
-                            child: CustomPaint(
-                              painter: MalaPainter(
-                                beadCount: 108,
-                                activeBeadIndex: malaProgressCounter,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _incrementCounter,
-                            child: Container(
-                              width: 260,
-                              height: 260,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.orange.shade700,
-                                gradient: RadialGradient(colors: [
-                                  Colors.orange.shade500,
-                                  Colors.orange.shade800
-                                ]),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color:
-                                          Colors.orange.shade900.withAlpha(160),
-                                      spreadRadius: 2,
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10)),
-                                  BoxShadow(
-                                      color: Colors.black.withAlpha(129),
-                                      spreadRadius: 10,
-                                      blurRadius: 40),
-                                ],
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      transitionBuilder: (Widget child,
-                                          Animation<double> animation) {
-                                        return ScaleTransition(
-                                            scale: animation, child: child);
-                                      },
-                                      child: Text(
-                                        (malaProgressCounter == 0 &&
-                                                displayTotal > 0)
-                                            ? "108"
-                                            : (malaProgressCounter).toString(),
-                                        key: ValueKey<int>(displayTotal),
-                                        style: const TextStyle(
-                                          fontSize: 72,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          shadows: [
-                                            Shadow(
-                                                blurRadius: 10.0,
-                                                color: Colors.black54,
-                                                offset: Offset(2.0, 2.0))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      'Total: ${displayTotal.toString()}',
-                                      style: TextStyle(
-                                        color: Colors.white.withAlpha(170),
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
+                      child: GestureDetector(
+                        onHorizontalDragEnd: _onMantraSwiped,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 340,
+                              height: 340,
+                              child: CustomPaint(
+                                painter: MalaPainter(
+                                  beadCount: 108,
+                                  activeBeadIndex: malaProgressCounter,
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            GestureDetector(
+                              onTap: _incrementCounter,
+                              child: Container(
+                                width: 260,
+                                height: 260,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.orange.shade700,
+                                  gradient: RadialGradient(colors: [
+                                    Colors.orange.shade500,
+                                    Colors.orange.shade800
+                                  ]),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.orange.shade900
+                                            .withAlpha(160),
+                                        spreadRadius: 2,
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 10)),
+                                    BoxShadow(
+                                        color: Colors.black.withAlpha(129),
+                                        spreadRadius: 10,
+                                        blurRadius: 40),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        transitionBuilder: (Widget child,
+                                            Animation<double> animation) {
+                                          return ScaleTransition(
+                                              scale: animation, child: child);
+                                        },
+                                        child: Text(
+                                          (malaProgressCounter == 0 &&
+                                                  displayTotal > 0)
+                                              ? "108"
+                                              : (malaProgressCounter)
+                                                  .toString(),
+                                          key: ValueKey<int>(displayTotal),
+                                          style: const TextStyle(
+                                            fontSize: 72,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(
+                                                  blurRadius: 10.0,
+                                                  color: Colors.black54,
+                                                  offset: Offset(2.0, 2.0))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Total: ${displayTotal.toString()}',
+                                        style: TextStyle(
+                                          color: Colors.white.withAlpha(170),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Text('Tap to Chant',

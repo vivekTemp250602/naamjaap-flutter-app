@@ -80,62 +80,67 @@ class _ProfileScreenState extends State<ProfileScreen>
       'Mala Master': Icons.school_rounded,
     };
 
+    final Map<String, String> badgeDescriptions = {
+      'First Mala': 'You completed your first 108 chants.',
+      'Sahasranama': 'You have chanted one thousand names.',
+      'Ten Thousand Steps': 'A significant step on your journey.',
+      'Lakshya Chanter': 'You have completed one hundred thousand chants!',
+      'Millionaire of Faith': 'An incredible milestone of one million chants.',
+      '7-Day Sadhana': 'You have built a consistent 7-day practice.',
+      '30-Day Devotion': 'A full month of dedication to your path.',
+      'Sacred Centurion': 'You have completed 108 days of chanting.',
+      'Solar Cycle of Faith': 'A full year of consistent devotion!',
+      'Ekadashi Mala': 'You have completed 11 full malas.',
+      'Mala Master': 'You have completed 108 full malas!',
+    };
+
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Your Achievements'),
-        // The content is now a scrollable grid.
-        content: SizedBox(
-          width: double.maxFinite,
-          child: GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 2.5, // Adjusts the shape of the tiles
+        context: context,
+        builder: (context) {
+          // The Dialog is now larger and more spacious.
+          return AlertDialog(
+            title: const Text('Your Achievements'),
+            content: SizedBox(
+              width: double.maxFinite,
+              // The content is a ListView for a more elegant, scrollable list.
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: badges.length,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  final badge = badges.reversed
+                      .toList()[index]
+                      .toString(); // Show most recent first
+
+                  // The ListTile provides a clean, professional structure for each "plaque".
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                    // The leading Icon is now dynamic based on the badge type.
+                    leading: CircleAvatar(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.primary.withAlpha(20),
+                      child: Icon(
+                        badgeIcons[badge] ?? Icons.shield_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    // The title and subtitle provide a clear hierarchy.
+                    title: Text(badge,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(badgeDescriptions[badge] ??
+                        'A mark of your dedication.'),
+                  );
+                },
+              ),
             ),
-            itemCount: badges.length,
-            itemBuilder: (context, index) {
-              final badge = badges[index].toString();
-              return Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.secondary.withAlpha(20),
-                      Theme.of(context).colorScheme.surface.withAlpha(125),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(badgeIcons[badge] ?? Icons.shield_rounded,
-                        color: Theme.of(context).colorScheme.secondary),
-                    const SizedBox(width: 8),
-                    Expanded(
-                        child: Text(badge,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        });
   }
 
   // Upload Profile Image
@@ -250,10 +255,10 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // Exact UPI Launch Code
   Future<void> _launchUPI() async {
-    const String defaultAmount = "11";
     final String transactionId = 'TR${DateTime.now().millisecondsSinceEpoch}';
+    // MODIFIED: The "am=" parameter has been completely removed.
     final Uri upiUri = Uri.parse(
-        'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&am=$defaultAmount&cu=INR');
+        'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&cu=INR');
 
     try {
       if (await canLaunchUrl(upiUri)) {
@@ -384,8 +389,8 @@ class _ProfileScreenState extends State<ProfileScreen>
           shadowColor: Colors.green.withAlpha(80),
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => GardenScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const GardenScreen()));
             },
             borderRadius: BorderRadius.circular(16.0),
             child: Container(
@@ -774,28 +779,35 @@ class _ProfileScreenState extends State<ProfileScreen>
                         child: Text("Start chanting to earn your first badge!"))
                   else
                     // The "Preview Shelf" shows the 3 most recent badges.
-                    Row(
-                      children: [
-                        ...badges.reversed.take(3).map((badge) => Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Chip(
-                                avatar: Icon(Icons.shield_rounded,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                                label: Text(badge.toString()),
-                              ),
-                            )),
-                        if (badges.length > 3)
-                          Chip(
-                            label: Text('+${badges.length - 3} more...'),
-                          ),
-                      ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          ...badges.reversed.take(3).map((badge) => Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Chip(
+                                  avatar: Icon(Icons.shield_rounded,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                  label: Text(badge.toString()),
+                                ),
+                              )),
+                          if (badges.length > 3)
+                            Chip(
+                              label: Text('+${badges.length - 3} more...'),
+                            ),
+                        ],
+                      ),
                     ),
                 ],
               ),
             ),
           ),
+        ),
+
+        const SizedBox(
+          height: 20,
         ),
 
         // ----- Sign Out Button -------

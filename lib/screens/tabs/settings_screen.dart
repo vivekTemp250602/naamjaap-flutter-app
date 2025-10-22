@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/services/storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,10 +22,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     with AutomaticKeepAliveClientMixin {
   final FirestoreService _firestoreService = FirestoreService();
   final StorageService _storageService = StorageService();
+  final NotificationService _notificationService = NotificationService();
   final String _uid = FirebaseAuth.instance.currentUser!.uid;
+
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
   bool _isDeleting = false;
+  String _notificationLanguage = 'hi';
 
   static const String _screenName = 'setting';
   final AdService _adService = AdService();
@@ -55,14 +59,36 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (!userDoc.exists) return;
 
     final userData = userDoc.data() as Map<String, dynamic>;
+    final settings = userData['settings'] as Map<String, dynamic>? ?? {};
 
     if (mounted) {
       setState(() {
         _isAmbianceEnabled = prefs.getBool('isAmbianceEnabled') ?? false;
-        _areRemindersEnabled =
-            userData['settings']?['enableReminders'] ?? false;
+        _areRemindersEnabled = settings['enableReminders'] ?? false;
+        _notificationLanguage = settings['notificationLanguage'] ?? 'en';
       });
     }
+  }
+
+  Future<void> _updateSettings(String key, dynamic value) async {
+    setState(() {
+      if (key == 'enableReminders') {
+        _areRemindersEnabled = value;
+      } else if (key == 'notificationLanguage') {
+        _notificationLanguage = value;
+      }
+    });
+
+    // Update the app's notification topics
+    if (key == 'notificationLanguage' || key == 'enableReminders') {
+      await _notificationService.updateNotificationPreferences(
+        language: _notificationLanguage,
+        isEnabled: _areRemindersEnabled,
+      );
+    }
+
+    // Update Firestore in the background
+    await _firestoreService.updateUserSettings(_uid, {key: value});
   }
 
   Future<void> _toggleAmbiance(bool value) async {
@@ -221,34 +247,63 @@ class _SettingsScreenState extends State<SettingsScreen>
                       children: [
                         // --- App Settings Card ---
                         Card(
-                          child: Column(
-                            children: [
-                              SwitchListTile(
-                                title: const Text("Temple Ambiance"),
-                                subtitle: const Text(
-                                    "Play subtle background temple sounds."),
-                                secondary: const Icon(Icons.waves_rounded),
-                                value: _isAmbianceEnabled,
-                                onChanged: _toggleAmbiance,
-                              ),
+                          child: Column(children: [
+                            SwitchListTile(
+                              title: const Text("Temple Ambiance"),
+                              subtitle: const Text(
+                                  "Play subtle background temple sounds."),
+                              secondary: const Icon(Icons.waves_rounded),
+                              value: _isAmbianceEnabled,
+                              onChanged: _toggleAmbiance,
+                            ),
 
-                              // Divider
-                              const Divider(
-                                  height: 1, indent: 16, endIndent: 16),
+                            // Divider
+                            const Divider(height: 1, indent: 16, endIndent: 16),
 
-                              // Daily Remainder
-                              SwitchListTile(
-                                title: const Text("Daily Reminders"),
-                                subtitle: const Text(
-                                    "Get a notification if you haven't chanted today."),
-                                secondary:
-                                    const Icon(Icons.notifications_outlined),
-                                // THIS IS THE FIX: It now uses the correct state variable.
-                                value: _areRemindersEnabled,
-                                onChanged: _toggleReminders,
+                            // Daily Remainder
+                            SwitchListTile(
+                              title: const Text("Daily Reminders"),
+                              subtitle: const Text(
+                                  "Get a notification if you haven't chanted today."),
+                              secondary:
+                                  const Icon(Icons.notifications_outlined),
+                              // THIS IS THE FIX: It now uses the correct state variable.
+                              value: _areRemindersEnabled,
+                              onChanged: _toggleReminders,
+                            ),
+
+                            const Divider(height: 1, indent: 16, endIndent: 16),
+
+                            // Notification Language
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              child: DropdownButtonFormField(
+                                initialValue: _notificationLanguage,
+                                decoration: const InputDecoration(
+                                  labelText: 'Notification Language',
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.language),
+                                ),
+                                items: const [
+                                  DropdownMenuItem(
+                                      value: 'en', child: Text('English')),
+                                  DropdownMenuItem(
+                                      value: 'hi',
+                                      child: Text('हिन्दी (Hindi)')),
+                                  DropdownMenuItem(
+                                      value: 'sa',
+                                      child: Text('संस्कृतम् (Sanskrit)')),
+                                ],
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    _updateSettings(
+                                        'notificationLanguage', value);
+                                  }
+                                },
                               ),
-                            ],
-                          ),
+                            ),
+                          ]),
                         ),
                         const SizedBox(height: 20),
 

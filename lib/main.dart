@@ -8,6 +8,7 @@ import 'package:naamjaap/screens/animated_splash_screen.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -49,6 +50,9 @@ class NaamJaapApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
       useMaterial3: true,
+      textTheme: GoogleFonts.interTextTheme(
+        Theme.of(context).textTheme,
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.deepOrange,
         brightness: Brightness.light,

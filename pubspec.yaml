@@ -23,6 +23,7 @@ dependencies:
   firebase_remote_config: ^5.0.1
   in_app_review: ^2.0.9
   share_plus: ^9.0.0
+  google_fonts: ^6.3.2
 
   # Other services
   google_sign_in: ^6.2.1

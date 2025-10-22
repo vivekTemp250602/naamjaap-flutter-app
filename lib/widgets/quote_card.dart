@@ -23,7 +23,7 @@ class QuoteCard extends StatefulWidget {
 
 class _QuoteCardState extends State<QuoteCard> {
   // State variable to track the currently selected language.
-  QuoteLanguage _selectedLanguage = QuoteLanguage.english;
+  QuoteLanguage _selectedLanguage = QuoteLanguage.hindi;
 
   // Helper method to get the correct text based on the selected language.
   String get _displayText {

@@ -198,7 +198,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                                           context, userData),
                                       child: card
                                           .animate()
-                                          .fadeIn(duration: 500.ms)
+                                          .fadeIn(
+                                              duration: 500.ms, delay: 100.ms)
                                           .slideY(
                                               begin: 0.5,
                                               curve: Curves.easeOut),

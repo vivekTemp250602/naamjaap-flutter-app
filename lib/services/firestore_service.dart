@@ -179,4 +179,16 @@ class FirestoreService {
       'total_malas': FieldValue.increment(1),
     });
   }
+
+  Future<void> updateUserSettings(
+      String uid, Map<String, dynamic> settingsUpdate) {
+    // This will take a map like {'notificationLanguage': 'hi'} or {'enableReminders': true}
+    // and correctly merge it into the 'settings' map in Firestore.
+    return _db.collection('users').doc(uid).set(
+      {
+        'settings': settingsUpdate,
+      },
+      SetOptions(merge: true),
+    );
+  }
 }

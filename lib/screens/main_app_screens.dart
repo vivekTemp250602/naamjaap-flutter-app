@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/tabs/home_screen.dart';
 import 'package:naamjaap/screens/tabs/leaderboard_screen.dart';
@@ -27,7 +28,6 @@ class _MainAppScreensState extends State<MainAppScreens> {
   DateTime? _lastBackPressed;
 
   late final List<Widget> _screens;
-  late final List<Widget> _screenTitles;
   late final StreamSubscription<User?> _authSubscription;
   late final PageController _pageController;
 
@@ -44,32 +44,31 @@ class _MainAppScreensState extends State<MainAppScreens> {
       ProfileScreen(),
     ];
 
-    _screenTitles = [
-      const Text('Home'),
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.emoji_events_outlined, color: Colors.amber.shade300),
-          const SizedBox(width: 8),
-          const Text('Leaderboard'),
-        ],
-      ),
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset('assets/images/peacock_feather.png', height: 24),
-          const SizedBox(width: 8),
-          const Text('Wisdom'),
-        ],
-      ),
-      const Text('My Profile'),
-    ];
+    // _screenTitles = [
+    //   Text(AppLocalizations.of(context)!.nav_home),
+    //   Row(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       Icon(Icons.emoji_events_outlined, color: Colors.amber.shade300),
+    //       const SizedBox(width: 8),
+    //       Text(AppLocalizations.of(context)!.nav_leaderboard),
+    //     ],
+    //   ),
+    //   Row(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       Image.asset('assets/images/peacock_feather.png', height: 24),
+    //       const SizedBox(width: 8),
+    //       Text(AppLocalizations.of(context)!.nav_wisdom),
+    //     ],
+    //   ),
+    //   Text(AppLocalizations.of(context)!.nav_profile),
+    // ];
 
     NotificationService().initialize(widget.user.uid);
 
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null && mounted) {
-        // If the user signs out, navigate back to the LoginScreen.
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (Route<dynamic> route) => false,
@@ -99,6 +98,21 @@ class _MainAppScreensState extends State<MainAppScreens> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final List<Widget> screenTitles = [
+      Text(l10n.nav_home),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.emoji_events_outlined, color: Colors.amber.shade300),
+          const SizedBox(width: 8),
+          Text(l10n.nav_leaderboard),
+        ],
+      ),
+      Text(l10n.nav_wisdom),
+      Text(l10n.nav_profile),
+    ];
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -114,7 +128,9 @@ class _MainAppScreensState extends State<MainAppScreens> {
               now.difference(_lastBackPressed!) > const Duration(seconds: 2)) {
             _lastBackPressed = now;
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Press back again to exit')),
+              SnackBar(
+                  content:
+                      Text(AppLocalizations.of(context)!.dialog_pressBack)),
             );
           } else {
             SystemNavigator.pop();
@@ -155,7 +171,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
                     offset: Offset(1.0, 1.0),
                   )
                 ]),
-            child: _screenTitles[_currentIndex],
+            child: screenTitles[_currentIndex],
           ),
           actions: [
             if (_currentIndex == 3)

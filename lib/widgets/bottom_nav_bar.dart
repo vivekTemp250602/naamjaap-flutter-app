@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -19,27 +20,27 @@ class BottomNavBar extends StatelessWidget {
       backgroundColor: Colors.white,
       selectedItemColor: Colors.orange.shade800,
       unselectedItemColor: Colors.grey.shade600,
-      type: BottomNavigationBarType.fixed, // Ensures all labels are visible
-      items: const [
+      type: BottomNavigationBarType.fixed,
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          activeIcon: Icon(Icons.home),
-          label: 'Home',
+          icon: const Icon(Icons.home_outlined),
+          activeIcon: const Icon(Icons.home),
+          label: AppLocalizations.of(context)!.nav_home,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.leaderboard_outlined),
-          activeIcon: Icon(Icons.leaderboard),
-          label: 'Leaderboard',
+          icon: const Icon(Icons.leaderboard_outlined),
+          activeIcon: const Icon(Icons.leaderboard),
+          label: AppLocalizations.of(context)!.nav_leaderboard,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.auto_stories_outlined),
-          activeIcon: Icon(Icons.auto_stories),
-          label: 'Wisdom',
+          icon: const Icon(Icons.auto_stories_outlined),
+          activeIcon: const Icon(Icons.auto_stories),
+          label: AppLocalizations.of(context)!.nav_wisdom,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          activeIcon: Icon(Icons.person),
-          label: 'Profile',
+          icon: const Icon(Icons.person_outline),
+          activeIcon: const Icon(Icons.person),
+          label: AppLocalizations.of(context)!.nav_profile,
         ),
       ],
     );

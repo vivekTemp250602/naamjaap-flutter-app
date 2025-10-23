@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/widgets/bodhi_tree_painter.dart';
@@ -79,7 +80,7 @@ class _GardenScreenState extends State<GardenScreen>
                 Container(
                   padding: const EdgeInsets.all(24.0),
                   child: Text(
-                    '$totalMalas Malas Completed',
+                    '$totalMalas ${AppLocalizations.of(context)!.garden_totalMala}',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),

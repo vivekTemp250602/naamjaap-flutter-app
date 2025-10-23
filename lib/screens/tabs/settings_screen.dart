@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/providers/locale_provider.dart';
+import 'package:naamjaap/screens/language_selector_page.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/services/storage_service.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,10 +32,15 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
   bool _isDeleting = false;
-  String _notificationLanguage = 'hi';
 
   static const String _screenName = 'setting';
   final AdService _adService = AdService();
+
+  final List<Map<String, dynamic>> notificationLanguages = [
+    {'name': 'English', 'locale': const Locale('en')},
+    {'name': 'हिन्दी', 'locale': const Locale('hi')},
+    {'name': 'संस्कृतम्', 'locale': const Locale('sa')}, // Assuming 'sa'
+  ];
 
   @override
   void initState() {
@@ -65,30 +74,26 @@ class _SettingsScreenState extends State<SettingsScreen>
       setState(() {
         _isAmbianceEnabled = prefs.getBool('isAmbianceEnabled') ?? false;
         _areRemindersEnabled = settings['enableReminders'] ?? false;
-        _notificationLanguage = settings['notificationLanguage'] ?? 'en';
       });
     }
   }
 
-  Future<void> _updateSettings(String key, dynamic value) async {
-    setState(() {
-      if (key == 'enableReminders') {
-        _areRemindersEnabled = value;
-      } else if (key == 'notificationLanguage') {
-        _notificationLanguage = value;
-      }
+  Future<void> _updateUserPreferences() async {
+    final langCode = Provider.of<LocaleProvider>(context, listen: false)
+            .locale
+            ?.languageCode ??
+        'en';
+    final bool isEnabled = _areRemindersEnabled; // Use the state variable
+
+    await _notificationService.updateNotificationPreferences(
+      language: langCode,
+      isEnabled: isEnabled,
+    );
+
+    await _firestoreService.updateUserSettings(_uid, {
+      'enableReminders': isEnabled,
+      'notificationLanguage': langCode,
     });
-
-    // Update the app's notification topics
-    if (key == 'notificationLanguage' || key == 'enableReminders') {
-      await _notificationService.updateNotificationPreferences(
-        language: _notificationLanguage,
-        isEnabled: _areRemindersEnabled,
-      );
-    }
-
-    // Update Firestore in the background
-    await _firestoreService.updateUserSettings(_uid, {key: value});
   }
 
   Future<void> _toggleAmbiance(bool value) async {
@@ -105,10 +110,10 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Future<void> _toggleReminders(bool value) async {
-    await _firestoreService.updateReminderSetting(_uid, value);
     setState(() {
       _areRemindersEnabled = value;
     });
+    await _updateUserPreferences();
   }
 
   Future<void> _signOut() async {
@@ -155,20 +160,19 @@ class _SettingsScreenState extends State<SettingsScreen>
         context: context,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: const Text('Delete Account?'),
-            content: const Text(
-                'This action is permanent and cannot be undone. All your chanting data, achievements, and personal information will be permanently erased.\n\nAre you absolutely sure you want to proceed?'),
+            title: Text(AppLocalizations.of(context)!.dialog_deleteTitle),
+            content: Text(AppLocalizations.of(context)!.dialog_deleteBody),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.dialog_cancel),
                 onPressed: () => Navigator.of(dialogContext).pop(),
               ),
               // The delete button is styled to be dangerous.
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text(
-                  'Yes, Delete My Account',
-                  style: TextStyle(color: Colors.white),
+                child: Text(
+                  AppLocalizations.of(context)!.dialog_deleteConfirm,
+                  style: const TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
                   Navigator.of(dialogContext).pop(); // Close the dialog
@@ -226,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: Text(AppLocalizations.of(context)!.settings_title),
           backgroundColor: Theme.of(context).colorScheme.surface,
         ),
         body: SafeArea(
@@ -239,6 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               final userData =
                   userSnapshot.data!.data() as Map<String, dynamic>;
               final bool isPremium = userData['isPremium'] ?? false;
+              final String _uid = FirebaseAuth.instance.currentUser!.uid;
               return Column(
                 children: [
                   Expanded(
@@ -249,9 +254,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                         Card(
                           child: Column(children: [
                             SwitchListTile(
-                              title: const Text("Temple Ambiance"),
-                              subtitle: const Text(
-                                  "Play subtle background temple sounds."),
+                              title: Text(AppLocalizations.of(context)!
+                                  .settings_ambiance),
+                              subtitle: Text(AppLocalizations.of(context)!
+                                  .settings_ambianceDesc),
                               secondary: const Icon(Icons.waves_rounded),
                               value: _isAmbianceEnabled,
                               onChanged: _toggleAmbiance,
@@ -262,49 +268,47 @@ class _SettingsScreenState extends State<SettingsScreen>
 
                             // Daily Remainder
                             SwitchListTile(
-                              title: const Text("Daily Reminders"),
-                              subtitle: const Text(
-                                  "Get a notification if you haven't chanted today."),
+                              title: Text(AppLocalizations.of(context)!
+                                  .settings_reminders),
+                              subtitle: Text(AppLocalizations.of(context)!
+                                  .settings_remindersDesc),
                               secondary:
                                   const Icon(Icons.notifications_outlined),
                               // THIS IS THE FIX: It now uses the correct state variable.
                               value: _areRemindersEnabled,
                               onChanged: _toggleReminders,
                             ),
-
-                            const Divider(height: 1, indent: 16, endIndent: 16),
-
-                            // Notification Language
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              child: DropdownButtonFormField(
-                                initialValue: _notificationLanguage,
-                                decoration: const InputDecoration(
-                                  labelText: 'Notification Language',
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.language),
-                                ),
-                                items: const [
-                                  DropdownMenuItem(
-                                      value: 'en', child: Text('English')),
-                                  DropdownMenuItem(
-                                      value: 'hi',
-                                      child: Text('हिन्दी (Hindi)')),
-                                  DropdownMenuItem(
-                                      value: 'sa',
-                                      child: Text('संस्कृतम् (Sanskrit)')),
-                                ],
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    _updateSettings(
-                                        'notificationLanguage', value);
-                                  }
-                                },
-                              ),
-                            ),
                           ]),
                         ),
+
+                        const SizedBox(height: 20),
+
+                        // Language Button
+                        Card(
+                          child: ListTile(
+                            leading: const Icon(Icons.language),
+                            title: Text(AppLocalizations.of(context)!
+                                .settings_language),
+                            subtitle: Text(Provider.of<LocaleProvider>(context)
+                                    .locale
+                                    ?.languageCode
+                                    .toUpperCase() ??
+                                AppLocalizations.of(context)!
+                                    .localeName
+                                    .toUpperCase()),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => LanguageSelectorPage(
+                                    uid: _uid,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+
                         const SizedBox(height: 20),
 
                         // --- Legal & Support Card ---
@@ -315,7 +319,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 onTap: _launchFeedbackForm,
                                 leading: const Icon(Icons.feedback_outlined,
                                     color: Colors.blueGrey),
-                                title: const Text("Feedback & Support"),
+                                title: Text(AppLocalizations.of(context)!
+                                    .settings_feedback),
                                 trailing: const Icon(Icons.arrow_forward_ios,
                                     size: 16),
                               ),
@@ -328,7 +333,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 onTap: _launchPrivacyPolicy,
                                 leading: const Icon(Icons.privacy_tip_outlined,
                                     color: Colors.green),
-                                title: const Text("Privacy Policy"),
+                                title: Text(AppLocalizations.of(context)!
+                                    .settings_privacy),
                                 trailing: const Icon(Icons.arrow_forward_ios,
                                     size: 16),
                               ),
@@ -341,7 +347,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 onTap: _launchTerms,
                                 leading: const Icon(Icons.gavel_outlined,
                                     color: Colors.black54),
-                                title: const Text("Terms & Conditions"),
+                                title: Text(AppLocalizations.of(context)!
+                                    .settings_terms),
                                 trailing: const Icon(Icons.arrow_forward_ios,
                                     size: 16),
                               ),
@@ -358,7 +365,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                             onTap: _showDeleteAccountDialog,
                             leading: Icon(Icons.delete_forever_outlined,
                                 color: Colors.red.shade400),
-                            title: Text("Delete My Account",
+                            title: Text(
+                                AppLocalizations.of(context)!
+                                    .settings_deleteAccount,
                                 style: TextStyle(color: Colors.red.shade400)),
                           ),
                         ),
@@ -369,7 +378,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                         // Sign Out
                         ElevatedButton.icon(
                           icon: const Icon(Icons.logout),
-                          label: const Text('Sign Out'),
+                          label: Text(
+                              AppLocalizations.of(context)!.settings_signOut),
                           onPressed: _signOut,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red.shade400,
@@ -387,14 +397,17 @@ class _SettingsScreenState extends State<SettingsScreen>
                   if (_isDeleting)
                     Container(
                       color: Colors.black.withAlpha(130),
-                      child: const Center(
+                      child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CircularProgressIndicator(color: Colors.white),
-                            SizedBox(height: 16),
-                            Text("Deleting your account...",
-                                style: TextStyle(color: Colors.white)),
+                            const CircularProgressIndicator(
+                                color: Colors.white),
+                            const SizedBox(height: 16),
+                            Text(
+                                AppLocalizations.of(context)!
+                                    .settings_deletingAccount,
+                                style: const TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),

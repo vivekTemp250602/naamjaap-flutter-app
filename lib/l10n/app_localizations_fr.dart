@@ -1,0 +1,273 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for French (`fr`).
+class AppLocalizationsFr extends AppLocalizations {
+  AppLocalizationsFr([String locale = 'fr']) : super(locale);
+
+  @override
+  String get appTitle => 'Naam Jaap';
+
+  @override
+  String get login_welcome => 'Bienvenue sur Naam Jaap';
+
+  @override
+  String get login_subtitle => 'Votre compagnon personnel de chant numérique.';
+
+  @override
+  String get login_termsAgreement => 'J\'ai lu et j\'accepte les ';
+
+  @override
+  String get login_termsAndConditions => 'Termes & Conditions';
+
+  @override
+  String get login_and => ' et la ';
+
+  @override
+  String get login_privacyPolicy => 'Politique de Confidentialité';
+
+  @override
+  String get login_signInWithGoogle => 'Se connecter avec Google';
+
+  @override
+  String get nav_home => 'Accueil';
+
+  @override
+  String get nav_leaderboard => 'Classement';
+
+  @override
+  String get nav_wisdom => 'Sagesse';
+
+  @override
+  String get nav_profile => 'Mon Profil';
+
+  @override
+  String get home_tapToChant => 'Touchez pour Chanter';
+
+  @override
+  String get home_dayStreak => 'Série de Jours';
+
+  @override
+  String get home_total => 'Total :';
+
+  @override
+  String get home_mantraInfo => 'Info Mantra';
+
+  @override
+  String get dialog_close => 'Fermer';
+
+  @override
+  String get wisdom_title => 'Sagesse du Jour';
+
+  @override
+  String get wisdom_dismissed =>
+      'La sagesse d\'aujourd\'hui a été contemplée.\nUne nouvelle perspective arrivera demain.';
+
+  @override
+  String get wisdom_loading => 'Chargement de la sagesse...';
+
+  @override
+  String get leaderboard_allTime => 'Général';
+
+  @override
+  String get leaderboard_thisWeek => 'Cette Semaine';
+
+  @override
+  String get leaderboard_yourProgress => 'Votre Progression';
+
+  @override
+  String leaderboard_jappsToPass(Object count, Object playerName) {
+    return '$count chants pour dépasser $playerName';
+  }
+
+  @override
+  String get leaderboard_empty => 'Le voyage commence !';
+
+  @override
+  String get leaderboard_emptySubtitle =>
+      'Soyez le premier à figurer au classement !';
+
+  @override
+  String get leaderboard_isEmpty => 'Le classement est vide.';
+
+  @override
+  String get leaderboard_noBade => 'Aucun badge pour le moment';
+
+  @override
+  String get leaderboard_notOnBoard =>
+      'Continuez à chanter pour figurer au classement !';
+
+  @override
+  String get leaderboard_topOfBoard => 'Vous êtes au sommet ! ✨';
+
+  @override
+  String get leaderboard_noChants => 'Aucun chant pour le moment';
+
+  @override
+  String leaderboard_topMantra(Object mantra) {
+    return 'Mantra Principal : $mantra';
+  }
+
+  @override
+  String get profile_yourProgress => 'Votre Progression';
+
+  @override
+  String get profile_dailyStreak => 'Série Quotidienne';
+
+  @override
+  String get profile_totalJapps => 'Total Chants';
+
+  @override
+  String get profile_globalRank => 'Rang Mondial';
+
+  @override
+  String get profile_mantraTotals => 'Totaux des Mantras';
+
+  @override
+  String get profile_achievements => 'Succès';
+
+  @override
+  String get profile_shareProgress => 'Partagez Votre Progression';
+
+  @override
+  String get profile_badgesEmpty =>
+      'Commencez à chanter pour gagner votre premier badge !';
+
+  @override
+  String get profile_mantrasEmpty =>
+      'Commencez à chanter pour voir vos totaux ici !';
+
+  @override
+  String get profile_shareApp => 'Partager Naam Jaap';
+
+  @override
+  String get profile_rateApp => 'Évaluez notre application';
+
+  @override
+  String get profile_supportTitle => 'Soutenir Naam Jaap';
+
+  @override
+  String get profile_supportSubtitle =>
+      'Aidez à maintenir l\'application en fonctionnement';
+
+  @override
+  String get profile_myBodhi => 'Mon Arbre Bodhi';
+
+  @override
+  String get profile_myBodhiSubtitle =>
+      'Un témoignage visuel de votre dévotion.';
+
+  @override
+  String get profile_yourAchievement => 'Vos Réalisations';
+
+  @override
+  String get profile_yourAchievements => 'Vos Réalisations';
+
+  @override
+  String get profile_aMark => 'Une marque de votre dévouement.';
+
+  @override
+  String get profile_changeName => 'Changer votre nom';
+
+  @override
+  String get profile_enterName => 'Entrez un nouveau Nom';
+
+  @override
+  String get settings_title => 'Réglages';
+
+  @override
+  String get settings_ambiance => 'Ambiance de Temple';
+
+  @override
+  String get settings_ambianceDesc =>
+      'Jouer des sons subtils de temple en fond.';
+
+  @override
+  String get settings_reminders => 'Rappels Quotidiens';
+
+  @override
+  String get settings_remindersDesc =>
+      'Recevez une notification si vous n\'avez pas chanté aujourd\'hui.';
+
+  @override
+  String get settings_language => 'Langue de l\'App';
+
+  @override
+  String get settings_feedback => 'Avis & Support';
+
+  @override
+  String get settings_feedbackDesc =>
+      'Signaler un bug ou suggérer une fonctionnalité.';
+
+  @override
+  String get settings_deletingAccount => 'Deleting your account...';
+
+  @override
+  String get settings_privacy => 'Politique de Confidentialité';
+
+  @override
+  String get settings_terms => 'Termes & Conditions';
+
+  @override
+  String get settings_deleteAccount => 'Supprimer Mon Compte';
+
+  @override
+  String get settings_signOut => 'Se Déconnecter';
+
+  @override
+  String get dialog_deleteTitle => 'Supprimer le Compte ?';
+
+  @override
+  String get dialog_deleteBody =>
+      'Cette action est permanente et ne peut être annulée. Toutes vos données de chant, succès et informations personnelles seront effacés de façon permanente.\n\nÊtes-vous absolument sûr de vouloir continuer ?';
+
+  @override
+  String get dialog_deleteConfirm => 'Oui, Supprimer Mon Compte';
+
+  @override
+  String get dialog_continue => 'Continuer';
+
+  @override
+  String get dialog_pressBack => 'Appuyez à nouveau sur retour pour quitter';
+
+  @override
+  String get dialog_update => 'Mise à jour requise';
+
+  @override
+  String get dialog_updateDesc =>
+      'Une nouvelle version de Naam Jaap est disponible avec des mises à jour importantes. Veuillez mettre à jour l\'application pour continuer.';
+
+  @override
+  String get dialog_updateNow => 'Mettre à jour maintenant';
+
+  @override
+  String get dialog_save => 'Enregistrer';
+
+  @override
+  String get dialog_something => 'Quelque chose s\'est mal passé.';
+
+  @override
+  String get dialog_cancel => 'Annuler';
+
+  @override
+  String get misc_japps => 'chants';
+
+  @override
+  String get misc_days => 'Jours';
+
+  @override
+  String get misc_badge => 'Badges';
+
+  @override
+  String get lang_chooseLang =>
+      'Choisissez votre langue préférée pour continuer';
+
+  @override
+  String get lang_searchLang => 'Rechercher des langues';
+
+  @override
+  String get garden_totalMala => 'Malas Terminés';
+}

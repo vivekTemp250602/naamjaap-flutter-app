@@ -24,7 +24,6 @@ class ConnectivityService with ChangeNotifier {
     _connectionStatus = result;
     if (wasOnline != isOnline) {
       notifyListeners();
-      print("Connectivity changed: $result -> Online: $isOnline");
     }
   }
 

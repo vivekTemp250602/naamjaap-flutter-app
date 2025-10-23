@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -96,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Image.asset('assets/images/app_logo.png', width: 150),
             const SizedBox(height: 20),
             Text(
-              'Naam Jaap',
+              AppLocalizations.of(context)!.appTitle,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),

@@ -1,0 +1,270 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Malayalam (`ml`).
+class AppLocalizationsMl extends AppLocalizations {
+  AppLocalizationsMl([String locale = 'ml']) : super(locale);
+
+  @override
+  String get appTitle => 'Naam Jaap';
+
+  @override
+  String get login_welcome => 'നാം ജപിലേക്ക് സ്വാഗതം';
+
+  @override
+  String get login_subtitle => 'നിങ്ങളുടെ വ്യക്തിഗത ഡിജിറ്റൽ ജപ സഹായി.';
+
+  @override
+  String get login_termsAgreement => 'ഞാൻ ';
+
+  @override
+  String get login_termsAndConditions => 'നിബന്ധനകളും വ്യവസ്ഥകളും';
+
+  @override
+  String get login_and => ' കൂടാതെ ';
+
+  @override
+  String get login_privacyPolicy => 'സ്വകാര്യതാ നയവും അംഗീകരിക്കുന്നു';
+
+  @override
+  String get login_signInWithGoogle => 'Google ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക';
+
+  @override
+  String get nav_home => 'ഹോം';
+
+  @override
+  String get nav_leaderboard => 'ലീഡർബോർഡ്';
+
+  @override
+  String get nav_wisdom => 'ജ്ഞാനം';
+
+  @override
+  String get nav_profile => 'എന്റെ പ്രൊഫൈൽ';
+
+  @override
+  String get home_tapToChant => 'ജപിക്കാൻ ടാപ്പ് ചെയ്യുക';
+
+  @override
+  String get home_dayStreak => 'ദിവസ സ്ട്രീക്ക്';
+
+  @override
+  String get home_total => 'ആകെ:';
+
+  @override
+  String get home_mantraInfo => 'മന്ത്ര വിവരം';
+
+  @override
+  String get dialog_close => 'അടയ്ക്കുക';
+
+  @override
+  String get wisdom_title => 'ഇന്നത്തെ ജ്ಞാനം';
+
+  @override
+  String get wisdom_dismissed =>
+      'ഇന്നത്തെ ജ്ഞാനം ധ്യാനിച്ചു കഴിഞ്ഞു.\nനാളെ ഒരു പുതിയ ഉൾക്കാഴ്ച എത്തും.';
+
+  @override
+  String get wisdom_loading => 'ജ്ഞാനം ലോഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get leaderboard_allTime => 'എക്കാലത്തെയും';
+
+  @override
+  String get leaderboard_thisWeek => 'ഈ ആഴ്ച';
+
+  @override
+  String get leaderboard_yourProgress => 'നിങ്ങളുടെ പുരോഗതി';
+
+  @override
+  String leaderboard_jappsToPass(Object count, Object playerName) {
+    return '$playerName-യെ മറികടക്കാൻ $count ജപങ്ങൾ';
+  }
+
+  @override
+  String get leaderboard_empty => 'യാത്ര ആരംഭിക്കുന്നു!';
+
+  @override
+  String get leaderboard_emptySubtitle => 'ലീഡർബോർഡിൽ ഒന്നാമനാകൂ!';
+
+  @override
+  String get leaderboard_isEmpty => 'ലീഡർബോർഡ് ശൂന്യമാണ്.';
+
+  @override
+  String get leaderboard_noBade => 'ഇതുവരെ ബാഡ്ജുകളൊന്നുമില്ല';
+
+  @override
+  String get leaderboard_notOnBoard => 'ബോർഡിൽ കയറാൻ ജപിക്കുന്നത് തുടരുക!';
+
+  @override
+  String get leaderboard_topOfBoard => 'നിങ്ങൾ മുകളിലാണ്! ✨';
+
+  @override
+  String get leaderboard_noChants => 'ഇതുവരെ ജപങ്ങളൊന്നുമില്ല';
+
+  @override
+  String leaderboard_topMantra(Object mantra) {
+    return 'മികച്ച മന്ത്രം: $mantra';
+  }
+
+  @override
+  String get profile_yourProgress => 'നിങ്ങളുടെ പുരോഗതി';
+
+  @override
+  String get profile_dailyStreak => 'ദൈനംദിന സ്ട്രീക്ക്';
+
+  @override
+  String get profile_totalJapps => 'ആകെ ജപങ്ങൾ';
+
+  @override
+  String get profile_globalRank => 'ഗ്ലോബൽ റാങ്ക്';
+
+  @override
+  String get profile_mantraTotals => 'മന്ത്രങ്ങളുടെ ആകെ എണ്ണം';
+
+  @override
+  String get profile_achievements => 'നേട്ടങ്ങൾ';
+
+  @override
+  String get profile_shareProgress => 'നിങ്ങളുടെ പുരോഗതി പങ്കിടുക';
+
+  @override
+  String get profile_badgesEmpty =>
+      'നിങ്ങളുടെ ആദ്യ ബാഡ്ജ് നേടാൻ ജപിക്കാൻ തുടങ്ങൂ!';
+
+  @override
+  String get profile_mantrasEmpty =>
+      'നിങ്ങളുടെ ആകെ എണ്ണം ഇവിടെ കാണാൻ ജപിക്കാൻ തുടങ്ങൂ!';
+
+  @override
+  String get profile_shareApp => 'നാം ജാപ് പങ്കിടുക';
+
+  @override
+  String get profile_rateApp => 'ഞങ്ങളുടെ അപ്ലിക്കേഷൻ റേറ്റ് ചെയ്യുക';
+
+  @override
+  String get profile_supportTitle => 'നാം ജാപിനെ പിന്തുണയ്ക്കുക';
+
+  @override
+  String get profile_supportSubtitle =>
+      'അപ്ലിക്കേഷൻ പ്രവർത്തിപ്പിക്കാൻ സഹായിക്കുക';
+
+  @override
+  String get profile_myBodhi => 'എൻ്റെ ബോധി വൃക്ഷം';
+
+  @override
+  String get profile_myBodhiSubtitle => 'നിങ്ങളുടെ ഭക്തിയുടെ ദൃശ്യസാക്ഷ്യം.';
+
+  @override
+  String get profile_yourAchievement => 'നിങ്ങളുടെ നേട്ടങ്ങൾ';
+
+  @override
+  String get profile_yourAchievements => 'നിങ്ങളുടെ നേട്ടങ്ങൾ';
+
+  @override
+  String get profile_aMark => 'നിങ്ങളുടെ സമർപ്പണത്തിന്റെ അടയാളം.';
+
+  @override
+  String get profile_changeName => 'നിങ്ങളുടെ പേര് മാറ്റുക';
+
+  @override
+  String get profile_enterName => 'പുതിയ പേര് നൽകുക';
+
+  @override
+  String get settings_title => 'സെറ്റിംഗ്സ്';
+
+  @override
+  String get settings_ambiance => 'ക്ഷേത്ര അന്തരീക്ഷം';
+
+  @override
+  String get settings_ambianceDesc =>
+      'പശ്ചാത്തലത്തിൽ ക്ഷേത്ര ശബ്ദങ്ങൾ പ്ലേ ചെയ്യുക.';
+
+  @override
+  String get settings_reminders => 'ദിവസേനയുള്ള ഓർമ്മപ്പെടുത്തലുകൾ';
+
+  @override
+  String get settings_remindersDesc =>
+      'നിങ്ങൾ ഇന്ന് ജപിച്ചില്ലെങ്കിൽ ഒരു അറിയിപ്പ് നേടുക.';
+
+  @override
+  String get settings_language => 'ആപ്പ് ഭാഷ';
+
+  @override
+  String get settings_feedback => 'അഭിപ്രായവും പിന്തുണയും';
+
+  @override
+  String get settings_feedbackDesc =>
+      'ഒരു ബഗ് റിപ്പോർട്ട് ചെയ്യുക അല്ലെങ്കിൽ ഒരു ഫീച്ചർ നിർദ്ദേശിക്കുക.';
+
+  @override
+  String get settings_deletingAccount => 'Deleting your account...';
+
+  @override
+  String get settings_privacy => 'സ്വകാര്യതാ നയം';
+
+  @override
+  String get settings_terms => 'നിബന്ധനകളും വ്യവസ്ഥകളും';
+
+  @override
+  String get settings_deleteAccount => 'എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക';
+
+  @override
+  String get settings_signOut => 'സൈൻ ഔട്ട് ചെയ്യുക';
+
+  @override
+  String get dialog_deleteTitle => 'അക്കൗണ്ട് ഇല്ലാതാക്കണോ?';
+
+  @override
+  String get dialog_deleteBody =>
+      'ഈ പ്രവർത്തനം സ്ഥിരമാണ്, ഇത് പഴയപടിയാക്കാൻ കഴിയില്ല. നിങ്ങളുടെ എല്ലാ ജപ ഡാറ്റയും നേട്ടങ്ങളും വ്യക്തിഗത വിവരങ്ങളും ശാശ്വതമായി മായ്ക്കപ്പെടും.\n\nനിങ്ങൾക്ക് തുടരണമെന്ന് ഉറപ്പാണോ?';
+
+  @override
+  String get dialog_deleteConfirm => 'അതെ, എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക';
+
+  @override
+  String get dialog_continue => 'തുടരുക';
+
+  @override
+  String get dialog_pressBack => 'പുറത്തുകടക്കാൻ വീണ്ടും പിന്നോട്ട് അമർത്തുക';
+
+  @override
+  String get dialog_update => 'അപ്ഡേറ്റ് ആവശ്യമാണ്';
+
+  @override
+  String get dialog_updateDesc =>
+      'പ്രധാനപ്പെട്ട അപ്‌ഡേറ്റുകളോടെ നാം ജാപിന്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്. തുടരാൻ ദയവായി അപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുക.';
+
+  @override
+  String get dialog_updateNow => 'ഇപ്പോൾ അപ്ഡേറ്റ് ചെയ്യുക';
+
+  @override
+  String get dialog_save => 'സേവ് ചെയ്യുക';
+
+  @override
+  String get dialog_something => 'എന്തോ കുഴപ്പം സംഭവിച്ചു.';
+
+  @override
+  String get dialog_cancel => 'റദ്ദാക്കുക';
+
+  @override
+  String get misc_japps => 'ജപങ്ങൾ';
+
+  @override
+  String get misc_days => 'ദിവസങ്ങൾ';
+
+  @override
+  String get misc_badge => 'ബാഡ്ജുകൾ';
+
+  @override
+  String get lang_chooseLang =>
+      'തുടരാൻ നിങ്ങൾക്ക് ഇഷ്ടമുള്ള ഭാഷ തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get lang_searchLang => 'ഭാഷകൾ തിരയുക';
+
+  @override
+  String get garden_totalMala => 'പൂർത്തിയാക്കിയ മാലകൾ';
+}

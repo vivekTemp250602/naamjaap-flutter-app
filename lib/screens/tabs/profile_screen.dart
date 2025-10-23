@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/screens/garden_screen.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
@@ -99,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         builder: (context) {
           // The Dialog is now larger and more spacious.
           return AlertDialog(
-            title: const Text('Your Achievements'),
+            title: Text(AppLocalizations.of(context)!.profile_yourAchievement),
             content: SizedBox(
               width: double.maxFinite,
               // The content is a ListView for a more elegant, scrollable list.
@@ -128,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     title: Text(badge,
                         style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text(badgeDescriptions[badge] ??
-                        'A mark of your dedication.'),
+                        AppLocalizations.of(context)!.profile_aMark),
                   );
                 },
               ),
@@ -136,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Close'),
+                child: Text(AppLocalizations.of(context)!.dialog_cancel),
               ),
             ],
           );
@@ -226,19 +227,20 @@ class _ProfileScreenState extends State<ProfileScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Change Your Name'),
+          title: Text(AppLocalizations.of(context)!.profile_changeName),
           content: TextField(
             controller: nameController,
             autofocus: true,
-            decoration: const InputDecoration(hintText: 'Enter new name'),
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.profile_enterName),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.dialog_cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('Save'),
+              child: Text(AppLocalizations.of(context)!.dialog_save),
               onPressed: () {
                 final newName = nameController.text.trim();
                 if (newName.isNotEmpty) {
@@ -420,9 +422,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("My Bodhi Tree",
+                        Text(AppLocalizations.of(context)!.profile_myBodhi,
                             style: Theme.of(context).textTheme.titleLarge),
-                        const Text("A visual testament to your devotion."),
+                        Text(AppLocalizations.of(context)!
+                            .profile_myBodhiSubtitle),
                       ],
                     ),
                   ),
@@ -529,7 +532,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Your Progress",
+                Text(AppLocalizations.of(context)!.profile_yourProgress,
                     style: Theme.of(context).textTheme.titleLarge),
 
                 const Divider(height: 24),
@@ -537,9 +540,10 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ListTile(
                   leading: Icon(Icons.local_fire_department_rounded,
                       color: Colors.orange.shade800),
-                  title: const Text('Daily Streaks'),
+                  title:
+                      Text(AppLocalizations.of(context)!.profile_dailyStreak),
                   trailing: Text(
-                    '${userData['currentStreak'] ?? 0} Days',
+                    '${userData['currentStreak'] ?? 0} ${AppLocalizations.of(context)!.misc_days}',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Theme.of(context).colorScheme.primary),
                   ),
@@ -548,7 +552,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 ListTile(
                   leading: Icon(Icons.star_border,
                       color: Theme.of(context).colorScheme.secondary),
-                  title: const Text("Total Japps"),
+                  title: Text(AppLocalizations.of(context)!.profile_totalJapps),
                   trailing: Text(
                     '${userData['total_japps'] ?? 0}',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -561,11 +565,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                   stream: _firestoreService.getLeaderboardStream(),
                   builder: (context, leaderboardSnapshot) {
                     if (!leaderboardSnapshot.hasData) {
-                      return const ListTile(
-                        leading: Icon(Icons.leaderboard_outlined,
+                      return ListTile(
+                        leading: const Icon(Icons.leaderboard_outlined,
                             color: Colors.grey),
-                        title: Text("Global Rank"),
-                        trailing: CircularProgressIndicator(strokeWidth: 2),
+                        title: Text(
+                            AppLocalizations.of(context)!.profile_globalRank),
+                        trailing:
+                            const CircularProgressIndicator(strokeWidth: 2),
                       );
                     }
                     final docs = leaderboardSnapshot.data!.docs;
@@ -577,7 +583,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                     return ListTile(
                       leading: const Icon(Icons.leaderboard_outlined,
                           color: Colors.grey),
-                      title: const Text("Global Rank"),
+                      title: Text(
+                          AppLocalizations.of(context)!.profile_globalRank),
                       trailing: Text(
                         rank > 0
                             ? '#$rank'
@@ -621,7 +628,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Mantra Totals",
+                  Text(AppLocalizations.of(context)!.profile_mantraTotals,
                       style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 16),
                   if (userData['japps'] != null &&
@@ -679,10 +686,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                       }).toList(),
                     )
                   else
-                    const Center(
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text("Start chanting to see your totals here!"),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                            AppLocalizations.of(context)!.profile_mantrasEmpty),
                       ),
                     ),
                 ],
@@ -704,7 +712,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                 onTap: _triggerShare, // This is your existing "Share Progress"
                 leading: Icon(Icons.photo_camera_front_outlined,
                     color: Theme.of(context).colorScheme.primary),
-                title: const Text("Share Your Progress"),
+                title:
+                    Text(AppLocalizations.of(context)!.profile_shareProgress),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
 
@@ -714,7 +723,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               ListTile(
                 onTap: _shareApp, // This is the new "Share the App"
                 leading: Icon(Icons.share, color: Colors.blue.shade600),
-                title: const Text("Share Naam Jaap"),
+                title: Text(AppLocalizations.of(context)!.profile_shareApp),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
 
@@ -726,7 +735,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 onTap: _requestReview, // This is the new "Rate the App"
                 leading: Icon(Icons.star_outline_rounded,
                     color: Colors.amber.shade800),
-                title: const Text("Rate Our App"),
+                title: Text(AppLocalizations.of(context)!.profile_rateApp),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
             ],
@@ -740,8 +749,9 @@ class _ProfileScreenState extends State<ProfileScreen>
           child: ListTile(
             onTap: _launchUPI,
             leading: const Icon(Icons.favorite_outline, color: Colors.red),
-            title: const Text("Support Naam Jaap"),
-            subtitle: const Text("Help keep the app running"),
+            title: Text(AppLocalizations.of(context)!.profile_supportTitle),
+            subtitle:
+                Text(AppLocalizations.of(context)!.profile_supportSubtitle),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           ),
         ),
@@ -765,7 +775,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 children: [
                   Row(
                     children: [
-                      Text("Achievements",
+                      Text(AppLocalizations.of(context)!.profile_achievements,
                           style: Theme.of(context).textTheme.titleLarge),
                       const Spacer(),
                       if (badges.isNotEmpty)
@@ -775,8 +785,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   const SizedBox(height: 16),
                   if (badges.isEmpty)
-                    const Center(
-                        child: Text("Start chanting to earn your first badge!"))
+                    Center(
+                        child: Text(
+                            AppLocalizations.of(context)!.profile_badgesEmpty))
                   else
                     // The "Preview Shelf" shows the 3 most recent badges.
                     SingleChildScrollView(
@@ -813,7 +824,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         // ----- Sign Out Button -------
         ElevatedButton.icon(
           icon: const Icon(Icons.logout),
-          label: const Text('Sign Out'),
+          label: Text(AppLocalizations.of(context)!.settings_signOut),
           onPressed: _signOut,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red.shade400,

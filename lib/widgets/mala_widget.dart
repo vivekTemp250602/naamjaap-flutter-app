@@ -33,13 +33,13 @@ class MalaPainter extends CustomPainter {
 
     // A subtle connecting string
     final stringPaint = Paint()
-      ..color = Colors.brown.shade800.withOpacity(0.5)
+      ..color = Colors.brown.shade800.withAlpha(130)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
     // A paint for the "ghost" beads that show the full path
     final ghostBeadPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withAlpha(25)
       ..style = PaintingStyle.fill;
 
     // A beautiful, natural wood gradient for the completed beads

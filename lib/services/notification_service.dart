@@ -17,7 +17,7 @@ class NotificationService {
     }
 
     /// Subscribe the user to the daily quote topic.
-    await _firebaseMessaging.subscribeToTopic('daily_quote');
+    // await _firebaseMessaging.subscribeToTopic('daily_quote');
 
     /// Set up a handler for messages that come in when the app is terminated
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

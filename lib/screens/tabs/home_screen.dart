@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
@@ -86,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen>
   final FirestoreService _firestoreService = FirestoreService();
   late final String _uid;
   late StreamSubscription<PlayerState> _playerStateSubscription;
-  // final AchievementsService _achievementsService = AchievementsService();
   late ConfettiController _malaConfettiController;
   SyncService? _syncService;
 
@@ -94,11 +94,10 @@ class _HomeScreenState extends State<HomeScreen>
   static const String _screenName = 'home';
   final AdService _adService = AdService();
 
-  // State variables - The UI is now driven by this fast, local state.
-  int _totalMantraCount = 0; // The last known total from Firestore
+  // State variables
+  int _totalMantraCount = 0;
   int _streakCount = 0;
-  Map<String, int> _pendingJappsLedger =
-      {}; // The local "notebook" for unsynced chants
+  Map<String, int> _pendingJappsLedger = {};
   String _selectedMantra = AppConstants.hareKrishna;
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
@@ -118,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen>
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
 
-    // Initialize the SyncService and give it a command (_onSyncComplete) to run after it finishes.
     _syncService = SyncService(
       connectivityService:
           Provider.of<ConnectivityService>(context, listen: false),
@@ -198,7 +196,6 @@ class _HomeScreenState extends State<HomeScreen>
   // This is the command that the SyncService runs after it successfully uploads data.
   void _onSyncComplete() {
     if (mounted) {
-      print("Sync complete! Refreshing totals from Firestore.");
       // After a sync, we clear the local "notebook" and fetch the new, updated totals.
       setState(() {
         _pendingJappsLedger = {};
@@ -346,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen>
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Close"),
+                  child: Text(AppLocalizations.of(context)!.dialog_close),
                 ),
               ],
             );
@@ -384,11 +381,9 @@ class _HomeScreenState extends State<HomeScreen>
 
     final bannerAd = _adService.getAdForScreen(_screenName);
 
-    final connectivityService = Provider.of<ConnectivityService>(context);
     final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');
     final pendingCount = _pendingJappsLedger[mantraKey] ?? 0;
 
-    // The "Mala Progress" is now the Firestore total + any unsynced local chants.
     final displayTotal = _totalMantraCount + pendingCount;
     final malaProgressCounter = displayTotal % 108;
 
@@ -428,7 +423,8 @@ class _HomeScreenState extends State<HomeScreen>
                     Chip(
                       avatar: Icon(Icons.local_fire_department,
                           color: Colors.orange.shade800),
-                      label: Text('$_streakCount Day Streak',
+                      label: Text(
+                          '$_streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       backgroundColor: Colors.white.withAlpha(190),
                       elevation: 4,
@@ -488,7 +484,8 @@ class _HomeScreenState extends State<HomeScreen>
                     TextButton.icon(
                       onPressed: _showMantraInfo,
                       icon: const Icon(Icons.info_outline),
-                      label: const Text("Mantra Info"),
+                      label:
+                          Text(AppLocalizations.of(context)!.home_mantraInfo),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white.withAlpha(220),
                       ),
@@ -605,7 +602,7 @@ class _HomeScreenState extends State<HomeScreen>
                                         ),
                                       ),
                                       Text(
-                                        'Total: ${displayTotal.toString()}',
+                                        '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
                                         style: TextStyle(
                                           color: Colors.white.withAlpha(170),
                                           fontSize: 16,
@@ -620,7 +617,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                     ),
-                    Text('Tap to Chant',
+                    Text("",
                         style: TextStyle(
                             color: Colors.white.withAlpha(190), fontSize: 18)),
                     const SizedBox(height: 36),

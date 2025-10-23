@@ -31,7 +31,7 @@ class FirestoreService {
       }
 
       final data = snapshot.data() as Map<String, dynamic>;
-      int currentStreak = data['currentStreak'] ?? 0;
+      // int currentStreak = data['currentStreak'] ?? 0;
       Timestamp? lastChantTimestamp = data['lastChantDate'];
       DateTime? lastChantDate = lastChantTimestamp?.toDate();
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -52,13 +53,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
     return Scaffold(
       body: SafeArea(
-        // NEW: We now wrap the main UI in a StreamBuilder to check if the user is premium.
         child: StreamBuilder<DocumentSnapshot>(
           stream: _firestoreService.getUserStatsStream(_currentUserId),
           builder: (context, userSnapshot) {
-            // A simple loader while we check the user's premium status.
             if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-              // This is the new, beautiful empty state.
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -70,12 +68,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "The Journey Begins",
+                      AppLocalizations.of(context)!.leaderboard_empty,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Be the first to grace the leaderboard!",
+                      AppLocalizations.of(context)!.leaderboard_emptySubtitle,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Colors.grey.shade600,
@@ -122,18 +120,24 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                           fillColor: Colors.deepOrange.shade400,
                           color: Colors.deepOrange.shade400,
                           constraints: const BoxConstraints(minHeight: 48.0),
-                          children: const [
+                          children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Text('All-Time',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Text(
+                                  AppLocalizations.of(context)!
+                                      .leaderboard_allTime,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Text('This Week',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
+                              child: Text(
+                                  AppLocalizations.of(context)!
+                                      .leaderboard_thisWeek,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
                             ),
                           ],
                         ),
@@ -151,13 +155,15 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                                   child: CircularProgressIndicator());
                             }
                             if (snapshot.hasError) {
-                              return const Center(
-                                  child: Text('Something went wrong.'));
+                              return Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .dialog_something));
                             }
                             if (!snapshot.hasData ||
                                 snapshot.data!.docs.isEmpty) {
-                              return const Center(
-                                  child: Text('Leaderboard is empty.'));
+                              return Center(
+                                  child: Text(AppLocalizations.of(context)!
+                                      .leaderboard_isEmpty));
                             }
 
                             final leaderboardDocs = snapshot.data!.docs;
@@ -272,7 +278,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.background,
+                  Theme.of(context).colorScheme.surface,
                   Colors.white,
                 ],
                 begin: Alignment.topCenter,
@@ -301,27 +307,28 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                   children: [
                     Chip(
                       avatar: Icon(Icons.star, color: Colors.amber.shade700),
-                      label:
-                          Text('${userData['total_japps'] ?? 0} Total Japps'),
+                      label: Text(
+                          '${userData['total_japps'] ?? 0} ${AppLocalizations.of(context)!.profile_totalJapps}'),
                     ),
                     Chip(
                       avatar: Icon(Icons.local_fire_department,
                           color: Colors.orange.shade800),
-                      label:
-                          Text('${userData['currentStreak'] ?? 0} Day Streak'),
+                      label: Text(
+                          '${userData['currentStreak'] ?? 0} ${AppLocalizations.of(context)!.home_dayStreak}'),
                     ),
                     Chip(
                       avatar: const Icon(Icons.favorite, color: Colors.red),
-                      label: Text(
-                          'Top Mantra: ${getTopMantra(userData['japps'])}'),
+                      label: Text(AppLocalizations.of(context)!
+                          .leaderboard_topMantra(
+                              getTopMantra(userData['japps']))),
                     ),
                   ],
                 ),
                 ListTile(
                   leading: const Icon(Icons.shield, color: Colors.blue),
-                  title: const Text('Badges'),
+                  title: Text(AppLocalizations.of(context)!.misc_badge),
                   subtitle: Text((userData['badges'] as List?)?.isEmpty ?? true
-                      ? 'No badges yet'
+                      ? AppLocalizations.of(context)!.leaderboard_noBade
                       : (userData['badges'] as List).join(', ')),
                 ),
               ],
@@ -335,7 +342,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   // Updated sticky card to show rank and progress
   Widget _buildCurrentUserCard(FirestoreService service, String uid,
       List<DocumentSnapshot> leaderboardDocs) {
-    // Find current user's data and rank from the already fetched leaderboard list
     int currentUserRank = -1;
     DocumentSnapshot? currentUserDoc;
     for (int i = 0; i < leaderboardDocs.length; i++) {
@@ -358,7 +364,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
       final japsNeeded = (userAboveData['total_japps'] ?? 0) -
           (currentUserData['total_japps'] ?? 0);
-      return "$japsNeeded japps to pass ${userAboveData['name'] ?? '...'}!";
+      // return "$japsNeeded japps to pass ${userAboveData['name'] ?? '...'}!";
+      return "${AppLocalizations.of(context)!.leaderboard_jappsToPass(japsNeeded, "${userAboveData['name'] ?? '...'}")}!";
     }
 
     return Card(
@@ -386,8 +393,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                   fontSize: 16),
             ),
           ),
-          title: const Text("Your Progress",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(AppLocalizations.of(context)!.leaderboard_yourProgress,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Text(buildSubtitle()),
         ),
       ),
@@ -398,7 +405,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   Widget _buildStandardRankCard(BuildContext context, int rank,
       Map<String, dynamic> userData, bool isCurrentUser, int jappsCount) {
     return Card(
-      color: isCurrentUser ? Colors.orange.withOpacity(0.2) : null,
+      color: isCurrentUser ? Colors.orange.withAlpha(40) : null,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
         leading: Text(
@@ -406,7 +413,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         title: Text(userData['name'] ?? 'Anonymous'),
-        subtitle: Text('$jappsCount japps'),
+        subtitle:
+            Text('$jappsCount ${AppLocalizations.of(context)!.misc_japps}'),
         trailing: CircleAvatar(
           backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
         ),
@@ -469,7 +477,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
           ),
           subtitle: Text(
-            '$jappsCount japps',
+            '$jappsCount ${AppLocalizations.of(context)!.misc_japps}',
             style: TextStyle(color: Colors.white.withAlpha(200)),
           ),
           trailing: CircleAvatar(

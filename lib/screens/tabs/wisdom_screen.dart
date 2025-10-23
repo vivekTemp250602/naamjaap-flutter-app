@@ -86,7 +86,6 @@ class _WisdomScreenState extends State<WisdomScreen>
                         );
                       },
                     ),
-// This is the space for the future Bhagwat GPT!
                   ],
                 ),
               ),

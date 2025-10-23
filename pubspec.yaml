@@ -2,7 +2,7 @@ name: naamjaap
 description: "A digital japa mala application."
 publish_to: 'none'
 
-version: 1.0.0+8
+version: 1.0.0+9
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -10,8 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations: # Added as requested
+  flutter_localizations: 
     sdk: flutter
+  intl: ^0.20.2
 
   # Core services - All updated to the latest major versions
   firebase_core: ^3.1.0
@@ -48,6 +49,7 @@ dependencies:
   connectivity_plus: ^6.0.3
   
   cupertino_icons: ^1.0.6
+  flutter_gen: ^5.12.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +58,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
 
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:

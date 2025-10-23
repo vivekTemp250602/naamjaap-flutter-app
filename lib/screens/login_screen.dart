@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -131,14 +132,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Welcome to Naam Jaap',
+                  AppLocalizations.of(context)!.login_welcome,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Your personal digital chanting companion.',
+                  AppLocalizations.of(context)!.login_subtitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
@@ -167,10 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextSpan(
                           style: TextStyle(color: textColor, fontSize: 14),
                           children: [
-                            const TextSpan(
-                                text: 'I have read and agree to the '),
                             TextSpan(
-                              text: 'Terms & Conditions',
+                                text: AppLocalizations.of(context)!
+                                    .login_termsAgreement),
+                            TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .login_termsAndConditions,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline),
@@ -178,9 +181,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ..onTap = () => _launchURL(
                                     'https://vivekTemp250602.github.io/naamjaap-legal/terms.html'),
                             ),
-                            const TextSpan(text: ' and '),
                             TextSpan(
-                              text: 'Privacy Policy',
+                                text: AppLocalizations.of(context)!.login_and),
+                            TextSpan(
+                              text: AppLocalizations.of(context)!
+                                  .login_privacyPolicy,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline),
@@ -204,8 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     : ElevatedButton.icon(
                         icon: Image.asset('assets/images/google_logo.png',
                             height: 24),
-                        label: const Text('Sign in with Google'),
-                        // MODIFIED: The button is disabled if the user hasn't agreed.
+                        label: Text(AppLocalizations.of(context)!
+                            .login_signInWithGoogle),
                         onPressed: _hasAgreedToTerms ? _signInWithGoogle : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

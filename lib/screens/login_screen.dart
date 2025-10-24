@@ -179,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => _launchURL(
-                                    'https://vivekTemp250602.github.io/naamjaap-legal/terms.html'),
+                                    'https://vivektemp250602.github.io/terms.html'),
                             ),
                             TextSpan(
                                 text: AppLocalizations.of(context)!.login_and),
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => _launchURL(
-                                    'https://vivekTemp250602.github.io/naamjaap-legal/privacy.html'),
+                                    'https://vivekTemp250602.github.io/privacy.html'),
                             ),
                             const TextSpan(text: '.'),
                           ],

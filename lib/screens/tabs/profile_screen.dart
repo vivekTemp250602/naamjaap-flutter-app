@@ -297,9 +297,14 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   // Trigger the "Rate the App" prompt.
   Future<void> _requestReview() async {
-    final InAppReview inAppReview = InAppReview.instance;
-    if (await inAppReview.isAvailable()) {
-      inAppReview.requestReview();
+    final Uri url = Uri.parse(
+        "https://play.google.com/store/apps/details?id=com.vivek.naamjaap");
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open Play Store.')),
+        );
+      }
     }
   }
 

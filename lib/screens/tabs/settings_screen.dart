@@ -139,8 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   //  Privacy pages.
   Future<void> _launchPrivacyPolicy() async {
-    final Uri url = Uri.parse(
-        'https://vivekTemp250602.github.io/naamjaap-legal/privacy.html');
+    final Uri url = Uri.parse('https://vivekTemp250602.github.io/privacy.html');
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       // Handle error
     }
@@ -148,8 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   // Terms and conditions pages
   Future<void> _launchTerms() async {
-    final Uri url = Uri.parse(
-        'https://vivekTemp250602.github.io/naamjaap-legal/terms.html');
+    final Uri url = Uri.parse('https://vivektemp250602.github.io/terms.html');
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       // Handle error
     }

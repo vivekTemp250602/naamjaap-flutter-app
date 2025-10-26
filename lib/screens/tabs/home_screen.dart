@@ -207,10 +207,10 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  Future<void> _saveSelectedMantra(String mantraId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.prefsKeySelectedMantra, mantraId);
-  }
+  // Future<void> _saveSelectedMantra(String mantraId) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString(AppConstants.prefsKeySelectedMantra, mantraId);
+  // }
 
   void _onMantraSelected(Mantra mantra) async {
     await _syncService?.syncPendingData();

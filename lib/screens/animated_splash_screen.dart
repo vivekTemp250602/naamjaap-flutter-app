@@ -164,16 +164,3 @@ class LotusPainter extends CustomPainter {
     return true;
   }
 }
-
-class _AuthenticatedApp extends StatelessWidget {
-  final User user;
-  const _AuthenticatedApp({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => MantraProvider(user.uid),
-      child: MainAppScreens(user: user),
-    );
-  }
-}

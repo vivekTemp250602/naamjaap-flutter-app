@@ -5,12 +5,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/providers/locale_provider.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/language_selector_page.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/services/storage_service.dart';
+import 'package:naamjaap/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -83,8 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             .locale
             ?.languageCode ??
         'en';
-    final bool isEnabled = _areRemindersEnabled; // Use the state variable
-
+    final bool isEnabled = _areRemindersEnabled;
     await _notificationService.updateNotificationPreferences(
       language: langCode,
       isEnabled: isEnabled,
@@ -241,185 +242,200 @@ class _SettingsScreenState extends State<SettingsScreen>
               final userData =
                   userSnapshot.data!.data() as Map<String, dynamic>;
               final bool isPremium = userData['isPremium'] ?? false;
-              final String _uid = FirebaseAuth.instance.currentUser!.uid;
-              return Column(
+              // final String uid = FirebaseAuth.instance.currentUser!.uid;
+              return Stack(
                 children: [
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.all(16.0),
-                      children: [
-                        // --- App Settings Card ---
-                        Card(
-                          child: Column(children: [
-                            SwitchListTile(
-                              title: Text(AppLocalizations.of(context)!
-                                  .settings_ambiance),
-                              subtitle: Text(AppLocalizations.of(context)!
-                                  .settings_ambianceDesc),
-                              secondary: const Icon(Icons.waves_rounded),
-                              value: _isAmbianceEnabled,
-                              onChanged: _toggleAmbiance,
-                            ),
-
-                            // Divider
-                            const Divider(height: 1, indent: 16, endIndent: 16),
-
-                            // Daily Remainder
-                            SwitchListTile(
-                              title: Text(AppLocalizations.of(context)!
-                                  .settings_reminders),
-                              subtitle: Text(AppLocalizations.of(context)!
-                                  .settings_remindersDesc),
-                              secondary:
-                                  const Icon(Icons.notifications_outlined),
-                              // THIS IS THE FIX: It now uses the correct state variable.
-                              value: _areRemindersEnabled,
-                              onChanged: _toggleReminders,
-                            ),
-                          ]),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Language Button
-                        Card(
-                          child: ListTile(
-                            leading: const Icon(Icons.language),
-                            title: Text(AppLocalizations.of(context)!
-                                .settings_language),
-                            subtitle: Text(Provider.of<LocaleProvider>(context)
-                                    .locale
-                                    ?.languageCode
-                                    .toUpperCase() ??
-                                AppLocalizations.of(context)!
-                                    .localeName
-                                    .toUpperCase()),
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => LanguageSelectorPage(
-                                    uid: _uid,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // --- Legal & Support Card ---
-                        Card(
-                          child: Column(
-                            children: [
-                              ListTile(
-                                onTap: _launchFeedbackForm,
-                                leading: const Icon(Icons.feedback_outlined,
-                                    color: Colors.blueGrey),
-                                title: Text(AppLocalizations.of(context)!
-                                    .settings_feedback),
-                                trailing: const Icon(Icons.arrow_forward_ios,
-                                    size: 16),
-                              ),
-
-                              const Divider(
-                                  height: 1, indent: 16, endIndent: 16),
-
-                              // Privacy
-                              ListTile(
-                                onTap: _launchPrivacyPolicy,
-                                leading: const Icon(Icons.privacy_tip_outlined,
-                                    color: Colors.green),
-                                title: Text(AppLocalizations.of(context)!
-                                    .settings_privacy),
-                                trailing: const Icon(Icons.arrow_forward_ios,
-                                    size: 16),
-                              ),
-
-                              const Divider(
-                                  height: 1, indent: 16, endIndent: 16),
-
-                              // Terms
-                              ListTile(
-                                onTap: _launchTerms,
-                                leading: const Icon(Icons.gavel_outlined,
-                                    color: Colors.black54),
-                                title: Text(AppLocalizations.of(context)!
-                                    .settings_terms),
-                                trailing: const Icon(Icons.arrow_forward_ios,
-                                    size: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Space
-                        const SizedBox(height: 20),
-
-                        // --- Account Actions Card ---
-                        Card(
-                          child: ListTile(
-                            onTap: _showDeleteAccountDialog,
-                            leading: Icon(Icons.delete_forever_outlined,
-                                color: Colors.red.shade400),
-                            title: Text(
-                                AppLocalizations.of(context)!
-                                    .settings_deleteAccount,
-                                style: TextStyle(color: Colors.red.shade400)),
-                          ),
-                        ),
-
-                        // Space
-                        const SizedBox(height: 32),
-
-                        // Sign Out
-                        ElevatedButton.icon(
-                          icon: const Icon(Icons.logout),
-                          label: Text(
-                              AppLocalizations.of(context)!.settings_signOut),
-                          onPressed: _signOut,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red.shade400,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            textStyle: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Indicator
-                  if (_isDeleting)
-                    Container(
-                      color: Colors.black.withAlpha(130),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
+                    children: [
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.all(16.0),
                           children: [
-                            const CircularProgressIndicator(
-                                color: Colors.white),
-                            const SizedBox(height: 16),
-                            Text(
-                                AppLocalizations.of(context)!
-                                    .settings_deletingAccount,
-                                style: const TextStyle(color: Colors.white)),
+                            // --- App Settings Card ---
+                            Card(
+                              child: Column(children: [
+                                SwitchListTile(
+                                  title: Text(AppLocalizations.of(context)!
+                                      .settings_ambiance),
+                                  subtitle: Text(AppLocalizations.of(context)!
+                                      .settings_ambianceDesc),
+                                  secondary: const Icon(Icons.waves_rounded),
+                                  value: _isAmbianceEnabled,
+                                  onChanged: _toggleAmbiance,
+                                ),
+
+                                // Divider
+                                const Divider(
+                                    height: 1, indent: 16, endIndent: 16),
+
+                                // Daily Remainder
+                                SwitchListTile(
+                                  title: Text(AppLocalizations.of(context)!
+                                      .settings_reminders),
+                                  subtitle: Text(AppLocalizations.of(context)!
+                                      .settings_remindersDesc),
+                                  secondary:
+                                      const Icon(Icons.notifications_outlined),
+                                  value: _areRemindersEnabled,
+                                  onChanged: _toggleReminders,
+                                ),
+                              ]),
+                            ),
+
+                            const SizedBox(
+                              height: 20,
+                            ),
+
+                            // Language Button
+                            Card(
+                              child: ListTile(
+                                leading: const Icon(Icons.language),
+                                title: Text(AppLocalizations.of(context)!
+                                    .settings_language),
+                                subtitle: Text(
+                                    Provider.of<LocaleProvider>(context)
+                                            .locale
+                                            ?.languageCode
+                                            .toUpperCase() ??
+                                        AppLocalizations.of(context)!
+                                            .localeName
+                                            .toUpperCase()),
+                                trailing: const Icon(Icons.arrow_forward_ios),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LanguageSelectorPage(
+                                        uid: _uid,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // --- Legal & Support Card ---
+                            Card(
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    onTap: _launchFeedbackForm,
+                                    leading: const Icon(Icons.feedback_outlined,
+                                        color: Colors.blueGrey),
+                                    title: Text(AppLocalizations.of(context)!
+                                        .settings_feedback),
+                                    trailing: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 16),
+                                  ),
+
+                                  const Divider(
+                                      height: 1, indent: 16, endIndent: 16),
+
+                                  // Privacy
+                                  ListTile(
+                                    onTap: _launchPrivacyPolicy,
+                                    leading: const Icon(
+                                        Icons.privacy_tip_outlined,
+                                        color: Colors.green),
+                                    title: Text(AppLocalizations.of(context)!
+                                        .settings_privacy),
+                                    trailing: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 16),
+                                  ),
+
+                                  const Divider(
+                                      height: 1, indent: 16, endIndent: 16),
+
+                                  // Terms
+                                  ListTile(
+                                    onTap: _launchTerms,
+                                    leading: const Icon(Icons.gavel_outlined,
+                                        color: Colors.black54),
+                                    title: Text(AppLocalizations.of(context)!
+                                        .settings_terms),
+                                    trailing: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 16),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Space
+                            const SizedBox(height: 20),
+
+                            // --- Account Actions Card ---
+                            Card(
+                              child: ListTile(
+                                onTap: _showDeleteAccountDialog,
+                                leading: Icon(Icons.delete_forever_outlined,
+                                    color: Colors.red.shade400),
+                                title: Text(
+                                    AppLocalizations.of(context)!
+                                        .settings_deleteAccount,
+                                    style:
+                                        TextStyle(color: Colors.red.shade400)),
+                              ),
+                            ),
+
+                            // Space
+                            const SizedBox(height: 32),
+
+                            // Sign Out
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.logout),
+                              label: Text(AppLocalizations.of(context)!
+                                  .settings_signOut),
+                              onPressed: _signOut,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red.shade400,
+                                foregroundColor: Colors.white,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                textStyle: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ),
 
-                  if (bannerAd != null &&
-                      !isPremium &&
-                      _adService.isAdLoadedForScreen(_screenName))
-                    Container(
-                      alignment: Alignment.center,
-                      width: bannerAd.size.width.toDouble(),
-                      height: bannerAd.size.height.toDouble(),
-                      child: AdWidget(ad: bannerAd),
-                    ),
+                      // Indicator
+                      if (_isDeleting)
+                        Container(
+                          color: Colors.black.withAlpha(130),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator(
+                                    color: Colors.white),
+                                const SizedBox(height: 16),
+                                Text(
+                                    AppLocalizations.of(context)!
+                                        .settings_deletingAccount,
+                                    style:
+                                        const TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      if (bannerAd != null &&
+                          !isPremium &&
+                          _adService.isAdLoadedForScreen(_screenName))
+                        Container(
+                          alignment: Alignment.center,
+                          width: bannerAd.size.width.toDouble(),
+                          height: bannerAd.size.height.toDouble(),
+                          child: AdWidget(ad: bannerAd),
+                        ),
+                    ],
+                  ),
                 ],
               );
             },

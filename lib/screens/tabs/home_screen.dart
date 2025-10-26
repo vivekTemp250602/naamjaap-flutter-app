@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/services/achievements_service.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
@@ -87,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen>
   final FirestoreService _firestoreService = FirestoreService();
   late final String _uid;
   late StreamSubscription<PlayerState> _playerStateSubscription;
+  final AchievementsService _achievementsService = AchievementsService();
   late ConfettiController _malaConfettiController;
   SyncService? _syncService;
 
@@ -98,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen>
   int _totalMantraCount = 0;
   int _streakCount = 0;
   Map<String, int> _pendingJappsLedger = {};
-  String _selectedMantra = AppConstants.hareKrishna;
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
@@ -117,15 +119,18 @@ class _HomeScreenState extends State<HomeScreen>
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
 
+    final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
+
     _syncService = SyncService(
       connectivityService:
           Provider.of<ConnectivityService>(context, listen: false),
       firestoreService: _firestoreService,
       uid: _uid,
-      onSyncComplete: _onSyncComplete,
+      onSyncComplete: () => _onSyncComplete(mantraProvider),
     );
 
-    _initializeScreen();
+    _loadPreferences();
+    _loadInitialCounts();
 
     _playerStateSubscription =
         _audioService.onPlayerStateChanged.listen((state) {
@@ -150,42 +155,28 @@ class _HomeScreenState extends State<HomeScreen>
 
   // --- Helper Methods ---
 
-  Future<void> _initializeScreen() async {
+  Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    final selectedMantra =
-        prefs.getString(AppConstants.prefsKeySelectedMantra) ??
-            AppConstants.hareKrishna;
-    final isMuted = prefs.getBool(AppConstants.prefsKeyMute) ?? false;
-    final isVibrationEnabled =
-        prefs.getBool(AppConstants.prefsKeyVibrationEnabled) ?? true;
-
-    // Load any pending japps from the last session
-    final ledgerJson = prefs.getString('pendingJappsLedger');
-    final Map<String, int> pendingJappsLedger = ledgerJson != null
-        ? Map<String, int>.from(json.decode(ledgerJson))
-        : {};
-
-    // Fetch the latest totals from Firestore once to get our baseline
-    await _loadTotalCounts(selectedMantra);
-
     if (mounted) {
       setState(() {
-        _selectedMantra = selectedMantra;
-        _isMuted = isMuted;
-        _isVibrationEnabled = isVibrationEnabled;
-        _pendingJappsLedger = pendingJappsLedger;
+        _isMuted = prefs.getBool(AppConstants.prefsKeyMute) ?? false;
+        _isVibrationEnabled =
+            prefs.getBool(AppConstants.prefsKeyVibrationEnabled) ?? true;
       });
       await _audioService.setMuted(_isMuted);
     }
   }
 
-  Future<void> _loadTotalCounts(String mantra) async {
+  Future<void> _loadInitialCounts() async {
     final userDoc = await _firestoreService.getUserDocument(_uid);
     if (!userDoc.exists || !mounted) return;
 
     final userData = userDoc.data() as Map<String, dynamic>;
     final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
-    final mantraKey = mantra.toLowerCase().replaceAll(' ', '_');
+    final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
+
+    // Use the provider's selected mantra to get the right count
+    final mantraKey = mantraProvider.selectedMantra?.id ?? '';
 
     setState(() {
       _totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
@@ -193,65 +184,81 @@ class _HomeScreenState extends State<HomeScreen>
     });
   }
 
+  Future<void> _loadTotalCounts(String mantraId) async {
+    final userDoc = await _firestoreService.getUserDocument(_uid);
+    if (!userDoc.exists || !mounted) return;
+
+    final userData = userDoc.data() as Map<String, dynamic>;
+    final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
+
+    setState(() {
+      _totalMantraCount = jappsMap[mantraId] as int? ?? 0;
+      _streakCount = userData['currentStreak'] ?? 0;
+    });
+  }
+
   // This is the command that the SyncService runs after it successfully uploads data.
-  void _onSyncComplete() {
+  void _onSyncComplete(MantraProvider provider) {
     if (mounted) {
-      // After a sync, we clear the local "notebook" and fetch the new, updated totals.
+      print("Sync complete! Refreshing totals from Firestore.");
       setState(() {
         _pendingJappsLedger = {};
       });
-      _loadTotalCounts(_selectedMantra);
+      // We get the mantraId from the provider
+      _loadInitialCounts();
     }
   }
 
-  void _onMantraSelected(String mantra) async {
+  Future<void> _saveSelectedMantra(String mantraId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.prefsKeySelectedMantra, mantraId);
+  }
+
+  void _onMantraSelected(Mantra mantra) async {
     await _syncService?.syncPendingData();
     if (_isPlaying) await _audioService.stop();
-    setState(() {
-      _selectedMantra = mantra;
-    });
-    await _saveSelectedMantra(mantra);
-    await _loadTotalCounts(mantra);
+
+    // Tell the provider to change
+    Provider.of<MantraProvider>(context, listen: false)
+        .setSelectedMantra(mantra);
+
+    // Load the new counts
+    await _loadTotalCounts(mantra.id);
   }
 
   Future<void> _incrementCounter() async {
     if (_isVibrationEnabled) HapticFeedback.lightImpact();
 
-    final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');
+    final mantraKey =
+        Provider.of<MantraProvider>(context, listen: false).selectedMantra!.id;
 
-    // 1. Instantly update the local "notebook" for a fast UI feel.
     setState(() {
       _pendingJappsLedger[mantraKey] =
           (_pendingJappsLedger[mantraKey] ?? 0) + 1;
     });
 
-    // 2. Save the updated notebook to the phone's storage.
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
         'pendingJappsLedger', json.encode(_pendingJappsLedger));
 
-    // 3. Reset a timer. After 5 seconds of inactivity, it will try to sync.
     _syncTimer?.cancel();
     _syncTimer = Timer(
         const Duration(seconds: 5), () => _syncService?.syncPendingData());
 
-    // 4. Check for mala completion using the combined total.
     final currentTotal =
         _totalMantraCount + (_pendingJappsLedger[mantraKey] ?? 0);
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _malaConfettiController.play();
       _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
       _firestoreService.incrementTotalMalas(_uid);
+      _achievementsService.checkAndAwardBadges(_uid);
     }
 
     if (!_isPlaying) {
-      _audioService.play(AppConstants.mantraAudioPaths[_selectedMantra]!);
+      _audioService.play(Provider.of<MantraProvider>(context, listen: false)
+          .selectedMantra!
+          .audioPath);
     }
-  }
-
-  Future<void> _saveSelectedMantra(String mantra) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppConstants.prefsKeySelectedMantra, mantra);
   }
 
   void _toggleMute() async {
@@ -273,8 +280,8 @@ class _HomeScreenState extends State<HomeScreen>
     await prefs.setBool(AppConstants.prefsKeyVibrationEnabled, newStatus);
   }
 
-  void _showMantraInfo() {
-    final descriptions = MantraInfoService.getDescription(_selectedMantra);
+  void _showMantraInfo(String mantraName) {
+    final descriptions = MantraInfoService.getDescription(mantraName);
     InfoLanguage selectedLanguage = InfoLanguage.english;
 
     showDialog(
@@ -282,20 +289,22 @@ class _HomeScreenState extends State<HomeScreen>
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
-            String displayText;
+            String displayText = descriptions['en'] ?? '';
+
             switch (selectedLanguage) {
               case InfoLanguage.hindi:
-                displayText = descriptions['hi']!;
+                displayText = descriptions['hi'] ?? displayText;
                 break;
               case InfoLanguage.sanskrit:
-                displayText = descriptions['sa']!;
+                displayText = descriptions['sa'] ?? displayText;
                 break;
               case InfoLanguage.english:
-                displayText = descriptions['en']!;
+                displayText = descriptions['en'] ?? displayText;
+                break;
             }
 
             return AlertDialog(
-              title: Text(_selectedMantra),
+              title: Text(mantraName),
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
@@ -310,9 +319,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                     ),
-                    const Divider(
-                      height: 24,
-                    ),
+                    const Divider(height: 24),
                     ToggleButtons(
                       isSelected: [
                         selectedLanguage == InfoLanguage.english,
@@ -353,310 +360,306 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  void toggleZenMode() {
-    setState(() {
-      _isZenMode = !_isZenMode;
-    });
-  }
-
-  void _onMantraSwiped(DragEndDetails details) {
+  void _onMantraSwiped(
+      DragEndDetails details, List<Mantra> allMantras, Mantra selectedMantra) {
     if (details.primaryVelocity == null) return;
 
-    final List<String> mantras = RemoteConfigService().mantras;
-    final int currentIndex = mantras.indexOf(_selectedMantra);
+    final int currentIndex = allMantras.indexOf(selectedMantra);
+    if (currentIndex == -1) return;
 
     if (details.primaryVelocity! < 0) {
-      final int nextIndex = (currentIndex + 1) % mantras.length;
-      _onMantraSelected(mantras[nextIndex]);
+      // Swiped Left (velocity is negative) -> Go to NEXT mantra
+      final int nextIndex = (currentIndex + 1) % allMantras.length;
+      _onMantraSelected(allMantras[nextIndex]);
     } else if (details.primaryVelocity! > 0) {
-      final int nextIndex =
-          (currentIndex - 1 + mantras.length) % mantras.length;
-      _onMantraSelected(mantras[nextIndex]);
+      // Swiped Right (velocity is positive) -> Go to PREVIOUS mantra
+      final int prevIndex =
+          (currentIndex - 1 + allMantras.length) % allMantras.length;
+      _onMantraSelected(allMantras[prevIndex]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     final bannerAd = _adService.getAdForScreen(_screenName);
+    final connectivityService = Provider.of<ConnectivityService>(context);
 
-    final mantraKey = _selectedMantra.toLowerCase().replaceAll(' ', '_');
-    final pendingCount = _pendingJappsLedger[mantraKey] ?? 0;
+    return Consumer<MantraProvider>(builder: (context, mantraProvider, child) {
+      if (mantraProvider.isLoading || mantraProvider.selectedMantra == null) {
+        return Container(
+          color: Theme.of(context).colorScheme.surface,
+          child: const Center(child: CircularProgressIndicator()),
+        );
+      }
 
-    final displayTotal = _totalMantraCount + pendingCount;
-    final malaProgressCounter = displayTotal % 108;
+      final selectedMantra = mantraProvider.selectedMantra!;
+      final allMantras = mantraProvider.allMantras;
 
-    return Stack(
-      children: [
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 700),
-          child: AnimatedBackground(
-            key: ValueKey<String>(_selectedMantra),
-            imagePaths: AppConstants.mantraImagePaths[_selectedMantra]!,
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.black.withAlpha(140),
-              Colors.black.withAlpha(70),
-              Colors.black.withAlpha(140)
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-          ),
-        ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          body: SafeArea(
-            child: StreamBuilder<DocumentSnapshot>(
-              stream: _firestoreService.getUserStatsStream(_uid),
-              builder: (context, userSnapshot) {
-                if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final userData =
-                    userSnapshot.data!.data() as Map<String, dynamic>;
-                final bool isPremium = userData['isPremium'] ?? false;
-
-                return Column(
-                  children: [
-                    Chip(
-                      avatar: Icon(Icons.local_fire_department,
-                          color: Colors.orange.shade800),
-                      label: Text(
-                          '$_streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      backgroundColor: Colors.white.withAlpha(190),
-                      elevation: 4,
-                    ),
-
-                    // Mantra Selector
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: SizedBox(
-                        height: 50,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Row(
-                            children: [
-                              ...RemoteConfigService().mantras.map((mantra) {
-                                final isSelected = _selectedMantra == mantra;
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6.0),
-                                  child: GestureDetector(
-                                    onTap: () => _onMantraSelected(mantra),
-                                    child: AnimatedContainer(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
-                                      decoration: BoxDecoration(
-                                        color: isSelected
-                                            ? Colors.orange.withAlpha(210)
-                                            : Colors.black.withAlpha(70),
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                            color: isSelected
-                                                ? Colors.orange.shade300
-                                                : Colors.white.withAlpha(128),
-                                            width: 2),
-                                      ),
-                                      child: Text(mantra,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal)),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Mantra Info Button
-                    TextButton.icon(
-                      onPressed: _showMantraInfo,
-                      icon: const Icon(Icons.info_outline),
-                      label:
-                          Text(AppLocalizations.of(context)!.home_mantraInfo),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white.withAlpha(220),
-                      ),
-                    ),
-
-                    // Internet Status - Vibration - Sound
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const SizedBox(
-                            width: 10,
-                          ),
-
-                          // Vibration Status
-                          IconButton(
-                            icon: Icon(_isVibrationEnabled
-                                ? Icons.vibration
-                                : Icons.mobile_off_rounded),
-                            iconSize: 28,
-                            color: Colors.white.withAlpha(210),
-                            onPressed: _toggleVibration,
-                            tooltip: _isVibrationEnabled
-                                ? 'Vibration On'
-                                : 'Vibration Off',
-                          ),
-
-                          // Sound Status
-                          IconButton(
-                            icon: Icon(
-                                _isMuted ? Icons.volume_off : Icons.volume_up),
-                            iconSize: 28,
-                            color: Colors.white.withAlpha(210),
-                            onPressed: _toggleMute,
-                            tooltip: _isMuted ? 'Sound Off' : 'Sound On',
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Tap to Chant Button
-                    Expanded(
-                      child: GestureDetector(
-                        onHorizontalDragEnd: _onMantraSwiped,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                              width: 340,
-                              height: 340,
-                              child: CustomPaint(
-                                painter: MalaPainter(
-                                  beadCount: 108,
-                                  activeBeadIndex: malaProgressCounter,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: _incrementCounter,
-                              child: Container(
-                                width: 260,
-                                height: 260,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.orange.shade700,
-                                  gradient: RadialGradient(colors: [
-                                    Colors.orange.shade500,
-                                    Colors.orange.shade800
-                                  ]),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.orange.shade900
-                                            .withAlpha(160),
-                                        spreadRadius: 2,
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 10)),
-                                    BoxShadow(
-                                        color: Colors.black.withAlpha(129),
-                                        spreadRadius: 10,
-                                        blurRadius: 40),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        transitionBuilder: (Widget child,
-                                            Animation<double> animation) {
-                                          return ScaleTransition(
-                                              scale: animation, child: child);
-                                        },
-                                        child: Text(
-                                          (malaProgressCounter == 0 &&
-                                                  displayTotal > 0)
-                                              ? "108"
-                                              : (malaProgressCounter)
-                                                  .toString(),
-                                          key: ValueKey<int>(displayTotal),
-                                          style: const TextStyle(
-                                            fontSize: 72,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            shadows: [
-                                              Shadow(
-                                                  blurRadius: 10.0,
-                                                  color: Colors.black54,
-                                                  offset: Offset(2.0, 2.0))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
-                                        style: TextStyle(
-                                          color: Colors.white.withAlpha(170),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text("",
-                        style: TextStyle(
-                            color: Colors.white.withAlpha(190), fontSize: 18)),
-                    const SizedBox(height: 36),
-
-                    if (bannerAd != null &&
-                        !isPremium &&
-                        _adService.isAdLoadedForScreen(_screenName))
-                      Container(
-                        alignment: Alignment.center,
-                        width: bannerAd.size.width.toDouble(),
-                        height: bannerAd.size.height.toDouble(),
-                        child: AdWidget(ad: bannerAd),
-                      ),
-                  ],
-                );
-              },
+      // Variables
+      final mantraKey = selectedMantra.id;
+      final pendingCount = _pendingJappsLedger[mantraKey] ?? 0;
+      final displayTotal = _totalMantraCount + pendingCount;
+      final malaProgressCounter = displayTotal % 108;
+      return Stack(
+        children: [
+          /// Mantra Background
+          AnimatedSwitcher(
+              duration: const Duration(milliseconds: 700),
+              child: selectedMantra.isCustom
+                  ? AppConstants.getBackgroundById(selectedMantra.backgroundId!)
+                      .child
+                  : AnimatedBackground(
+                      key: ValueKey<String>(selectedMantra.id),
+                      imagePaths:
+                          AppConstants.mantraImagePaths[selectedMantra.name]!,
+                    )),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                Colors.black.withAlpha(140),
+                Colors.black.withAlpha(70),
+                Colors.black.withAlpha(140)
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: ConfettiWidget(
-            confettiController: _malaConfettiController,
-            emissionFrequency: 0,
-            numberOfParticles: 60,
-            maxBlastForce: 50,
-            minBlastForce: 20,
-            gravity: 0.1,
-            blastDirectionality: BlastDirectionality.explosive,
-            shouldLoop: false,
-            colors: const [
-              Colors.orange,
-              Colors.amber,
-              Colors.yellow,
-              Colors.white,
-            ],
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+                child: Column(
+              children: [
+                Chip(
+                  avatar: Icon(Icons.local_fire_department,
+                      color: Colors.orange.shade800),
+                  label: Text(
+                      '$_streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.white.withAlpha(190),
+                  elevation: 4,
+                ),
+
+                // Mantra Selector
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: SizedBox(
+                    height: 50,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        children: allMantras.map((mantra) {
+                          final isSelected = selectedMantra.id == mantra.id;
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: GestureDetector(
+                              onTap: () => _onMantraSelected(mantra),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? Colors.orange.withAlpha(210)
+                                      : Colors.black.withAlpha(70),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? Colors.orange.shade300
+                                        : Colors.white.withAlpha(128),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Text(
+                                  mantra.name,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Mantra Info Button
+                TextButton.icon(
+                  onPressed: () => _showMantraInfo(selectedMantra.name),
+                  icon: const Icon(Icons.info_outline),
+                  label: Text(AppLocalizations.of(context)!.home_mantraInfo),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white.withAlpha(220),
+                  ),
+                ),
+
+                // Internet Status - Vibration - Sound
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+
+                      // Vibration Status
+                      IconButton(
+                        icon: Icon(_isVibrationEnabled
+                            ? Icons.vibration
+                            : Icons.mobile_off_rounded),
+                        iconSize: 28,
+                        color: Colors.white.withAlpha(210),
+                        onPressed: _toggleVibration,
+                        tooltip: _isVibrationEnabled
+                            ? 'Vibration On'
+                            : 'Vibration Off',
+                      ),
+
+                      // Sound Status
+                      IconButton(
+                        icon:
+                            Icon(_isMuted ? Icons.volume_off : Icons.volume_up),
+                        iconSize: 28,
+                        color: Colors.white.withAlpha(210),
+                        onPressed: _toggleMute,
+                        tooltip: _isMuted ? 'Sound Off' : 'Sound On',
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Tap to Chant Button
+                Expanded(
+                  child: GestureDetector(
+                    onHorizontalDragEnd: (details) =>
+                        _onMantraSwiped(details, allMantras, selectedMantra),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          width: 340,
+                          height: 340,
+                          child: CustomPaint(
+                            painter: MalaPainter(
+                              beadCount: 108,
+                              activeBeadIndex: malaProgressCounter,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _incrementCounter,
+                          child: Container(
+                            width: 260,
+                            height: 260,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.orange.shade700,
+                              gradient: RadialGradient(colors: [
+                                Colors.orange.shade500,
+                                Colors.orange.shade800
+                              ]),
+                              boxShadow: [
+                                BoxShadow(
+                                    color:
+                                        Colors.orange.shade900.withAlpha(160),
+                                    spreadRadius: 2,
+                                    blurRadius: 20,
+                                    offset: const Offset(0, 10)),
+                                BoxShadow(
+                                    color: Colors.black.withAlpha(129),
+                                    spreadRadius: 10,
+                                    blurRadius: 40),
+                              ],
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    transitionBuilder: (Widget child,
+                                        Animation<double> animation) {
+                                      return ScaleTransition(
+                                          scale: animation, child: child);
+                                    },
+                                    child: Text(
+                                      (malaProgressCounter == 0 &&
+                                              displayTotal > 0)
+                                          ? "108"
+                                          : (malaProgressCounter).toString(),
+                                      key: ValueKey<int>(displayTotal),
+                                      style: const TextStyle(
+                                        fontSize: 72,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                              blurRadius: 10.0,
+                                              color: Colors.black54,
+                                              offset: Offset(2.0, 2.0))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
+                                    style: TextStyle(
+                                      color: Colors.white.withAlpha(170),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Text("",
+                    style: TextStyle(
+                        color: Colors.white.withAlpha(190), fontSize: 18)),
+                const SizedBox(height: 36),
+
+                if (bannerAd != null &&
+                    _adService.isAdLoadedForScreen(_screenName))
+                  Container(
+                    alignment: Alignment.center,
+                    width: bannerAd.size.width.toDouble(),
+                    height: bannerAd.size.height.toDouble(),
+                    child: AdWidget(ad: bannerAd),
+                  ),
+              ],
+            )),
           ),
-        ),
-      ],
-    );
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _malaConfettiController,
+              emissionFrequency: 0,
+              numberOfParticles: 60,
+              maxBlastForce: 50,
+              minBlastForce: 20,
+              gravity: 0.1,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              colors: const [
+                Colors.orange,
+                Colors.amber,
+                Colors.yellow,
+                Colors.white,
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

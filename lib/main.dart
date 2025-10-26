@@ -15,32 +15,20 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  // This is the main "async" function where we initialize everything.
-
-  // --- STEP 1: INITIALIZE FLUTTER (Must be first) ---
   WidgetsFlutterBinding.ensureInitialized();
 
-  // --- STEP 2: INITIALIZE FIREBASE (Must be second) ---
-  // This is the "ignition key." We do this *outside* the error zone.
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // --- STEP 3: SET UP THE ERROR HANDLERS (Now it's safe) ---
-  // Now that Firebase is running, we can tell Crashlytics what to do.
   runZonedGuarded<Future<void>>(() async {
-    // Set up the main Flutter error handler
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-    // Set up the platform error handler (for native crashes)
     PlatformDispatcher.instance.onError = (error, stack) {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
 
-    // --- STEP 4: INITIALIZE OTHER CORE SERVICES ---
     await RemoteConfigService().initialize();
 
-    // --- STEP 5: PREPARE PROVIDERS & SYSTEM UI ---
     LocaleProvider localeProvider = LocaleProvider();
     await localeProvider.loadSavedLocale();
 
@@ -49,7 +37,6 @@ Future<void> main() async {
       DeviceOrientation.portraitDown,
     ]);
 
-    // --- STEP 6: RUN THE APP ---
     runApp(
       MultiProvider(
         providers: [
@@ -59,9 +46,7 @@ Future<void> main() async {
         child: const NaamJaapApp(),
       ),
     );
-  },
-      // This is the "catch" block for any errors that happen *during* initialization.
-      (error, stack) {
+  }, (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
   });
 }

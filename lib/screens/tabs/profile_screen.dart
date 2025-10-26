@@ -6,12 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/screens/garden_screen.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/rendering.dart';
 import 'package:naamjaap/services/storage_service.dart';
@@ -308,6 +310,37 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  // Delete Mantra Dialogs
+  void _showDeleteMantraDialog(
+      BuildContext context, MantraProvider provider, Mantra mantra) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Delete "${mantra.name}"?'),
+        content: const Text(
+            'Are you sure? All japa counts associated with this mantra will also be permanently deleted.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(AppLocalizations.of(context)!.dialog_cancel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              provider.deleteCustomMantra(mantra.id);
+              Navigator.of(dialogContext).pop();
+            },
+            child: const Text(
+              'Yes, Delete',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -344,21 +377,30 @@ class _ProfileScreenState extends State<ProfileScreen>
                     userSnapshot.data!.data() as Map<String, dynamic>;
                 final bool isPremium = userData['isPremium'] ?? false;
 
-                return Column(
-                  children: [
-                    Expanded(
-                      child: buildProfileView(userData, isPremium),
-                    ),
-                    if (bannerAd != null &&
-                        !isPremium &&
-                        _adService.isAdLoadedForScreen(_screenName))
-                      Container(
-                        alignment: Alignment.center,
-                        width: bannerAd.size.width.toDouble(),
-                        height: bannerAd.size.height.toDouble(),
-                        child: AdWidget(ad: bannerAd),
-                      ),
-                  ],
+                return Consumer<MantraProvider>(
+                  builder: (context, mantraProvider, child) {
+                    final customMantras = mantraProvider.allMantras
+                        .where((m) => m.isCustom)
+                        .toList();
+
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: buildProfileView(userData, customMantras,
+                              mantraProvider, isPremium),
+                        ),
+                        if (bannerAd != null &&
+                            !isPremium &&
+                            _adService.isAdLoadedForScreen(_screenName))
+                          Container(
+                            alignment: Alignment.center,
+                            width: bannerAd.size.width.toDouble(),
+                            height: bannerAd.size.height.toDouble(),
+                            child: AdWidget(ad: bannerAd),
+                          ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
@@ -368,7 +410,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  Widget buildProfileView(Map<String, dynamic> userData, bool isPremium) {
+  Widget buildProfileView(
+      Map<String, dynamic> userData,
+      List<Mantra> customMantras,
+      MantraProvider mantraProvider,
+      bool isPremium) {
     final int totalMalas = userData['total_malas'] ?? 0;
     final List<dynamic> badges = userData['badges'] ?? [];
 
@@ -706,6 +752,53 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         const SizedBox(
           height: 20,
+        ),
+
+        Card(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text("My Custom Mantras",
+                    style: Theme.of(context).textTheme.titleLarge),
+              ),
+              if (customMantras.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text("You haven't added any custom mantras yet."),
+                ),
+              ...customMantras.map((mantra) {
+                return ListTile(
+                  title: Text(mantra.name),
+                  trailing: IconButton(
+                    icon:
+                        Icon(Icons.delete_outline, color: Colors.red.shade400),
+                    onPressed: () => _showDeleteMantraDialog(
+                        context, mantraProvider, mantra),
+                  ),
+                );
+              }),
+              const Divider(height: 1, indent: 16, endIndent: 16),
+              ListTile(
+                leading:
+                    const Icon(Icons.add_circle_outline, color: Colors.green),
+                title: const Text("Add New Mantra"),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (newContext) => ChangeNotifierProvider.value(
+                              value: mantraProvider,
+                              child: const CustomMantraEditor(),
+                            )),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(
+          height: 24,
         ),
 
         // Share your progress - Share Naam Jaap - Rate Our App

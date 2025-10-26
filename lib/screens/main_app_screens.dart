@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:async';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,18 +23,15 @@ class MainAppScreens extends StatefulWidget {
 
 class _MainAppScreensState extends State<MainAppScreens> {
   int _currentIndex = 0;
-  DateTime? _lastBackPressed;
-
+  late final PageController _pageController;
   late final List<Widget> _screens;
   late final StreamSubscription<User?> _authSubscription;
-  late final PageController _pageController;
+  DateTime? _lastBackPressed;
 
   @override
   void initState() {
     super.initState();
-
     _pageController = PageController();
-
     _screens = const [
       HomeScreen(),
       LeaderboardScreen(),
@@ -44,29 +39,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
       ProfileScreen(),
     ];
 
-    // _screenTitles = [
-    //   Text(AppLocalizations.of(context)!.nav_home),
-    //   Row(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Icon(Icons.emoji_events_outlined, color: Colors.amber.shade300),
-    //       const SizedBox(width: 8),
-    //       Text(AppLocalizations.of(context)!.nav_leaderboard),
-    //     ],
-    //   ),
-    //   Row(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Image.asset('assets/images/peacock_feather.png', height: 24),
-    //       const SizedBox(width: 8),
-    //       Text(AppLocalizations.of(context)!.nav_wisdom),
-    //     ],
-    //   ),
-    //   Text(AppLocalizations.of(context)!.nav_profile),
-    // ];
-
     NotificationService().initialize(widget.user.uid);
-
     _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
       if (user == null && mounted) {
         Navigator.of(context).pushAndRemoveUntil(
@@ -85,9 +58,11 @@ class _MainAppScreensState extends State<MainAppScreens> {
   }
 
   void _onTabTapped(int index) {
-    _pageController.animateToPage(index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   void _onPageChanged(int index) {
@@ -98,6 +73,7 @@ class _MainAppScreensState extends State<MainAppScreens> {
 
   @override
   Widget build(BuildContext context) {
+    // We build the titles list here, where the context is safe.
     final l10n = AppLocalizations.of(context)!;
     final List<Widget> screenTitles = [
       Text(l10n.nav_home),
@@ -109,7 +85,14 @@ class _MainAppScreensState extends State<MainAppScreens> {
           Text(l10n.nav_leaderboard),
         ],
       ),
-      Text(l10n.nav_wisdom),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset('assets/images/peacock_feather.png', height: 24),
+          const SizedBox(width: 8),
+          Text(l10n.nav_wisdom),
+        ],
+      ),
       Text(l10n.nav_profile),
     ];
 
@@ -147,10 +130,10 @@ class _MainAppScreensState extends State<MainAppScreens> {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.25),
+                  color: Colors.black.withAlpha(45),
                   border: Border(
                     bottom: BorderSide(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withAlpha(80),
                       width: 1.0,
                     ),
                   ),
@@ -174,12 +157,15 @@ class _MainAppScreensState extends State<MainAppScreens> {
             child: screenTitles[_currentIndex],
           ),
           actions: [
-            if (_currentIndex == 3)
+            if (_currentIndex == 3) // Profile Screen
               IconButton(
                 icon: const Icon(Icons.settings_outlined, color: Colors.white),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const SettingsScreen()));
+                  // This context is now a child of the Provider,
+                  // so the SettingsScreen can find it!
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
                 },
                 tooltip: 'Settings',
               ),
@@ -188,8 +174,6 @@ class _MainAppScreensState extends State<MainAppScreens> {
         body: PageView(
           controller: _pageController,
           onPageChanged: _onPageChanged,
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
           children: _screens,
         ),
         bottomNavigationBar: BottomNavBar(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:naamjaap/utils/constants.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -18,6 +19,56 @@ class FirestoreService {
     return date.year == now.year &&
         date.month == now.month &&
         date.day == now.day;
+  }
+
+  Future<String> addCustomMantra({
+    required String uid,
+    required String mantraName,
+    required String backgroundId,
+  }) async {
+    final userRef = _db.collection('users').doc(uid);
+    // Create a unique ID for the new mantra
+    final String mantraId = _db.collection('users').doc().id;
+
+    await userRef.update({
+      'custom_mantras.$mantraId': {
+        'name': mantraName,
+        'backgroundId': backgroundId,
+      }
+    });
+
+    return mantraId;
+  }
+
+  Future<void> deleteCustomMantra(String uid, String mantraId) {
+    final userRef = _db.collection('users').doc(uid);
+
+    // We also must delete the japp counts for this mantra.
+    return userRef.update({
+      'custom_mantras.$mantraId': FieldValue.delete(),
+      'japps.$mantraId': FieldValue.delete(),
+    });
+  }
+
+  /// NEW: Fetches the user's custom mantras in a structured way.
+  List<Mantra> getCustomMantrasFromData(Map<String, dynamic> userData) {
+    final List<Mantra> customMantras = [];
+    final mantrasMap =
+        userData['custom_mantras'] as Map<String, dynamic>? ?? {};
+
+    for (final entry in mantrasMap.entries) {
+      customMantras.add(Mantra(
+        id: entry.key,
+        name: entry.value['name'] ?? 'Unnamed Mantra',
+        isCustom: true,
+        backgroundId: entry.value['backgroundId'] ??
+            AppConstants.customBackgrounds.first.id,
+        // Custom mantras don't have a pre-defined audio path
+        audioPath: 'assets/audio/temple_bells.mp3',
+        imagePath: '', // Or play silent/ambiance
+      ));
+    }
+    return customMantras;
   }
 
   /// It atomically increments japps and handles the daily streak logic.
@@ -182,8 +233,6 @@ class FirestoreService {
 
   Future<void> updateUserSettings(
       String uid, Map<String, dynamic> settingsUpdate) {
-    // This will take a map like {'notificationLanguage': 'hi'} or {'enableReminders': true}
-    // and correctly merge it into the 'settings' map in Firestore.
     return _db.collection('users').doc(uid).set(
       {
         'settings': settingsUpdate,

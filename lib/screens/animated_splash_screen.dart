@@ -1,9 +1,10 @@
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 
 class AnimatedSplashScreen extends StatefulWidget {
@@ -22,9 +23,10 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   @override
   void initState() {
     super.initState();
-
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    );
 
     _lotusAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -54,14 +56,19 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
 
   void _navigateUser() {
     if (!mounted) return;
-
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginScreen()));
     } else {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => MainAppScreens(user: user)));
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (context) => MantraProvider(user.uid),
+            child: MainAppScreens(user: user),
+          ),
+        ),
+      );
     }
   }
 
@@ -93,9 +100,8 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                   FadeTransition(
                     opacity: _logoAnimation,
                     child: Image.asset(
-                      "assets/images/app_logo_simple.png",
-                      width: 200,
-                      height: 200,
+                      'assets/images/app_logo_simple.png',
+                      width: 100,
                     ),
                   ),
                 ],
@@ -156,5 +162,18 @@ class LotusPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+}
+
+class _AuthenticatedApp extends StatelessWidget {
+  final User user;
+  const _AuthenticatedApp({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => MantraProvider(user.uid),
+      child: MainAppScreens(user: user),
+    );
   }
 }

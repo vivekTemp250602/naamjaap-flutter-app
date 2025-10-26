@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/mantra_info_service.dart';
-import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
@@ -104,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen>
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
-  bool _isZenMode = false;
+  // bool _isZenMode = false;
   Timer? _syncTimer;
 
   @override
@@ -383,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
-    final connectivityService = Provider.of<ConnectivityService>(context);
+    // final connectivityService = Provider.of<ConnectivityService>(context);
 
     return Consumer<MantraProvider>(builder: (context, mantraProvider, child) {
       if (mantraProvider.isLoading || mantraProvider.selectedMantra == null) {

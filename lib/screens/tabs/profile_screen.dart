@@ -684,17 +684,29 @@ class _ProfileScreenState extends State<ProfileScreen>
                   const SizedBox(height: 16),
                   if (userData['japps'] != null &&
                       (userData['japps'] as Map).isNotEmpty)
-                    // We use a Column of custom-built Rows for an elegant, typographic look.
                     Column(
                       children: (userData['japps'] as Map<String, dynamic>)
                           .entries
                           .map((entry) {
-                        final mantraName = AppConstants.mantras.firstWhere(
-                          (m) =>
-                              m.toLowerCase().replaceAll(' ', '_') == entry.key,
-                          orElse: () => entry.key,
-                        );
+                        final String mantraKey = entry.key;
                         final mantraCount = entry.value as int;
+                        String mantraName;
+
+                        try {
+                          final mantra = mantraProvider.allMantras.firstWhere(
+                            (m) => m.id == mantraKey,
+                          );
+
+                          mantraName = mantra.name;
+                        } catch (error) {
+                          mantraName = mantraKey;
+                        }
+
+                        // final mantraName = AppConstants.mantras.firstWhere(
+                        //   (m) =>
+                        //       m.toLowerCase().replaceAll(' ', '_') == entry.key,
+                        //   orElse: () => entry.key,
+                        // );
 
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -712,7 +724,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                           color: Colors.grey.shade700,
                                         ),
                                   ),
-                                  const Spacer(), // Pushes the count to the right.
+                                  const Spacer(),
                                   // The Count - BIG, BOLD, and GOLDEN.
                                   Text(
                                     mantraCount.toString(),
@@ -729,7 +741,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 ],
                               ),
                               const SizedBox(height: 12),
-                              // A delicate, almost invisible divider.
                               Divider(color: Colors.grey.shade200, height: 1),
                             ],
                           ),

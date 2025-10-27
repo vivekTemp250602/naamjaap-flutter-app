@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "확실하신가요? 이 만트라와 관련된 모든 자파 횟수도 영구적으로 삭제됩니다.",
     "profile_yesDelete": "예, 삭제합니다",
     "profile_couldNotUserData": "사용자 데이터를 로드할 수 없습니다.",
-    "misc_anonymous": "익명"
+    "misc_anonymous": "익명",
+    "profile_sankalpaSet": "성스러운 서원 세우기",
+    "profile_sankalpaSubtitle": "개인 챈팅 목표 설정하기.",
+    "profile_sankalpaTitle": "나의 자파 산칼파",
+    "profile_sankalpaChanting": "챈팅 중",
+    "profile_sankalpaToReach": " {targetCount}회 달성까지.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date}까지",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "자파 산칼파 설정하기",
+    "dialog_sankalpaSelectMantra": "만트라 선택",
+    "dialog_sankalpaTargetCount": "목표 횟수 (예: 11000)",
+    "dialog_sankalpaTargetDate": "목표 날짜",
+    "dialog_sankalpaSelectDate": "날짜 선택",
+    "dialog_sankalpaSetPledge": "나의 서원 설정하기",
+    "dialog_sankalpaError": "모든 필드를 올바르게 입력해주세요.",
+    "dialog_sankalpaErrorTarget": "목표 횟수는 현재 횟수보다 커야 합니다."
 }

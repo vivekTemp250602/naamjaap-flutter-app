@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "ನೀವು ಖಚಿತವಾಗಿರುವಿರಾ? ಈ ಮಂತ್ರಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಎಲ್ಲಾ ಜಪ ಎಣಿಕೆಗಳನ್ನು ಸಹ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ.",
     "profile_yesDelete": "ಹೌದು, ಅಳಿಸಿ",
     "profile_couldNotUserData": "ಬಳಕೆದಾರರ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
-    "misc_anonymous": "ಅನಾಮಧೇಯ"
+    "misc_anonymous": "ಅನಾಮಧೇಯ",
+    "profile_sankalpaSet": "ಒಂದು ಪವಿತ್ರ ಸಂಕಲ್ಪ ಮಾಡಿ",
+    "profile_sankalpaSubtitle": "ವೈಯಕ್ತಿಕ ಜಪ ಗುರಿಯನ್ನು ಹೊಂದಿಸಿ.",
+    "profile_sankalpaTitle": "ನಿಮ್ಮ ಜಪ ಸಂಕಲ್ಪ",
+    "profile_sankalpaChanting": "ಜಪಿಸುತ್ತಿದೆ",
+    "profile_sankalpaToReach": " {targetCount} ಬಾರಿ ತಲುಪಲು.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} ರೊಳಗೆ",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "ನಿಮ್ಮ ಜಪ ಸಂಕಲ್ಪವನ್ನು ಹೊಂದಿಸಿ",
+    "dialog_sankalpaSelectMantra": "ಮಂತ್ರ ಆಯ್ಕೆಮಾಡಿ",
+    "dialog_sankalpaTargetCount": "ಗುರಿ ಎಣಿಕೆ (ಉದಾ., 11000)",
+    "dialog_sankalpaTargetDate": "ಗುರಿ ದಿನಾಂಕ",
+    "dialog_sankalpaSelectDate": "ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "dialog_sankalpaSetPledge": "ನನ್ನ ಸಂಕಲ್ಪವನ್ನು ಹೊಂದಿಸಿ",
+    "dialog_sankalpaError": "ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಸರಿಯಾಗಿ ಭರ್ತಿ ಮಾಡಿ.",
+    "dialog_sankalpaErrorTarget": "ಗುರಿ ಎಣಿಕೆಯು ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಎಣಿಕೆಗಿಂತ ಹೆಚ್ಚಿರಬೇಕು."
 }

@@ -105,5 +105,35 @@
     "profile_deleteMantraSure": "Are you sure? All japa counts associated with this mantra will also be permanently deleted.",
     "profile_yesDelete": "Yes, Delete",
     "profile_couldNotUserData": "Could not load user data.",
-    "misc_anonymous": "Anonymous"
+    "misc_anonymous": "Anonymous",
+    "profile_sankalpaSet": "Make a Sacred Vow",
+    "profile_sankalpaSubtitle": "Set a personal chanting goal.",
+    "profile_sankalpaTitle": "Your Japa Sankalpa",
+    "profile_sankalpaChanting": "Chanting",
+    "profile_sankalpaToReach": " to reach {targetCount} times.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int",
+            "example": "11000"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "By {date}",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String",
+            "example": "Dec 31, 2025"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "Set Your Japa Sankalpa",
+    "dialog_sankalpaSelectMantra": "Select Mantra",
+    "dialog_sankalpaTargetCount": "Target Count (e.g., 11000)",
+    "dialog_sankalpaTargetDate": "Target Date",
+    "dialog_sankalpaSelectDate": "Select a date",
+    "dialog_sankalpaSetPledge": "Set My Vow",
+    "dialog_sankalpaError": "Please fill all fields correctly.",
+    "dialog_sankalpaErrorTarget": "Target count must be greater than your current count."
 }

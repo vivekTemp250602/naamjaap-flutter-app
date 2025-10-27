@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "ଆପଣ ନିଶ୍ଚିତ କି? ଏହି ମନ୍ତ୍ର ସହିତ ଜଡିତ ସମସ୍ତ ଜପ ଗଣନା ମଧ୍ୟ ସ୍ଥାୟୀ ଭାବରେ ବିଲୋପ କରାଯିବ।",
     "profile_yesDelete": "ହଁ, ବିଲୋପ କରନ୍ତୁ",
     "profile_couldNotUserData": "ଉପଯୋଗକର୍ତ୍ତା ଡାଟା ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ।",
-    "misc_anonymous": "ଅଜ୍ଞାତ"
+    "misc_anonymous": "ଅଜ୍ଞାତ",
+    "profile_sankalpaSet": "ଏକ ପବିତ୍ର ସଂକଳ୍ପ କରନ୍ତୁ",
+    "profile_sankalpaSubtitle": "ଏକ ବ୍ୟକ୍ତିଗତ ଜପ ଲକ୍ଷ୍ୟ ସ୍ଥିର କରନ୍ତୁ।",
+    "profile_sankalpaTitle": "ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ",
+    "profile_sankalpaChanting": "ଜପ କରୁଛନ୍ତି",
+    "profile_sankalpaToReach": " {targetCount} ଥର ପହଞ୍ଚିବା ପାଇଁ।",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} ସୁଦ୍ଧା",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ",
+    "dialog_sankalpaSelectMantra": "ମନ୍ତ୍ର ଚୟନ କରନ୍ତୁ",
+    "dialog_sankalpaTargetCount": "ଲକ୍ଷ୍ୟ ଗଣନା (ଯଥା, 11000)",
+    "dialog_sankalpaTargetDate": "ଲକ୍ଷ୍ୟ ତାରିଖ",
+    "dialog_sankalpaSelectDate": "ଏକ ତାରିଖ ଚୟନ କରନ୍ତୁ",
+    "dialog_sankalpaSetPledge": "ମୋ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ",
+    "dialog_sankalpaError": "ଦୟାକରି ସମସ୍ତ କ୍ଷେତ୍ର ସଠିକ୍ ଭାବରେ ପୂରଣ କରନ୍ତୁ।",
+    "dialog_sankalpaErrorTarget": "ଲକ୍ଷ୍ୟ ଗଣନା ଆପଣଙ୍କ ବର୍ତ୍ତମାନର ଗଣନାଠାରୁ ଅଧିକ ହେବା ଆବଶ୍ୟକ।"
 }

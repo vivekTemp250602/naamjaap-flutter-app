@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "શું તમે ચોક્કસ છો? આ મંત્ર સાથે સંકળાયેલ તમામ જાપ ગણતરીઓ પણ કાયમ માટે કાઢી નાખવામાં આવશે.",
     "profile_yesDelete": "હા, કાઢી નાખો",
     "profile_couldNotUserData": "વપરાશકર્તા ડેટા લોડ કરી શકાયો નથી.",
-    "misc_anonymous": "અનામિક"
+    "misc_anonymous": "અનામિક",
+    "profile_sankalpaSet": "એક પવિત્ર સંકલ્પ કરો",
+    "profile_sankalpaSubtitle": "વ્યક્તિગત જાપ લક્ષ્ય નક્કી કરો.",
+    "profile_sankalpaTitle": "તમારો જાપ સંકલ્પ",
+    "profile_sankalpaChanting": "જાપ કરી રહ્યા છીએ",
+    "profile_sankalpaToReach": " {targetCount} વખત પહોંચવા માટે.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} સુધીમાં",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "તમારો જાપ સંકલ્પ નક્કી કરો",
+    "dialog_sankalpaSelectMantra": "મંત્ર પસંદ કરો",
+    "dialog_sankalpaTargetCount": "લક્ષ્ય ગણતરી (દા.ત., 11000)",
+    "dialog_sankalpaTargetDate": "લક્ષ્ય તારીખ",
+    "dialog_sankalpaSelectDate": "તારીખ પસંદ કરો",
+    "dialog_sankalpaSetPledge": "મારો સંકલ્પ નક્કી કરો",
+    "dialog_sankalpaError": "કૃપા કરીને બધી ફીલ્ડ્સ યોગ્ય રીતે ભરો.",
+    "dialog_sankalpaErrorTarget": "લક્ષ્ય ગણતરી તમારી વર્તમાન ગણતરી કરતાં વધુ હોવી જોઈએ."
 }

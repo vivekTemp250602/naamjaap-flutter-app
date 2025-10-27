@@ -351,4 +351,53 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'అజ్ఞాత';
+
+  @override
+  String get profile_sankalpaSet => 'ఒక పవిత్ర సంకల్పం చేయండి';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'వ్యక్తిగత జప లక్ష్యాన్ని నిర్దేశించుకోండి.';
+
+  @override
+  String get profile_sankalpaTitle => 'మీ జప సంకల్పం';
+
+  @override
+  String get profile_sankalpaChanting => 'జపిస్తున్నారు';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount సార్లు చేరుకోవడానికి.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date నాటికి';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'మీ జప సంకల్పాన్ని నిర్దేశించుకోండి';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'మంత్రాన్ని ఎంచుకోండి';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'లక్ష్య గణన (ఉదా., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'లక్ష్య తేదీ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ఒక తేదీని ఎంచుకోండి';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'నా సంకల్పాన్ని నిర్దేశించుకోండి';
+
+  @override
+  String get dialog_sankalpaError =>
+      'దయచేసి అన్ని ఫీల్డ్‌లను సరిగ్గా పూరించండి.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'లక్ష్య గణన మీ ప్రస్తుత గణన కంటే ఎక్కువగా ఉండాలి.';
 }

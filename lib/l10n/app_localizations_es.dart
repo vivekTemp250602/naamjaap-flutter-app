@@ -353,4 +353,53 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'Anónimo';
+
+  @override
+  String get profile_sankalpaSet => 'Haz un Voto Sagrado';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'Establece una meta personal de canto.';
+
+  @override
+  String get profile_sankalpaTitle => 'Tu Sankalpa de Japa';
+
+  @override
+  String get profile_sankalpaChanting => 'Cantando';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' para alcanzar $targetCount veces.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'Para el $date';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'Establece tu Sankalpa de Japa';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'Seleccionar Mantra';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'Conteo Objetivo (ej., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'Fecha Objetivo';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'Selecciona una fecha';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'Establecer mi Voto';
+
+  @override
+  String get dialog_sankalpaError =>
+      'Por favor, completa todos los campos correctamente.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'El conteo objetivo debe ser mayor que tu conteo actual.';
 }

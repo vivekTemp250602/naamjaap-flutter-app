@@ -351,4 +351,51 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'அடையாளம் தெரியாதவர்';
+
+  @override
+  String get profile_sankalpaSet => 'ஒரு புனித சபதம் செய்யுங்கள்';
+
+  @override
+  String get profile_sankalpaSubtitle => 'ஒரு தனிப்பட்ட ஜப இலக்கை அமைக்கவும்.';
+
+  @override
+  String get profile_sankalpaTitle => 'உங்கள் ஜப சங்கல்பம்';
+
+  @override
+  String get profile_sankalpaChanting => 'ஜபித்தல்';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount முறைகளை அடைய.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date க்குள்';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'உங்கள் ஜப சங்கல்பத்தை அமைக்கவும்';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'மந்திரத்தைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'இலக்கு எண்ணிக்கை (எ.கா., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'இலக்கு தேதி';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ஒரு தேதியைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'என் சபதத்தை அமைக்கவும்';
+
+  @override
+  String get dialog_sankalpaError => 'அனைத்து புலங்களையும் சரியாக நிரப்பவும்.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'இலக்கு எண்ணிக்கை உங்கள் தற்போதைய எண்ணிக்கையை விட அதிகமாக இருக்க வேண்டும்.';
 }

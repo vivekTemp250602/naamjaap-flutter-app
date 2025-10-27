@@ -337,4 +337,52 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get misc_anonymous => '匿名';
+
+  @override
+  String get profile_sankalpaSet => 'Lege ein heiliges Gelübde ab';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'Setze ein persönliches Chanting-Ziel.';
+
+  @override
+  String get profile_sankalpaTitle => 'Dein Japa Sankalpa';
+
+  @override
+  String get profile_sankalpaChanting => 'Chanten';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' um $targetCount Mal zu erreichen.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'Bis $date';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'Setze dein Japa Sankalpa';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'Mantra auswählen';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'Zielanzahl (z.B. 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'Zieldatum';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'Datum auswählen';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'Mein Gelübde festlegen';
+
+  @override
+  String get dialog_sankalpaError => 'Bitte fülle alle Felder korrekt aus.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'Die Zielanzahl muss größer sein als deine aktuelle Anzahl.';
 }

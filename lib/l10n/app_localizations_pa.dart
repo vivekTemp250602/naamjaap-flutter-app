@@ -346,4 +346,51 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'ਅਗਿਆਤ';
+
+  @override
+  String get profile_sankalpaSet => 'ਇੱਕ ਪਵਿੱਤਰ ਸੰਕਲਪ ਲਓ';
+
+  @override
+  String get profile_sankalpaSubtitle => 'ਇੱਕ ਨਿੱਜੀ ਜਾਪ ਦਾ ਟੀਚਾ ਨਿਰਧਾਰਤ ਕਰੋ।';
+
+  @override
+  String get profile_sankalpaTitle => 'ਤੁਹਾਡਾ ਜਪ ਸੰਕਲਪ';
+
+  @override
+  String get profile_sankalpaChanting => 'ਜਾਪ ਕਰ ਰਿਹਾ ਹੈ';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount ਵਾਰ ਪਹੁੰਚਣ ਲਈ।';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date ਤੱਕ';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'ਆਪਣਾ ਜਪ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'ਮੰਤਰ ਚੁਣੋ';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'ਟੀਚਾ ਗਿਣਤੀ (ਜਿਵੇਂ, 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'ਟੀਚਾ ਮਿਤੀ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ਇੱਕ ਮਿਤੀ ਚੁਣੋ';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'ਮੇਰਾ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ';
+
+  @override
+  String get dialog_sankalpaError => 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਖੇਤਰ ਸਹੀ ਢੰਗ ਨਾਲ ਭਰੋ।';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'ਟੀਚਾ ਗਿਣਤੀ ਤੁਹਾਡੀ ਮੌਜੂਦਾ ਗਿਣਤੀ ਤੋਂ ਵੱਧ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।';
 }

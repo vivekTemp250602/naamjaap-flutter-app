@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ മന്ത്രവുമായി ബന്ധപ്പെട്ട എല്ലാ ജപ എണ്ണങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും.",
     "profile_yesDelete": "അതെ, ഇല്ലാതാക്കുക",
     "profile_couldNotUserData": "ഉപയോക്തൃ ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.",
-    "misc_anonymous": "അജ്ഞാതൻ"
+    "misc_anonymous": "അജ്ഞാതൻ",
+    "profile_sankalpaSet": "ഒരു പുണ്യ പ്രതിജ്ഞ ചെയ്യുക",
+    "profile_sankalpaSubtitle": "ഒരു വ്യക്തിഗത ജപ ലക്ഷ്യം സജ്ജമാക്കുക.",
+    "profile_sankalpaTitle": "നിങ്ങളുടെ ജപ സങ്കൽപ്പം",
+    "profile_sankalpaChanting": "ജപിക്കുന്നു",
+    "profile_sankalpaToReach": " {targetCount} തവണ എത്താൻ.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} -നകം",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "നിങ്ങളുടെ ജപ സങ്കൽപ്പം സജ്ജമാക്കുക",
+    "dialog_sankalpaSelectMantra": "മന്ത്രം തിരഞ്ഞെടുക്കുക",
+    "dialog_sankalpaTargetCount": "ലക്ഷ്യ എണ്ണം (ഉദാ., 11000)",
+    "dialog_sankalpaTargetDate": "ലക്ഷ്യ തീയതി",
+    "dialog_sankalpaSelectDate": "ഒരു തീയതി തിരഞ്ഞെടുക്കുക",
+    "dialog_sankalpaSetPledge": "എൻ്റെ പ്രതിജ്ഞ സജ്ജമാക്കുക",
+    "dialog_sankalpaError": "എല്ലാ ഫീൽഡുകളും ശരിയായി പൂരിപ്പിക്കുക.",
+    "dialog_sankalpaErrorTarget": "ലക്ഷ്യ എണ്ണം നിങ്ങളുടെ നിലവിലെ എണ്ണത്തേക്കാൾ വലുതായിരിക്കണം."
 }

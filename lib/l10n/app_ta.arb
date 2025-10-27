@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "உங்களுக்கு உறுதியாகத் தெரியுமா? இந்த மந்திரத்துடன் தொடர்புடைய அனைத்து ஜப எண்ணிக்கைகளும் நிரந்தரமாக நீக்கப்படும்.",
     "profile_yesDelete": "ஆம், நீக்கு",
     "profile_couldNotUserData": "பயனர் தரவை ஏற்ற முடியவில்லை.",
-    "misc_anonymous": "அடையாளம் தெரியாதவர்"
+    "misc_anonymous": "அடையாளம் தெரியாதவர்",
+    "profile_sankalpaSet": "ஒரு புனித சபதம் செய்யுங்கள்",
+    "profile_sankalpaSubtitle": "ஒரு தனிப்பட்ட ஜப இலக்கை அமைக்கவும்.",
+    "profile_sankalpaTitle": "உங்கள் ஜப சங்கல்பம்",
+    "profile_sankalpaChanting": "ஜபித்தல்",
+    "profile_sankalpaToReach": " {targetCount} முறைகளை அடைய.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} க்குள்",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "உங்கள் ஜப சங்கல்பத்தை அமைக்கவும்",
+    "dialog_sankalpaSelectMantra": "மந்திரத்தைத் தேர்ந்தெடுக்கவும்",
+    "dialog_sankalpaTargetCount": "இலக்கு எண்ணிக்கை (எ.கா., 11000)",
+    "dialog_sankalpaTargetDate": "இலக்கு தேதி",
+    "dialog_sankalpaSelectDate": "ஒரு தேதியைத் தேர்ந்தெடுக்கவும்",
+    "dialog_sankalpaSetPledge": "என் சபதத்தை அமைக்கவும்",
+    "dialog_sankalpaError": "அனைத்து புலங்களையும் சரியாக நிரப்பவும்.",
+    "dialog_sankalpaErrorTarget": "இலக்கு எண்ணிக்கை உங்கள் தற்போதைய எண்ணிக்கையை விட அதிகமாக இருக்க வேண்டும்."
 }

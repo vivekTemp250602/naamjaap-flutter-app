@@ -339,4 +339,50 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get misc_anonymous => '익명';
+
+  @override
+  String get profile_sankalpaSet => '성스러운 서원 세우기';
+
+  @override
+  String get profile_sankalpaSubtitle => '개인 챈팅 목표 설정하기.';
+
+  @override
+  String get profile_sankalpaTitle => '나의 자파 산칼파';
+
+  @override
+  String get profile_sankalpaChanting => '챈팅 중';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount회 달성까지.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date까지';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => '자파 산칼파 설정하기';
+
+  @override
+  String get dialog_sankalpaSelectMantra => '만트라 선택';
+
+  @override
+  String get dialog_sankalpaTargetCount => '목표 횟수 (예: 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => '목표 날짜';
+
+  @override
+  String get dialog_sankalpaSelectDate => '날짜 선택';
+
+  @override
+  String get dialog_sankalpaSetPledge => '나의 서원 설정하기';
+
+  @override
+  String get dialog_sankalpaError => '모든 필드를 올바르게 입력해주세요.';
+
+  @override
+  String get dialog_sankalpaErrorTarget => '목표 횟수는 현재 횟수보다 커야 합니다.';
 }

@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "আপনি কি নিশ্চিত? এই মন্ত্রের সাথে যুক্ত সমস্ত জপ গণনাও স্থায়ীভাবে মুছে ফেলা হবে।",
     "profile_yesDelete": "হ্যাঁ, মুছুন",
     "profile_couldNotUserData": "ব্যবহারকারীর ডেটা লোড করা যায়নি।",
-    "misc_anonymous": "বেনামী"
+    "misc_anonymous": "বেনামী",
+    "profile_sankalpaSet": "একটি পবিত্র সংকল্প করুন",
+    "profile_sankalpaSubtitle": "একটি ব্যক্তিগত জপ লক্ষ্য নির্ধারণ করুন।",
+    "profile_sankalpaTitle": "আপনার জপ সংকল্প",
+    "profile_sankalpaChanting": "জপ করছেন",
+    "profile_sankalpaToReach": " {targetCount} বার পৌঁছানোর জন্য।",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} এর মধ্যে",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "আপনার জপ সংকল্প নির্ধারণ করুন",
+    "dialog_sankalpaSelectMantra": "মন্ত্র নির্বাচন করুন",
+    "dialog_sankalpaTargetCount": "লক্ষ্য গণনা (যেমন, 11000)",
+    "dialog_sankalpaTargetDate": "লক্ষ্য তারিখ",
+    "dialog_sankalpaSelectDate": "একটি তারিখ নির্বাচন করুন",
+    "dialog_sankalpaSetPledge": "আমার সংকল্প নির্ধারণ করুন",
+    "dialog_sankalpaError": "অনুগ্রহ করে সমস্ত ক্ষেত্র সঠিকভাবে পূরণ করুন।",
+    "dialog_sankalpaErrorTarget": "লক্ষ্য গণনা আপনার বর্তমান গণনার চেয়ে বেশি হতে হবে।"
 }

@@ -105,5 +105,33 @@
   "profile_deleteMantraSure": "您确定吗？与此真言相关的所有念诵计数也将被永久删除。",
   "profile_yesDelete": "是的，删除",
   "profile_couldNotUserData": "无法加载用户数据。",
-  "misc_anonymous": "匿名"
+  "misc_anonymous": "匿名",
+  "profile_sankalpaSet": "Lege ein heiliges Gelübde ab",
+  "profile_sankalpaSubtitle": "Setze ein persönliches Chanting-Ziel.",
+  "profile_sankalpaTitle": "Dein Japa Sankalpa",
+  "profile_sankalpaChanting": "Chanten",
+  "profile_sankalpaToReach": " um {targetCount} Mal zu erreichen.",
+  "@profile_sankalpaToReach": {
+    "placeholders": {
+      "targetCount": {
+        "type": "int"
+      }
+    }
+  },
+  "profile_sankalpaByDate": "Bis {date}",
+  "@profile_sankalpaByDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "dialog_sankalpaTitle": "Setze dein Japa Sankalpa",
+  "dialog_sankalpaSelectMantra": "Mantra auswählen",
+  "dialog_sankalpaTargetCount": "Zielanzahl (z.B. 11000)",
+  "dialog_sankalpaTargetDate": "Zieldatum",
+  "dialog_sankalpaSelectDate": "Datum auswählen",
+  "dialog_sankalpaSetPledge": "Mein Gelübde festlegen",
+  "dialog_sankalpaError": "Bitte fülle alle Felder korrekt aus.",
+  "dialog_sankalpaErrorTarget": "Die Zielanzahl muss größer sein als deine aktuelle Anzahl."
 }

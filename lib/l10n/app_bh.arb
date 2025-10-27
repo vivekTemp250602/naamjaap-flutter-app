@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "का रउआ निश्चित बानी? एह मंत्र से जुड़ल सगरी जाप गिनती भी हमेशा खातिर हटा दिहल जाई।",
     "profile_yesDelete": "हँ, हटाईं",
     "profile_couldNotUserData": "उपयोगकर्ता डेटा लोड ना हो सकल।",
-    "misc_anonymous": "गुमनाम"
+    "misc_anonymous": "गुमनाम",
+    "profile_sankalpaSet": "एगो पवित्र संकल्प लीं",
+    "profile_sankalpaSubtitle": "एगो व्यक्तिगत जाप लक्ष्य निर्धारित करीं।",
+    "profile_sankalpaTitle": "राउर जप संकल्प",
+    "profile_sankalpaChanting": "जाप करत बानी",
+    "profile_sankalpaToReach": " {targetCount} बेर पहुँचे खातिर।",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} ले",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "आपन जप संकल्प निर्धारित करीं",
+    "dialog_sankalpaSelectMantra": "मंत्र चुनीं",
+    "dialog_sankalpaTargetCount": "लक्ष्य गिनती (जइसे, 11000)",
+    "dialog_sankalpaTargetDate": "लक्ष्य तिथि",
+    "dialog_sankalpaSelectDate": "एगो तिथि चुनीं",
+    "dialog_sankalpaSetPledge": "हमर संकल्प निर्धारित करीं",
+    "dialog_sankalpaError": "कृपया सगरी फील्ड सही ढंग से भरीं।",
+    "dialog_sankalpaErrorTarget": "लक्ष्य गिनती राउर वर्तमान गिनती से अधिका होखे के चाहीं।"
 }

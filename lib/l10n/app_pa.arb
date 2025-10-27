@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਹੋ? ਇਸ ਮੰਤਰ ਨਾਲ ਜੁੜੀਆਂ ਸਾਰੀਆਂ ਜਾਪ ਗਿਣਤੀਆਂ ਵੀ ਸਥਾਈ ਤੌਰ 'ਤੇ ਮਿਟਾ ਦਿੱਤੀਆਂ ਜਾਣਗੀਆਂ।",
     "profile_yesDelete": "ਹਾਂ, ਮਿਟਾਓ",
     "profile_couldNotUserData": "ਉਪਭੋਗਤਾ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।",
-    "misc_anonymous": "ਅਗਿਆਤ"
+    "misc_anonymous": "ਅਗਿਆਤ",
+    "profile_sankalpaSet": "ਇੱਕ ਪਵਿੱਤਰ ਸੰਕਲਪ ਲਓ",
+    "profile_sankalpaSubtitle": "ਇੱਕ ਨਿੱਜੀ ਜਾਪ ਦਾ ਟੀਚਾ ਨਿਰਧਾਰਤ ਕਰੋ।",
+    "profile_sankalpaTitle": "ਤੁਹਾਡਾ ਜਪ ਸੰਕਲਪ",
+    "profile_sankalpaChanting": "ਜਾਪ ਕਰ ਰਿਹਾ ਹੈ",
+    "profile_sankalpaToReach": " {targetCount} ਵਾਰ ਪਹੁੰਚਣ ਲਈ।",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} ਤੱਕ",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "ਆਪਣਾ ਜਪ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ",
+    "dialog_sankalpaSelectMantra": "ਮੰਤਰ ਚੁਣੋ",
+    "dialog_sankalpaTargetCount": "ਟੀਚਾ ਗਿਣਤੀ (ਜਿਵੇਂ, 11000)",
+    "dialog_sankalpaTargetDate": "ਟੀਚਾ ਮਿਤੀ",
+    "dialog_sankalpaSelectDate": "ਇੱਕ ਮਿਤੀ ਚੁਣੋ",
+    "dialog_sankalpaSetPledge": "ਮੇਰਾ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ",
+    "dialog_sankalpaError": "ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਖੇਤਰ ਸਹੀ ਢੰਗ ਨਾਲ ਭਰੋ।",
+  "dialog_sankalpaErrorTarget": "ਟੀਚਾ ਗਿਣਤੀ ਤੁਹਾਡੀ ਮੌਜੂਦਾ ਗਿਣਤੀ ਤੋਂ ਵੱਧ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"
 }

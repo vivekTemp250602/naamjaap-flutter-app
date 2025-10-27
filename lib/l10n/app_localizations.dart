@@ -773,6 +773,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Anonymous'**
   String get misc_anonymous;
+
+  /// No description provided for @profile_sankalpaSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a Sacred Vow'**
+  String get profile_sankalpaSet;
+
+  /// No description provided for @profile_sankalpaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a personal chanting goal.'**
+  String get profile_sankalpaSubtitle;
+
+  /// No description provided for @profile_sankalpaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Japa Sankalpa'**
+  String get profile_sankalpaTitle;
+
+  /// No description provided for @profile_sankalpaChanting.
+  ///
+  /// In en, this message translates to:
+  /// **'Chanting'**
+  String get profile_sankalpaChanting;
+
+  /// No description provided for @profile_sankalpaToReach.
+  ///
+  /// In en, this message translates to:
+  /// **' to reach {targetCount} times.'**
+  String profile_sankalpaToReach(int targetCount);
+
+  /// No description provided for @profile_sankalpaByDate.
+  ///
+  /// In en, this message translates to:
+  /// **'By {date}'**
+  String profile_sankalpaByDate(String date);
+
+  /// No description provided for @dialog_sankalpaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Your Japa Sankalpa'**
+  String get dialog_sankalpaTitle;
+
+  /// No description provided for @dialog_sankalpaSelectMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Mantra'**
+  String get dialog_sankalpaSelectMantra;
+
+  /// No description provided for @dialog_sankalpaTargetCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Count (e.g., 11000)'**
+  String get dialog_sankalpaTargetCount;
+
+  /// No description provided for @dialog_sankalpaTargetDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Date'**
+  String get dialog_sankalpaTargetDate;
+
+  /// No description provided for @dialog_sankalpaSelectDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a date'**
+  String get dialog_sankalpaSelectDate;
+
+  /// No description provided for @dialog_sankalpaSetPledge.
+  ///
+  /// In en, this message translates to:
+  /// **'Set My Vow'**
+  String get dialog_sankalpaSetPledge;
+
+  /// No description provided for @dialog_sankalpaError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields correctly.'**
+  String get dialog_sankalpaError;
+
+  /// No description provided for @dialog_sankalpaErrorTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Target count must be greater than your current count.'**
+  String get dialog_sankalpaErrorTarget;
 }
 
 class _AppLocalizationsDelegate

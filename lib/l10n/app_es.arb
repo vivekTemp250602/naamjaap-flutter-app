@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "¿Estás seguro? Todos los recuentos de japa asociados con este mantra también se eliminarán permanentemente.",
     "profile_yesDelete": "Sí, Eliminar",
     "profile_couldNotUserData": "No se pudieron cargar los datos del usuario.",
-    "misc_anonymous": "Anónimo"
+    "misc_anonymous": "Anónimo",
+    "profile_sankalpaSet": "Haz un Voto Sagrado",
+    "profile_sankalpaSubtitle": "Establece una meta personal de canto.",
+    "profile_sankalpaTitle": "Tu Sankalpa de Japa",
+    "profile_sankalpaChanting": "Cantando",
+    "profile_sankalpaToReach": " para alcanzar {targetCount} veces.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "Para el {date}",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "Establece tu Sankalpa de Japa",
+    "dialog_sankalpaSelectMantra": "Seleccionar Mantra",
+    "dialog_sankalpaTargetCount": "Conteo Objetivo (ej., 11000)",
+    "dialog_sankalpaTargetDate": "Fecha Objetivo",
+    "dialog_sankalpaSelectDate": "Selecciona una fecha",
+    "dialog_sankalpaSetPledge": "Establecer mi Voto",
+    "dialog_sankalpaError": "Por favor, completa todos los campos correctamente.",
+    "dialog_sankalpaErrorTarget": "El conteo objetivo debe ser mayor que tu conteo actual."
 }

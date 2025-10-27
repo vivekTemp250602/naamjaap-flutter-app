@@ -347,4 +347,52 @@ class AppLocalizationsOr extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'ଅଜ୍ଞାତ';
+
+  @override
+  String get profile_sankalpaSet => 'ଏକ ପବିତ୍ର ସଂକଳ୍ପ କରନ୍ତୁ';
+
+  @override
+  String get profile_sankalpaSubtitle => 'ଏକ ବ୍ୟକ୍ତିଗତ ଜପ ଲକ୍ଷ୍ୟ ସ୍ଥିର କରନ୍ତୁ।';
+
+  @override
+  String get profile_sankalpaTitle => 'ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ';
+
+  @override
+  String get profile_sankalpaChanting => 'ଜପ କରୁଛନ୍ତି';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount ଥର ପହଞ୍ଚିବା ପାଇଁ।';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date ସୁଦ୍ଧା';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'ମନ୍ତ୍ର ଚୟନ କରନ୍ତୁ';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'ଲକ୍ଷ୍ୟ ଗଣନା (ଯଥା, 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'ଲକ୍ଷ୍ୟ ତାରିଖ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ଏକ ତାରିଖ ଚୟନ କରନ୍ତୁ';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'ମୋ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ';
+
+  @override
+  String get dialog_sankalpaError =>
+      'ଦୟାକରି ସମସ୍ତ କ୍ଷେତ୍ର ସଠିକ୍ ଭାବରେ ପୂରଣ କରନ୍ତୁ।';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'ଲକ୍ଷ୍ୟ ଗଣନା ଆପଣଙ୍କ ବର୍ତ୍ତମାନର ଗଣନାଠାରୁ ଅଧିକ ହେବା ଆବଶ୍ୟକ।';
 }

@@ -344,4 +344,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'Anonymous';
+
+  @override
+  String get profile_sankalpaSet => 'Make a Sacred Vow';
+
+  @override
+  String get profile_sankalpaSubtitle => 'Set a personal chanting goal.';
+
+  @override
+  String get profile_sankalpaTitle => 'Your Japa Sankalpa';
+
+  @override
+  String get profile_sankalpaChanting => 'Chanting';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' to reach $targetCount times.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'By $date';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'Set Your Japa Sankalpa';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'Select Mantra';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'Target Count (e.g., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'Target Date';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'Select a date';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'Set My Vow';
+
+  @override
+  String get dialog_sankalpaError => 'Please fill all fields correctly.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'Target count must be greater than your current count.';
 }

@@ -346,4 +346,51 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'अनामिक';
+
+  @override
+  String get profile_sankalpaSet => 'एक पवित्र संकल्प करा';
+
+  @override
+  String get profile_sankalpaSubtitle => 'एक वैयक्तिक जप ध्येय निश्चित करा.';
+
+  @override
+  String get profile_sankalpaTitle => 'तुमचा जप संकल्प';
+
+  @override
+  String get profile_sankalpaChanting => 'जप करत आहे';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount वेळा पोहोचण्यासाठी.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date पर्यंत';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'तुमचा जप संकल्प निश्चित करा';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'मंत्र निवडा';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'लक्ष्य संख्या (उदा., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'लक्ष्य तारीख';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'एक तारीख निवडा';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'माझा संकल्प निश्चित करा';
+
+  @override
+  String get dialog_sankalpaError => 'कृपया सर्व फील्ड योग्यरित्या भरा.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'लक्ष्य संख्या तुमच्या सध्याच्या संख्येपेक्षा जास्त असणे आवश्यक आहे.';
 }

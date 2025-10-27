@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "Bist du sicher? Alle Japa-Zählungen, die mit diesem Mantra verbunden sind, werden ebenfalls dauerhaft gelöscht.",
     "profile_yesDelete": "Ja, Löschen",
     "profile_couldNotUserData": "Benutzerdaten konnten nicht geladen werden.",
-    "misc_anonymous": "Anonym"
+    "misc_anonymous": "Anonym",
+    "profile_sankalpaSet": "Lege ein heiliges Gelübde ab",
+    "profile_sankalpaSubtitle": "Setze ein persönliches Chanting-Ziel.",
+    "profile_sankalpaTitle": "Dein Japa Sankalpa",
+    "profile_sankalpaChanting": "Chanten",
+    "profile_sankalpaToReach": " um {targetCount} Mal zu erreichen.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "Bis {date}",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "Setze dein Japa Sankalpa",
+    "dialog_sankalpaSelectMantra": "Mantra auswählen",
+    "dialog_sankalpaTargetCount": "Zielanzahl (z.B. 11000)",
+    "dialog_sankalpaTargetDate": "Zieldatum",
+    "dialog_sankalpaSelectDate": "Datum auswählen",
+    "dialog_sankalpaSetPledge": "Mein Gelübde festlegen",
+    "dialog_sankalpaError": "Bitte fülle alle Felder korrekt aus.",
+    "dialog_sankalpaErrorTarget": "Die Zielanzahl muss größer sein als deine aktuelle Anzahl."
 }

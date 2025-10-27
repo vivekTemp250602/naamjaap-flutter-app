@@ -349,4 +349,52 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'गुमनाम';
+
+  @override
+  String get profile_sankalpaSet => 'एक पवित्र संकल्प लें';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'एक व्यक्तिगत जाप लक्ष्य निर्धारित करें।';
+
+  @override
+  String get profile_sankalpaTitle => 'आपका जप संकल्प';
+
+  @override
+  String get profile_sankalpaChanting => 'जाप कर रहे हैं';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount बार पहुंचने के लिए।';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date तक';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'अपना जप संकल्प निर्धारित करें';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'मंत्र चुनें';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'लक्ष्य गणना (जैसे, 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'लक्ष्य तिथि';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'एक तिथि चुनें';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'मेरा संकल्प निर्धारित करें';
+
+  @override
+  String get dialog_sankalpaError => 'कृपया सभी फ़ील्ड सही ढंग से भरें।';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'लक्ष्य गणना आपकी वर्तमान गणना से अधिक होनी चाहिए।';
 }

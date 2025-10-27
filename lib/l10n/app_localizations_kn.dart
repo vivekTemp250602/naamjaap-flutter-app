@@ -349,4 +349,52 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'ಅನಾಮಧೇಯ';
+
+  @override
+  String get profile_sankalpaSet => 'ಒಂದು ಪವಿತ್ರ ಸಂಕಲ್ಪ ಮಾಡಿ';
+
+  @override
+  String get profile_sankalpaSubtitle => 'ವೈಯಕ್ತಿಕ ಜಪ ಗುರಿಯನ್ನು ಹೊಂದಿಸಿ.';
+
+  @override
+  String get profile_sankalpaTitle => 'ನಿಮ್ಮ ಜಪ ಸಂಕಲ್ಪ';
+
+  @override
+  String get profile_sankalpaChanting => 'ಜಪಿಸುತ್ತಿದೆ';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount ಬಾರಿ ತಲುಪಲು.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date ರೊಳಗೆ';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'ನಿಮ್ಮ ಜಪ ಸಂಕಲ್ಪವನ್ನು ಹೊಂದಿಸಿ';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'ಮಂತ್ರ ಆಯ್ಕೆಮಾಡಿ';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'ಗುರಿ ಎಣಿಕೆ (ಉದಾ., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'ಗುರಿ ದಿನಾಂಕ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'ನನ್ನ ಸಂಕಲ್ಪವನ್ನು ಹೊಂದಿಸಿ';
+
+  @override
+  String get dialog_sankalpaError =>
+      'ದಯವಿಟ್ಟು ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಸರಿಯಾಗಿ ಭರ್ತಿ ಮಾಡಿ.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'ಗುರಿ ಎಣಿಕೆಯು ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಎಣಿಕೆಗಿಂತ ಹೆಚ್ಚಿರಬೇಕು.';
 }

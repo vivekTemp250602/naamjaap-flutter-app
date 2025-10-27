@@ -339,4 +339,50 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get misc_anonymous => '匿名';
+
+  @override
+  String get profile_sankalpaSet => '聖なる誓いを立てる';
+
+  @override
+  String get profile_sankalpaSubtitle => '個人的な詠唱目標を設定します。';
+
+  @override
+  String get profile_sankalpaTitle => 'あなたのジャパ・サンカルパ';
+
+  @override
+  String get profile_sankalpaChanting => '詠唱中';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount 回に到達するため。';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date までに';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'ジャパ・サンカルパを設定';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'マントラを選択';
+
+  @override
+  String get dialog_sankalpaTargetCount => '目標回数（例：11000）';
+
+  @override
+  String get dialog_sankalpaTargetDate => '目標日';
+
+  @override
+  String get dialog_sankalpaSelectDate => '日付を選択';
+
+  @override
+  String get dialog_sankalpaSetPledge => '私の誓いを設定';
+
+  @override
+  String get dialog_sankalpaError => 'すべてのフィールドを正しく入力してください。';
+
+  @override
+  String get dialog_sankalpaErrorTarget => '目標回数は現在の回数より多くなければなりません。';
 }

@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "Вы уверены? Все счетчики джапы, связанные с этой мантрой, также будут навсегда удалены.",
     "profile_yesDelete": "Да, Удалить",
     "profile_couldNotUserData": "Не удалось загрузить данные пользователя.",
-    "misc_anonymous": "Анонимный"
+    "misc_anonymous": "Анонимный",
+    "profile_sankalpaSet": "Дайте Священный Обет",
+    "profile_sankalpaSubtitle": "Установите личную цель песнопения.",
+    "profile_sankalpaTitle": "Ваша Джапа Санкальпа",
+    "profile_sankalpaChanting": "Пение",
+    "profile_sankalpaToReach": " чтобы достичь {targetCount} раз.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "К {date}",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "Установите свою Джапа Санкальпу",
+    "dialog_sankalpaSelectMantra": "Выберите Мантру",
+    "dialog_sankalpaTargetCount": "Целевое количество (напр., 11000)",
+    "dialog_sankalpaTargetDate": "Целевая дата",
+    "dialog_sankalpaSelectDate": "Выберите дату",
+    "dialog_sankalpaSetPledge": "Установить мой Обет",
+    "dialog_sankalpaError": "Пожалуйста, заполните все поля правильно.",
+    "dialog_sankalpaErrorTarget": "Целевое количество должно быть больше вашего текущего количества."
 }

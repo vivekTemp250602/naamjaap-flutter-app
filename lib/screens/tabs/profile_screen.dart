@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/custom_mantra_editor.dart';
@@ -36,13 +38,19 @@ class _ProfileScreenState extends State<ProfileScreen>
   final StorageService _storageService = StorageService();
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
+  late ConfettiController _sankalpaConfettiController;
 
   static const String _screenName = 'profile';
   final AdService _adService = AdService();
 
+  Mantra? _selectedSankalpaMantra;
+  DateTime? _selectedSankalpaDate;
+  final _countController = TextEditingController();
+
   String _shareableName = '';
   int _shareableJapps = 0;
   bool _isUploading = false;
+  bool _isCreatingSankalpa = false;
 
   @override
   void initState() {
@@ -52,11 +60,16 @@ class _ProfileScreenState extends State<ProfileScreen>
         onAdLoaded: () {
           if (mounted) setState(() {});
         });
+
+    _sankalpaConfettiController =
+        ConfettiController(duration: const Duration(seconds: 3));
   }
 
   @override
   void dispose() {
     _adService.disposeAdForScreen(_screenName);
+    _countController.dispose();
+    _sankalpaConfettiController.dispose();
     super.dispose();
   }
 
@@ -314,6 +327,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  void _resetSankalpaEditor() {
+    _countController.clear();
+    _selectedSankalpaMantra = null;
+    _selectedSankalpaDate = null;
+  }
+
   // Delete Mantra Dialogs
   void _showDeleteMantraDialog(
       BuildContext context, MantraProvider provider, Mantra mantra) {
@@ -410,6 +429,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                 );
               },
             ),
+
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _sankalpaConfettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [
+                  Colors.orange,
+                  Colors.amber,
+                  Colors.yellow,
+                  Colors.white
+                ],
+                gravity: 0.2,
+                emissionFrequency: 0.05,
+                numberOfParticles: 20,
+              ),
+            ),
           ],
         ),
       ),
@@ -421,6 +458,8 @@ class _ProfileScreenState extends State<ProfileScreen>
       List<Mantra> customMantras,
       MantraProvider mantraProvider,
       bool isPremium) {
+    final sankalpaData = userData['sankalpa'] as Map<String, dynamic>?;
+    final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
     final int totalMalas = userData['total_malas'] ?? 0;
     final List<dynamic> badges = userData['badges'] ?? [];
 
@@ -503,6 +542,18 @@ class _ProfileScreenState extends State<ProfileScreen>
 
         const SizedBox(
           height: 20,
+        ),
+
+        // Sankalpa Card
+        if (_isCreatingSankalpa)
+          _buildSankalpaEditorCard(mantraProvider.allMantras, jappsMap)
+        else if (sankalpaData != null && sankalpaData['isActive'] == true)
+          _buildSankalpaProgressCard(sankalpaData, jappsMap)
+        else
+          _buildSetSankalpaCard(),
+
+        const SizedBox(
+          height: 25,
         ),
 
         // User Profile Pic
@@ -954,5 +1005,316 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
       ],
     );
+  }
+
+  Widget _buildSetSankalpaCard() {
+    return Card(
+      color: Colors.orange.shade50,
+      child: ListTile(
+        leading: Icon(Icons.flag_rounded,
+            color: Theme.of(context).colorScheme.primary, size: 32),
+        title: Text(AppLocalizations.of(context)!.profile_sankalpaSet),
+        subtitle: Text(AppLocalizations.of(context)!.profile_sankalpaSubtitle),
+        trailing: const Icon(Icons.add_circle_outline),
+        onTap: () {
+          setState(() {
+            _isCreatingSankalpa = true;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildSankalpaEditorCard(
+      List<Mantra> allMantras, Map<String, dynamic> jappsMap) {
+    _selectedSankalpaMantra ??= allMantras.first; // Set default
+
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppLocalizations.of(context)!.dialog_sankalpaTitle,
+                style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 24),
+            DropdownButtonFormField<Mantra>(
+              initialValue: _selectedSankalpaMantra,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations.of(context)!.dialog_sankalpaSelectMantra,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.book_outlined),
+              ),
+              items: allMantras.map((mantra) {
+                return DropdownMenuItem(
+                  value: mantra,
+                  child: Text(mantra.name, overflow: TextOverflow.ellipsis),
+                );
+              }).toList(),
+              onChanged: (mantra) {
+                if (mantra != null) {
+                  setState(() {
+                    _selectedSankalpaMantra = mantra;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: _countController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText:
+                    AppLocalizations.of(context)!.dialog_sankalpaTargetCount,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.flag_outlined),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(color: Colors.grey.shade400),
+              ),
+              leading: const Icon(Icons.calendar_today_outlined),
+              title:
+                  Text(AppLocalizations.of(context)!.dialog_sankalpaTargetDate),
+              subtitle: Text(
+                _selectedSankalpaDate == null
+                    ? AppLocalizations.of(context)!.dialog_sankalpaSelectDate
+                    : DateFormat('dd MMMM yyyy').format(_selectedSankalpaDate!),
+              ),
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now().add(const Duration(days: 30)),
+                  firstDate: DateTime.now().add(const Duration(days: 1)),
+                  lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                );
+                if (picked != null) {
+                  setState(() {
+                    _selectedSankalpaDate = picked;
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isCreatingSankalpa = false; // Cancel and swap back
+                    });
+                  },
+                  child: Text(AppLocalizations.of(context)!.dialog_cancel),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () => _saveSankalpa(jappsMap),
+                  child: Text(
+                      AppLocalizations.of(context)!.dialog_sankalpaSetPledge),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSankalpaProgressCard(
+      Map<String, dynamic> sankalpa, Map<String, dynamic> jappsMap) {
+    final mantraId = sankalpa['mantraId'] as String;
+    final mantraName = sankalpa['mantraName'] as String;
+    final targetCount = sankalpa['targetCount'] as int;
+    final startCount = sankalpa['startCount'] as int;
+    final endDate = (sankalpa['endDate'] as Timestamp).toDate();
+    final daysRemaining =
+        endDate.difference(DateTime.now()).inDays.clamp(0, 999);
+
+    final int currentJapaCount = jappsMap[mantraId] as int? ?? startCount;
+
+    // This is the logic based on your new idea
+    final int goal = targetCount - startCount;
+    final int progress = (currentJapaCount - startCount).clamp(0, goal);
+    final double percentage =
+        (goal == 0) ? 1.0 : (progress / goal).clamp(0.0, 1.0);
+
+    // NEW: Check for completion
+    final bool isComplete = progress >= goal;
+    if (isComplete) {
+      _sankalpaConfettiController.play();
+    }
+
+    return Card(
+      elevation: 4,
+      shadowColor: isComplete
+          ? Colors.green.withAlpha(130)
+          : Colors.orange.withAlpha(70),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Icon(Icons.flag_rounded,
+                    color: isComplete
+                        ? Colors.green
+                        : Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(AppLocalizations.of(context)!.profile_sankalpaTitle,
+                    style: const TextStyle(
+                        fontSize: 21, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                IconButton(
+                  icon: Icon(Icons.delete_outline_rounded,
+                      color: Colors.red.shade400, size: 24),
+                  onPressed: () {
+                    // THIS IS THE CRASH FIX
+                    _firestoreService.removeSankalpa(_currentUser.uid);
+                    setState(() {
+                      _isCreatingSankalpa = false;
+                      _resetSankalpaEditor();
+                    });
+                  },
+                  tooltip: 'Abandon Vow',
+                )
+              ],
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: 150,
+              height: 150,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CircularProgressIndicator(
+                    value: percentage,
+                    strokeWidth: 10,
+                    backgroundColor: Colors.grey.shade200,
+                    color: isComplete
+                        ? Colors.green
+                        : Theme.of(context).colorScheme.primary,
+                  ),
+                  Center(
+                    child: isComplete
+                        ? const Icon(Icons.check_circle,
+                            color: Colors.green, size: 50)
+                        : Text(
+                            '${(percentage * 100).toStringAsFixed(0)}%',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text.rich(
+              TextSpan(
+                style: Theme.of(context).textTheme.titleMedium,
+                children: [
+                  TextSpan(
+                      text:
+                          "${AppLocalizations.of(context)!.profile_sankalpaChanting} "),
+                  TextSpan(
+                    text: mantraName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isComplete
+                  ? "Goal Complete!"
+                  : AppLocalizations.of(context)!
+                      .profile_sankalpaToReach(targetCount),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  // THIS IS THE OVERFLOW FIX
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("PROGRESS",
+                          style: Theme.of(context).textTheme.labelSmall),
+                      Text(
+                        '$progress / $goal',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16), // Gutter between items
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text("DEADLINE",
+                        style: Theme.of(context).textTheme.labelSmall),
+                    Text(
+                      isComplete ? "Achieved!" : '$daysRemaining days left',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _saveSankalpa(Map<String, dynamic> jappsMap) async {
+    // THIS IS THE NEW LOGIC (YOUR IDEA)
+    final int? goalCount = int.tryParse(_countController.text);
+
+    if (_selectedSankalpaMantra == null ||
+        goalCount == null ||
+        goalCount <= 0 ||
+        _selectedSankalpaDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.dialog_sankalpaError)),
+      );
+      return;
+    }
+
+    final int startCount = jappsMap[_selectedSankalpaMantra!.id] as int? ?? 0;
+    final int targetCount = startCount + goalCount; // Your new logic
+
+    await _firestoreService.setSankalpa(
+      uid: _currentUser.uid,
+      mantra: _selectedSankalpaMantra!,
+      targetCount: targetCount,
+      endDate: _selectedSankalpaDate!,
+      startCount: startCount,
+    );
+
+    if (mounted) {
+      setState(() {
+        _isCreatingSankalpa = false;
+        _resetSankalpaEditor(); // THIS IS THE FIX
+      });
+    }
   }
 }

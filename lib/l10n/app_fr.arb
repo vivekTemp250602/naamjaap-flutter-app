@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "Êtes-vous sûr ? Tous les comptes de japa associés à ce mantra seront également supprimés de façon permanente.",
     "profile_yesDelete": "Oui, Supprimer",
     "profile_couldNotUserData": "Impossible de charger les données utilisateur.",
-    "misc_anonymous": "Anonyme"
+    "misc_anonymous": "Anonyme",
+    "profile_sankalpaSet": "Faites un Vœu Sacré",
+    "profile_sankalpaSubtitle": "Fixez un objectif personnel de chant.",
+    "profile_sankalpaTitle": "Votre Sankalpa Japa",
+    "profile_sankalpaChanting": "Chantant",
+    "profile_sankalpaToReach": " pour atteindre {targetCount} fois.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "D'ici le {date}",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "Définissez votre Sankalpa Japa",
+    "dialog_sankalpaSelectMantra": "Sélectionner le Mantra",
+    "dialog_sankalpaTargetCount": "Nombre Cible (ex., 11000)",
+    "dialog_sankalpaTargetDate": "Date Cible",
+    "dialog_sankalpaSelectDate": "Sélectionner une date",
+    "dialog_sankalpaSetPledge": "Définir mon Vœu",
+    "dialog_sankalpaError": "Veuillez remplir tous les champs correctement.",
+    "dialog_sankalpaErrorTarget": "Le nombre cible doit être supérieur à votre nombre actuel."
 }

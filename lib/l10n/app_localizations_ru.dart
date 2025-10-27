@@ -352,4 +352,52 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'Анонимный';
+
+  @override
+  String get profile_sankalpaSet => 'Дайте Священный Обет';
+
+  @override
+  String get profile_sankalpaSubtitle => 'Установите личную цель песнопения.';
+
+  @override
+  String get profile_sankalpaTitle => 'Ваша Джапа Санкальпа';
+
+  @override
+  String get profile_sankalpaChanting => 'Пение';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' чтобы достичь $targetCount раз.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'К $date';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'Установите свою Джапа Санкальпу';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'Выберите Мантру';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'Целевое количество (напр., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'Целевая дата';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'Выберите дату';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'Установить мой Обет';
+
+  @override
+  String get dialog_sankalpaError =>
+      'Пожалуйста, заполните все поля правильно.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'Целевое количество должно быть больше вашего текущего количества.';
 }

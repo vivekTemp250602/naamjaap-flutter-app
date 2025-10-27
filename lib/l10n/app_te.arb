@@ -102,8 +102,36 @@
     "dialog_checkoutMyProgress": "నామ్‌జాప్ యాప్‌లో నా పురోగతిని చూడండి!",
     "dialog_couldNotOpenPS": "Play Store తెరవలేకపోయింది.",
     "profile_deleteMantra": "\"{mantraName}\"ని తొలగించాలా?",
-  "profile_deleteMantraSure": "మీరు ఖచ్చితంగా ఉన్నారా? ఈ మంత్రంతో అనుబంధించబడిన అన్ని జప గణనలు కూడా శాశ్వతంగా తొలగించబడతాయి.",
-  "profile_yesDelete": "అవును, తొలగించు",
-  "profile_couldNotUserData": "వినియోగదారు డేటాను లోడ్ చేయలేకపోయింది.",
-  "misc_anonymous": "అజ్ఞాత"
+    "profile_deleteMantraSure": "మీరు ఖచ్చితంగా ఉన్నారా? ఈ మంత్రంతో అనుబంధించబడిన అన్ని జప గణనలు కూడా శాశ్వతంగా తొలగించబడతాయి.",
+    "profile_yesDelete": "అవును, తొలగించు",
+    "profile_couldNotUserData": "వినియోగదారు డేటాను లోడ్ చేయలేకపోయింది.",
+    "misc_anonymous": "అజ్ఞాత",
+    "profile_sankalpaSet": "ఒక పవిత్ర సంకల్పం చేయండి",
+    "profile_sankalpaSubtitle": "వ్యక్తిగత జప లక్ష్యాన్ని నిర్దేశించుకోండి.",
+    "profile_sankalpaTitle": "మీ జప సంకల్పం",
+    "profile_sankalpaChanting": "జపిస్తున్నారు",
+    "profile_sankalpaToReach": " {targetCount} సార్లు చేరుకోవడానికి.",
+    "@profile_sankalpaToReach": {
+      "placeholders": {
+        "targetCount": {
+          "type": "int"
+        }
+      }
+    },
+    "profile_sankalpaByDate": "{date} నాటికి",
+    "@profile_sankalpaByDate": {
+      "placeholders": {
+        "date": {
+          "type": "String"
+        }
+      }
+    },
+    "dialog_sankalpaTitle": "మీ జప సంకల్పాన్ని నిర్దేశించుకోండి",
+    "dialog_sankalpaSelectMantra": "మంత్రాన్ని ఎంచుకోండి",
+    "dialog_sankalpaTargetCount": "లక్ష్య గణన (ఉదా., 11000)",
+    "dialog_sankalpaTargetDate": "లక్ష్య తేదీ",
+    "dialog_sankalpaSelectDate": "ఒక తేదీని ఎంచుకోండి",
+    "dialog_sankalpaSetPledge": "నా సంకల్పాన్ని నిర్దేశించుకోండి",
+    "dialog_sankalpaError": "దయచేసి అన్ని ఫీల్డ్‌లను సరిగ్గా పూరించండి.",
+    "dialog_sankalpaErrorTarget": "లక్ష్య గణన మీ ప్రస్తుత గణన కంటే ఎక్కువగా ఉండాలి."
 }

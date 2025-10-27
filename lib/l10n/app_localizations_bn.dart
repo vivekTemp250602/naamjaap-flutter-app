@@ -347,4 +347,53 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'বেনামী';
+
+  @override
+  String get profile_sankalpaSet => 'একটি পবিত্র সংকল্প করুন';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'একটি ব্যক্তিগত জপ লক্ষ্য নির্ধারণ করুন।';
+
+  @override
+  String get profile_sankalpaTitle => 'আপনার জপ সংকল্প';
+
+  @override
+  String get profile_sankalpaChanting => 'জপ করছেন';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount বার পৌঁছানোর জন্য।';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date এর মধ্যে';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'আপনার জপ সংকল্প নির্ধারণ করুন';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'মন্ত্র নির্বাচন করুন';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'লক্ষ্য গণনা (যেমন, 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'লক্ষ্য তারিখ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'একটি তারিখ নির্বাচন করুন';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'আমার সংকল্প নির্ধারণ করুন';
+
+  @override
+  String get dialog_sankalpaError =>
+      'অনুগ্রহ করে সমস্ত ক্ষেত্র সঠিকভাবে পূরণ করুন।';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'লক্ষ্য গণনা আপনার বর্তমান গণনার চেয়ে বেশি হতে হবে।';
 }

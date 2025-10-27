@@ -346,4 +346,51 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'અનામિક';
+
+  @override
+  String get profile_sankalpaSet => 'એક પવિત્ર સંકલ્પ કરો';
+
+  @override
+  String get profile_sankalpaSubtitle => 'વ્યક્તિગત જાપ લક્ષ્ય નક્કી કરો.';
+
+  @override
+  String get profile_sankalpaTitle => 'તમારો જાપ સંકલ્પ';
+
+  @override
+  String get profile_sankalpaChanting => 'જાપ કરી રહ્યા છીએ';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount વખત પહોંચવા માટે.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date સુધીમાં';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'તમારો જાપ સંકલ્પ નક્કી કરો';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'મંત્ર પસંદ કરો';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'લક્ષ્ય ગણતરી (દા.ત., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'લક્ષ્ય તારીખ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'તારીખ પસંદ કરો';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'મારો સંકલ્પ નક્કી કરો';
+
+  @override
+  String get dialog_sankalpaError => 'કૃપા કરીને બધી ફીલ્ડ્સ યોગ્ય રીતે ભરો.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'લક્ષ્ય ગણતરી તમારી વર્તમાન ગણતરી કરતાં વધુ હોવી જોઈએ.';
 }

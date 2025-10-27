@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "तुम्ही खात्रीशीर आहात का? या मंत्राशी संबंधित सर्व जप संख्या देखील कायमच्या हटवल्या जातील.",
     "profile_yesDelete": "होय, हटवा",
     "profile_couldNotUserData": "वापरकर्ता डेटा लोड करू शकला नाही.",
-    "misc_anonymous": "अनामिक"
+    "misc_anonymous": "अनामिक",
+    "profile_sankalpaSet": "एक पवित्र संकल्प करा",
+    "profile_sankalpaSubtitle": "एक वैयक्तिक जप ध्येय निश्चित करा.",
+    "profile_sankalpaTitle": "तुमचा जप संकल्प",
+    "profile_sankalpaChanting": "जप करत आहे",
+    "profile_sankalpaToReach": " {targetCount} वेळा पोहोचण्यासाठी.",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} पर्यंत",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "तुमचा जप संकल्प निश्चित करा",
+    "dialog_sankalpaSelectMantra": "मंत्र निवडा",
+    "dialog_sankalpaTargetCount": "लक्ष्य संख्या (उदा., 11000)",
+    "dialog_sankalpaTargetDate": "लक्ष्य तारीख",
+    "dialog_sankalpaSelectDate": "एक तारीख निवडा",
+    "dialog_sankalpaSetPledge": "माझा संकल्प निश्चित करा",
+    "dialog_sankalpaError": "कृपया सर्व फील्ड योग्यरित्या भरा.",
+    "dialog_sankalpaErrorTarget": "लक्ष्य संख्या तुमच्या सध्याच्या संख्येपेक्षा जास्त असणे आवश्यक आहे."
 }

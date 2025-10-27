@@ -105,5 +105,33 @@
     "profile_deleteMantraSure": "よろしいですか？ このマントラに関連するすべてのジャパカウントも完全に削除されます。",
     "profile_yesDelete": "はい、削除します",
     "profile_couldNotUserData": "ユーザーデータを読み込めませんでした。",
-    "misc_anonymous": "匿名"
+    "misc_anonymous": "匿名",
+    "profile_sankalpaSet": "聖なる誓いを立てる",
+    "profile_sankalpaSubtitle": "個人的な詠唱目標を設定します。",
+    "profile_sankalpaTitle": "あなたのジャパ・サンカルパ",
+    "profile_sankalpaChanting": "詠唱中",
+    "profile_sankalpaToReach": " {targetCount} 回に到達するため。",
+    "@profile_sankalpaToReach": {
+        "placeholders": {
+        "targetCount": {
+            "type": "int"
+        }
+        }
+    },
+    "profile_sankalpaByDate": "{date} までに",
+    "@profile_sankalpaByDate": {
+        "placeholders": {
+        "date": {
+            "type": "String"
+        }
+        }
+    },
+    "dialog_sankalpaTitle": "ジャパ・サンカルパを設定",
+    "dialog_sankalpaSelectMantra": "マントラを選択",
+    "dialog_sankalpaTargetCount": "目標回数（例：11000）",
+    "dialog_sankalpaTargetDate": "目標日",
+    "dialog_sankalpaSelectDate": "日付を選択",
+    "dialog_sankalpaSetPledge": "私の誓いを設定",
+    "dialog_sankalpaError": "すべてのフィールドを正しく入力してください。",
+    "dialog_sankalpaErrorTarget": "目標回数は現在の回数より多くなければなりません。"
 }

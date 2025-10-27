@@ -356,4 +356,53 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'Anonyme';
+
+  @override
+  String get profile_sankalpaSet => 'Faites un Vœu Sacré';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'Fixez un objectif personnel de chant.';
+
+  @override
+  String get profile_sankalpaTitle => 'Votre Sankalpa Japa';
+
+  @override
+  String get profile_sankalpaChanting => 'Chantant';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' pour atteindre $targetCount fois.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'D\'ici le $date';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'Définissez votre Sankalpa Japa';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'Sélectionner le Mantra';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'Nombre Cible (ex., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'Date Cible';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'Sélectionner une date';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'Définir mon Vœu';
+
+  @override
+  String get dialog_sankalpaError =>
+      'Veuillez remplir tous les champs correctement.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'Le nombre cible doit être supérieur à votre nombre actuel.';
 }

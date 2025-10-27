@@ -353,4 +353,52 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get misc_anonymous => 'അജ്ഞാതൻ';
+
+  @override
+  String get profile_sankalpaSet => 'ഒരു പുണ്യ പ്രതിജ്ഞ ചെയ്യുക';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'ഒരു വ്യക്തിഗത ജപ ലക്ഷ്യം സജ്ജമാക്കുക.';
+
+  @override
+  String get profile_sankalpaTitle => 'നിങ്ങളുടെ ജപ സങ്കൽപ്പം';
+
+  @override
+  String get profile_sankalpaChanting => 'ജപിക്കുന്നു';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount തവണ എത്താൻ.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date -നകം';
+  }
+
+  @override
+  String get dialog_sankalpaTitle => 'നിങ്ങളുടെ ജപ സങ്കൽപ്പം സജ്ജമാക്കുക';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'മന്ത്രം തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'ലക്ഷ്യ എണ്ണം (ഉദാ., 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'ലക്ഷ്യ തീയതി';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ഒരു തീയതി തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'എൻ്റെ പ്രതിജ്ഞ സജ്ജമാക്കുക';
+
+  @override
+  String get dialog_sankalpaError => 'എല്ലാ ഫീൽഡുകളും ശരിയായി പൂരിപ്പിക്കുക.';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'ലക്ഷ്യ എണ്ണം നിങ്ങളുടെ നിലവിലെ എണ്ണത്തേക്കാൾ വലുതായിരിക്കണം.';
 }

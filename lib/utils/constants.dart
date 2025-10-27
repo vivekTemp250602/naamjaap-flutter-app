@@ -5,15 +5,17 @@ class Mantra {
   final String name;
   final bool isCustom;
   final String? backgroundId;
-  final String? imagePath;
+  final List<String>? imagePaths;
   final String audioPath;
+  final String? customAudioPath;
 
   Mantra(
       {required this.id,
       required this.name,
       required this.isCustom,
       this.backgroundId,
-      this.imagePath,
+      this.imagePaths,
+      this.customAudioPath,
       required this.audioPath});
 }
 

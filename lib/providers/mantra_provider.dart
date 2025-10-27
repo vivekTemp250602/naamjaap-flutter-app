@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:naamjaap/services/firestore_service.dart';
@@ -46,7 +47,7 @@ class MantraProvider extends ChangeNotifier {
         id: mantraKey,
         name: mantraName,
         isCustom: false,
-        imagePath: AppConstants.mantraImagePaths[mantraName]!.first,
+        imagePaths: AppConstants.mantraImagePaths[mantraName],
         audioPath: AppConstants.mantraAudioPaths[mantraName]!,
       );
     }).toList();
@@ -55,8 +56,24 @@ class MantraProvider extends ChangeNotifier {
     final List<Mantra> customMantras =
         _firestoreService.getCustomMantrasFromData(userData);
 
+    // 2b. Rebuild the full file path for custom audio
+    final directory = await getApplicationDocumentsDirectory();
+    final List<Mantra> processedCustomMantras = customMantras.map((mantra) {
+      return Mantra(
+        id: mantra.id,
+        name: mantra.name,
+        isCustom: true,
+        backgroundId: mantra.backgroundId,
+        audioPath: mantra.audioPath,
+        imagePaths: [],
+        customAudioPath: mantra.customAudioPath != null
+            ? '${directory.path}/${mantra.customAudioPath}'
+            : null,
+      );
+    }).toList();
+
     // 3. Combine them
-    _allMantras = [...globalMantras, ...customMantras];
+    _allMantras = [...globalMantras, ...processedCustomMantras];
 
     // 4. Load or update the selected mantra
     final lastMantraId = prefs.getString(AppConstants.prefsKeySelectedMantra);
@@ -68,7 +85,7 @@ class MantraProvider extends ChangeNotifier {
     }
 
     _isLoading = false;
-    notifyListeners(); // This is the magic that updates all screens.
+    notifyListeners();
   }
 
   Future<void> setSelectedMantra(Mantra mantra) async {
@@ -81,14 +98,38 @@ class MantraProvider extends ChangeNotifier {
   Future<void> addCustomMantra({
     required String mantraName,
     required String backgroundId,
+    String? tempAudioPath,
   }) async {
-    // 1. Only job is to update Firestore.
-    await _firestoreService.addCustomMantra(
+    // 1. Create the mantra in Firestore first to get its unique ID
+    final String newMantraId = await _firestoreService.createCustomMantra(
       uid: _uid,
       mantraName: mantraName,
       backgroundId: backgroundId,
     );
-    // The stream will see this change and call _buildMantraList automatically.
+
+    String? permanentRelativePath;
+
+    // 2. If an audio file was provided, rename it and prepare its path
+    if (tempAudioPath != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final permanentLocalPath = '${directory.path}/$newMantraId.m4a';
+      permanentRelativePath =
+          '$newMantraId.m4a'; // This is what we save to Firestore
+
+      try {
+        // Rename the temporary file to its new, permanent name
+        await File(tempAudioPath).rename(permanentLocalPath);
+
+        // 3. Now, update Firestore with the new, permanent audio path
+        await _firestoreService.updateCustomMantraAudioPath(
+          uid: _uid,
+          mantraId: newMantraId,
+          audioPath: permanentRelativePath,
+        );
+      } catch (e) {
+        permanentRelativePath = null; // Failed to save
+      }
+    }
   }
 
   Future<void> deleteCustomMantra(String mantraId) async {

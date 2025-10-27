@@ -253,9 +253,8 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     if (!_isPlaying) {
-      _audioService.play(Provider.of<MantraProvider>(context, listen: false)
-          .selectedMantra!
-          .audioPath);
+      _audioService.play(
+          Provider.of<MantraProvider>(context, listen: false).selectedMantra!);
     }
   }
 

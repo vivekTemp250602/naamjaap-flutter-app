@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -25,51 +28,67 @@ class FirestoreService {
     required String uid,
     required String mantraName,
     required String backgroundId,
+    String? localAudioPath,
   }) async {
     final userRef = _db.collection('users').doc(uid);
-    // Create a unique ID for the new mantra
     final String mantraId = _db.collection('users').doc().id;
+
+    final String customAudioPath = 'mantras/$mantraId.m4a';
 
     await userRef.update({
       'custom_mantras.$mantraId': {
         'name': mantraName,
         'backgroundId': backgroundId,
+        'customAudioPath': localAudioPath != null ? customAudioPath : null,
       }
     });
 
     return mantraId;
   }
 
-  Future<void> deleteCustomMantra(String uid, String mantraId) {
-    final userRef = _db.collection('users').doc(uid);
+  // Future<void> deleteCustomMantra(String uid, String mantraId) async {
+  //   final userRef = _db.collection('users').doc(uid);
 
-    // We also must delete the japp counts for this mantra.
-    return userRef.update({
-      'custom_mantras.$mantraId': FieldValue.delete(),
-      'japps.$mantraId': FieldValue.delete(),
-    });
-  }
+  //   try {
+  //     final directory = await getApplicationDocumentsDirectory();
+  //     final localPath = '${directory.path}/$mantraId.m4a';
+  //     final file = File(localPath);
+  //     if (await file.exists()) {
+  //       await file.delete();
+  //     }
+  //   } catch (e) {
+  //     //
+  //   }
 
-  /// NEW: Fetches the user's custom mantras in a structured way.
-  List<Mantra> getCustomMantrasFromData(Map<String, dynamic> userData) {
-    final List<Mantra> customMantras = [];
-    final mantrasMap =
-        userData['custom_mantras'] as Map<String, dynamic>? ?? {};
+  //   // Now, delete the Firestore records
+  //   await userRef.update({
+  //     'custom_mantras.$mantraId': FieldValue.delete(),
+  //     'japps.$mantraId': FieldValue.delete(),
+  //   });
+  // }
 
-    for (final entry in mantrasMap.entries) {
-      customMantras.add(Mantra(
-        id: entry.key,
-        name: entry.value['name'] ?? 'Unnamed Mantra',
-        isCustom: true,
-        backgroundId: entry.value['backgroundId'] ??
-            AppConstants.customBackgrounds.first.id,
-        // Custom mantras don't have a pre-defined audio path
-        audioPath: 'assets/audio/temple_bells.mp3',
-        imagePath: '', // Or play silent/ambiance
-      ));
-    }
-    return customMantras;
-  }
+  // /// NEW: Fetches the user's custom mantras in a structured way.
+  // List<Mantra> getCustomMantrasFromData(Map<String, dynamic> userData) {
+  //   final List<Mantra> customMantras = [];
+  //   final mantrasMap =
+  //       userData['custom_mantras'] as Map<String, dynamic>? ?? {};
+
+  //   for (final entry in mantrasMap.entries) {
+  //     final String? relativeAudioPath = entry.value['customAudioPath'];
+
+  //     customMantras.add(Mantra(
+  //       id: entry.key,
+  //       name: entry.value['name'] ?? 'Unnamed Mantra',
+  //       isCustom: true,
+  //       backgroundId: entry.value['backgroundId'] ??
+  //           AppConstants.customBackgrounds.first.id,
+  //       customAudioPath: relativeAudioPath,
+  //       audioPath: 'assets/audio/temple_bells.mp3',
+  //       imagePaths: [],
+  //     ));
+  //   }
+  //   return customMantras;
+  // }
 
   /// It atomically increments japps and handles the daily streak logic.
   Future<void> updateJappCount(String uid, String mantraKey) async {
@@ -239,5 +258,79 @@ class FirestoreService {
       },
       SetOptions(merge: true),
     );
+  }
+
+  Future<String> createCustomMantra({
+    required String uid,
+    required String mantraName,
+    required String backgroundId,
+  }) async {
+    final userRef = _db.collection('users').doc(uid);
+    final String mantraId = _db.collection('users').doc().id;
+
+    await userRef.update({
+      'custom_mantras.$mantraId': {
+        'name': mantraName,
+        'backgroundId': backgroundId,
+        'customAudioPath': null,
+      }
+    });
+
+    return mantraId;
+  }
+
+  Future<void> updateCustomMantraAudioPath({
+    required String uid,
+    required String mantraId,
+    required String audioPath,
+  }) {
+    final userRef = _db.collection('users').doc(uid);
+    return userRef.update({
+      'custom_mantras.$mantraId.customAudioPath': audioPath,
+    });
+  }
+
+  Future<void> deleteCustomMantra(String uid, String mantraId) async {
+    final userRef = _db.collection('users').doc(uid);
+
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final localPath = '${directory.path}/$mantraId.m4a';
+      final file = File(localPath);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      //
+    }
+
+    // Now, delete the Firestore records
+    await userRef.update({
+      'custom_mantras.$mantraId': FieldValue.delete(),
+      'japps.$mantraId': FieldValue.delete(),
+    });
+  }
+
+  /// Fetches the user's custom mantras in a structured way.
+  List<Mantra> getCustomMantrasFromData(Map<String, dynamic> userData) {
+    final List<Mantra> customMantras = [];
+    final mantrasMap =
+        userData['custom_mantras'] as Map<String, dynamic>? ?? {};
+
+    for (final entry in mantrasMap.entries) {
+      final String? relativeAudioPath = entry.value['customAudioPath'];
+
+      customMantras.add(Mantra(
+        id: entry.key,
+        name: entry.value['name'] ?? 'Unnamed Mantra',
+        isCustom: true,
+        backgroundId: entry.value['backgroundId'] ??
+            AppConstants.customBackgrounds.first.id,
+        customAudioPath: relativeAudioPath,
+        audioPath: 'assets/audio/temple_bells.mp3',
+        imagePaths: const [],
+      ));
+    }
+    return customMantras;
   }
 }

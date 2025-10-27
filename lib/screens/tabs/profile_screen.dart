@@ -12,6 +12,7 @@ import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/screens/garden_screen.dart';
+import 'package:naamjaap/screens/support_screen.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
@@ -39,6 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   final User _currentUser = FirebaseAuth.instance.currentUser!;
   final GlobalKey _shareCardKey = GlobalKey();
   late ConfettiController _sankalpaConfettiController;
+  final _donationAmountController = TextEditingController();
 
   static const String _screenName = 'profile';
   final AdService _adService = AdService();
@@ -68,6 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   void dispose() {
     _adService.disposeAdForScreen(_screenName);
+    _donationAmountController.dispose();
     _countController.dispose();
     _sankalpaConfettiController.dispose();
     super.dispose();
@@ -272,28 +275,77 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  // Exact UPI Launch Code
-  Future<void> _launchUPI() async {
-    final String transactionId = 'TR${DateTime.now().millisecondsSinceEpoch}';
-    // MODIFIED: The "am=" parameter has been completely removed.
-    final Uri upiUri = Uri.parse(
-        'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&cu=INR');
+  // Future<void> _showDonationDialog() async {
+  //   // Clear the controller in case it was used before
+  //   _donationAmountController.clear();
 
-    try {
-      if (await canLaunchUrl(upiUri)) {
-        await launchUrl(upiUri, mode: LaunchMode.externalApplication);
-      } else {
-        throw 'Could not launch UPI app.';
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Error: Could not find a UPI app to open.')),
-        );
-      }
-    }
-  }
+  //   return showDialog<void>(
+  //     context: context,
+  //     builder: (BuildContext dialogContext) {
+  //       return AlertDialog(
+  //         title: Text(AppLocalizations.of(context)!.profile_supportTitle),
+  //         content: TextField(
+  //           controller: _donationAmountController,
+  //           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+  //           decoration: const InputDecoration(
+  //             labelText: 'Enter amount (INR)',
+  //             prefixText: '₹',
+  //             border: OutlineInputBorder(),
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text(AppLocalizations.of(context)!.dialog_cancel),
+  //             onPressed: () => Navigator.of(dialogContext).pop(),
+  //           ),
+  //           ElevatedButton(
+  //             child: const Text('Donate Now'),
+  //             onPressed: () {
+  //               final String amount = _donationAmountController.text;
+  //               // Simple validation
+  //               if (amount.isNotEmpty &&
+  //                   double.tryParse(amount) != null &&
+  //                   double.parse(amount) > 0) {
+  //                 Navigator.of(dialogContext).pop(); // Close the dialog
+  //                 _launchUPI(amount); // Launch UPI with the specified amount
+  //               } else {
+  //                 // Show a small error without closing
+  //                 ScaffoldMessenger.of(context).showSnackBar(
+  //                   const SnackBar(
+  //                       content: Text('Please enter a valid amount.')),
+  //                 );
+  //               }
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
+  // // Exact UPI Launch Code
+  // Future<void> _launchUPI(String amount) async {
+  //   final String transactionId = 'TR${DateTime.now().millisecondsSinceEpoch}';
+
+  //   // MODIFIED: The "am=" parameter is now dynamic
+  //   final Uri upiUri = Uri.parse(
+  //       'upi://pay?pa=vivek120303@okhdfcbank&pn=Vivek%20Tiwari&tr=$transactionId&tn=Support%20Naam%20Jaap&am=$amount&cu=INR');
+
+  //   try {
+  //     if (await canLaunchUrl(upiUri)) {
+  //       await launchUrl(upiUri, mode: LaunchMode.externalApplication);
+  //     } else {
+  //       throw 'Could not launch UPI app.';
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //             content: Text('Error: Could not find a UPI app to open.')),
+  //       );
+  //     }
+  //   }
+  // }
 
   // Share the app link.
   Future<void> _shareApp() async {
@@ -914,7 +966,10 @@ class _ProfileScreenState extends State<ProfileScreen>
         // --- Support Card ---
         Card(
           child: ListTile(
-            onTap: _launchUPI,
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SupportScreen()));
+            },
             leading: const Icon(Icons.favorite_outline, color: Colors.red),
             title: Text(AppLocalizations.of(context)!.profile_supportTitle),
             subtitle:

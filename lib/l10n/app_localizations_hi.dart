@@ -266,4 +266,87 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'मालाएँ पूरी हुईं';
+
+  @override
+  String get misc_malas => 'मालाएँ';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName को पार करने के लिए $count मालाएँ';
+  }
+
+  @override
+  String get dialog_mic =>
+      'ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन की अनुमति आवश्यक है।';
+
+  @override
+  String get custom_create => 'अपना मंत्र बनाएँ';
+
+  @override
+  String get custom_yourMantra => 'मंत्र का नाम';
+
+  @override
+  String get custom_hint => 'जैसे, ॐ गुरवे नमः';
+
+  @override
+  String get custom_back => 'पृष्ठभूमि चुनें:';
+
+  @override
+  String get custom_addVoice => 'अपनी आवाज़ जोड़ें (वैकल्पिक):';
+
+  @override
+  String get custom_recording => 'रिकॉर्डिंग हो रही है...';
+
+  @override
+  String get custom_tapToRecord => 'रिकॉर्ड करने के लिए माइक पर टैप करें';
+
+  @override
+  String get custom_saveMantra => 'मंत्र सहेजें';
+
+  @override
+  String get custom_micAccess =>
+      'ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन की अनुमति आवश्यक है।';
+
+  @override
+  String get profile_yourCustomMantra => 'मेरे कस्टम मंत्र';
+
+  @override
+  String get profile_noCustoms => 'आपने अभी तक कोई कस्टम मंत्र नहीं जोड़ा है।';
+
+  @override
+  String get profile_addNewMantra => 'नया मंत्र जोड़ें';
+
+  @override
+  String get dialog_profilePictureUpdate => 'प्रोफ़ाइल चित्र अपडेट किया गया!';
+
+  @override
+  String get dialog_failedToUpload => 'छवि अपलोड करने में विफल।';
+
+  @override
+  String get dialog_exceptionCard =>
+      'साझा करने योग्य कार्ड संदर्भ उपलब्ध नहीं है।';
+
+  @override
+  String get dialog_checkoutMyProgress => 'नामजाप ऐप पर मेरी प्रगति देखें!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'प्ले स्टोर नहीं खुल सका।';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" हटाएँ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'क्या आप निश्चित हैं? इस मंत्र से जुड़े सभी जाप गणनाएँ भी स्थायी रूप से हटा दी जाएँगी।';
+
+  @override
+  String get profile_yesDelete => 'हाँ, हटाएँ';
+
+  @override
+  String get profile_couldNotUserData => 'उपयोगकर्ता डेटा लोड नहीं हो सका।';
+
+  @override
+  String get misc_anonymous => 'गुमनाम';
 }

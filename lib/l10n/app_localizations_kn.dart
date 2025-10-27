@@ -265,4 +265,88 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'ಪೂರ್ಣಗೊಂಡ ಮಾಲೆಗಳು';
+
+  @override
+  String get misc_malas => 'ಮಾಲೆಗಳು';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName ಅವರನ್ನು ದಾಟಲು $count ಮಾಲೆಗಳು';
+  }
+
+  @override
+  String get dialog_mic => 'ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ.';
+
+  @override
+  String get custom_create => 'ನಿಮ್ಮ ಮಂತ್ರವನ್ನು ರಚಿಸಿ';
+
+  @override
+  String get custom_yourMantra => 'ಮಂತ್ರದ ಹೆಸರು';
+
+  @override
+  String get custom_hint => 'ಉದಾ., ಓಂ ಗುರವೇ ನಮಃ';
+
+  @override
+  String get custom_back => 'ಹಿನ್ನೆಲೆ ಆರಿಸಿ:';
+
+  @override
+  String get custom_addVoice => 'ನಿಮ್ಮ ಧ್ವನಿಯನ್ನು ಸೇರಿಸಿ (ಐಚ್ಛಿಕ):';
+
+  @override
+  String get custom_recording => 'ರೆಕಾರ್ಡ್ ಆಗುತ್ತಿದೆ...';
+
+  @override
+  String get custom_tapToRecord => 'ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ ಟ್ಯಾಪ್ ಮಾಡಿ';
+
+  @override
+  String get custom_saveMantra => 'ಮಂತ್ರ ಉಳಿಸಿ';
+
+  @override
+  String get custom_micAccess =>
+      'ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಮೈಕ್ರೊಫೋನ್ ಅನುಮತಿ ಅಗತ್ಯವಿದೆ.';
+
+  @override
+  String get profile_yourCustomMantra => 'ನನ್ನ ಕಸ್ಟಮ್ ಮಂತ್ರಗಳು';
+
+  @override
+  String get profile_noCustoms =>
+      'ನೀವು ಇನ್ನೂ ಯಾವುದೇ ಕಸ್ಟಮ್ ಮಂತ್ರಗಳನ್ನು ಸೇರಿಸಿಲ್ಲ.';
+
+  @override
+  String get profile_addNewMantra => 'ಹೊಸ ಮಂತ್ರ ಸೇರಿಸಿ';
+
+  @override
+  String get dialog_profilePictureUpdate => 'ಪ್ರೊಫೈಲ್ ಚಿತ್ರ ನವೀಕರಿಸಲಾಗಿದೆ!';
+
+  @override
+  String get dialog_failedToUpload => 'ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.';
+
+  @override
+  String get dialog_exceptionCard => 'ಹಂಚಿಕೊಳ್ಳಬಹುದಾದ ಕಾರ್ಡ್ ಸಂದರ್ಭ ಲಭ್ಯವಿಲ್ಲ.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'ನಾಮ್‌ಜಾಪ್ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ನನ್ನ ಪ್ರಗತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play Store ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" ಅಳಿಸುವುದೇ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'ನೀವು ಖಚಿತವಾಗಿರುವಿರಾ? ಈ ಮಂತ್ರಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಎಲ್ಲಾ ಜಪ ಎಣಿಕೆಗಳನ್ನು ಸಹ ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲಾಗುತ್ತದೆ.';
+
+  @override
+  String get profile_yesDelete => 'ಹೌದು, ಅಳಿಸಿ';
+
+  @override
+  String get profile_couldNotUserData =>
+      'ಬಳಕೆದಾರರ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.';
+
+  @override
+  String get misc_anonymous => 'ಅನಾಮಧೇಯ';
 }

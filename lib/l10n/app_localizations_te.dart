@@ -267,4 +267,88 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'పూర్తయిన మాలలు';
+
+  @override
+  String get misc_malas => 'మాలలు';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerNameను అధిగమించడానికి $count మాలలు';
+  }
+
+  @override
+  String get dialog_mic => 'ఆడియో రికార్డ్ చేయడానికి మైక్రోఫోన్ అనుమతి అవసరం.';
+
+  @override
+  String get custom_create => 'మీ మంత్రాన్ని సృష్టించండి';
+
+  @override
+  String get custom_yourMantra => 'మంత్రం పేరు';
+
+  @override
+  String get custom_hint => 'ఉదా., ఓం గురవే నమః';
+
+  @override
+  String get custom_back => 'నేపథ్యాన్ని ఎంచుకోండి:';
+
+  @override
+  String get custom_addVoice => 'మీ వాయిస్‌ని జోడించండి (ఐచ్ఛికం):';
+
+  @override
+  String get custom_recording => 'రికార్డ్ అవుతోంది...';
+
+  @override
+  String get custom_tapToRecord => 'రికార్డ్ చేయడానికి మైక్‌పై నొక్కండి';
+
+  @override
+  String get custom_saveMantra => 'మంత్రాన్ని సేవ్ చేయి';
+
+  @override
+  String get custom_micAccess =>
+      'ఆడియో రికార్డ్ చేయడానికి మైక్రోఫోన్ అనుమతి అవసరం.';
+
+  @override
+  String get profile_yourCustomMantra => 'నా అనుకూల మంత్రాలు';
+
+  @override
+  String get profile_noCustoms => 'మీరు ఇంకా ఏ అనుకూల మంత్రాలను జోడించలేదు.';
+
+  @override
+  String get profile_addNewMantra => 'కొత్త మంత్రాన్ని జోడించు';
+
+  @override
+  String get dialog_profilePictureUpdate => 'ప్రొఫైల్ చిత్రం నవీకరించబడింది!';
+
+  @override
+  String get dialog_failedToUpload => 'చిత్రాన్ని అప్‌లోడ్ చేయడంలో విఫలమైంది.';
+
+  @override
+  String get dialog_exceptionCard =>
+      'భాగస్వామ్యం చేయదగిన కార్డ్ సందర్భం అందుబాటులో లేదు.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'నామ్‌జాప్ యాప్‌లో నా పురోగతిని చూడండి!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play Store తెరవలేకపోయింది.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\"ని తొలగించాలా?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'మీరు ఖచ్చితంగా ఉన్నారా? ఈ మంత్రంతో అనుబంధించబడిన అన్ని జప గణనలు కూడా శాశ్వతంగా తొలగించబడతాయి.';
+
+  @override
+  String get profile_yesDelete => 'అవును, తొలగించు';
+
+  @override
+  String get profile_couldNotUserData =>
+      'వినియోగదారు డేటాను లోడ్ చేయలేకపోయింది.';
+
+  @override
+  String get misc_anonymous => 'అజ్ఞాత';
 }

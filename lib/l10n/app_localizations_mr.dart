@@ -262,4 +262,88 @@ class AppLocalizationsMr extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'पूर्ण झालेल्या माळा';
+
+  @override
+  String get misc_malas => 'माळा';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName ला मागे टाकण्यासाठी $count माळा';
+  }
+
+  @override
+  String get dialog_mic =>
+      'ऑडिओ रेकॉर्ड करण्यासाठी मायक्रोफोन परवानगी आवश्यक आहे.';
+
+  @override
+  String get custom_create => 'तुमचा मंत्र तयार करा';
+
+  @override
+  String get custom_yourMantra => 'मंत्राचे नाव';
+
+  @override
+  String get custom_hint => 'उदा., ओम गुरवे नमः';
+
+  @override
+  String get custom_back => 'पार्श्वभूमी निवडा:';
+
+  @override
+  String get custom_addVoice => 'तुमचा आवाज जोडा (पर्यायी):';
+
+  @override
+  String get custom_recording => 'रेकॉर्डिंग सुरू आहे...';
+
+  @override
+  String get custom_tapToRecord => 'रेकॉर्ड करण्यासाठी माइकवर टॅप करा';
+
+  @override
+  String get custom_saveMantra => 'मंत्र सेव्ह करा';
+
+  @override
+  String get custom_micAccess =>
+      'ऑडिओ रेकॉर्ड करण्यासाठी मायक्रोफोन परवानगी आवश्यक आहे.';
+
+  @override
+  String get profile_yourCustomMantra => 'माझे कस्टम मंत्र';
+
+  @override
+  String get profile_noCustoms =>
+      'तुम्ही अजून कोणतेही कस्टम मंत्र जोडलेले नाहीत.';
+
+  @override
+  String get profile_addNewMantra => 'नवीन मंत्र जोडा';
+
+  @override
+  String get dialog_profilePictureUpdate => 'प्रोफाइल चित्र अपडेट केले!';
+
+  @override
+  String get dialog_failedToUpload => 'प्रतिमा अपलोड करण्यात अयशस्वी.';
+
+  @override
+  String get dialog_exceptionCard =>
+      'शेअर करण्यायोग्य कार्ड संदर्भ उपलब्ध नाही.';
+
+  @override
+  String get dialog_checkoutMyProgress => 'नामजाप अॅपवर माझी प्रगती पहा!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'प्ले स्टोअर उघडू शकले नाही.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" हटवायचे?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'तुम्ही खात्रीशीर आहात का? या मंत्राशी संबंधित सर्व जप संख्या देखील कायमच्या हटवल्या जातील.';
+
+  @override
+  String get profile_yesDelete => 'होय, हटवा';
+
+  @override
+  String get profile_couldNotUserData => 'वापरकर्ता डेटा लोड करू शकला नाही.';
+
+  @override
+  String get misc_anonymous => 'अनामिक';
 }

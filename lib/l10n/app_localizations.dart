@@ -623,6 +623,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Malas Completed'**
   String get garden_totalMala;
+
+  /// No description provided for @misc_malas.
+  ///
+  /// In en, this message translates to:
+  /// **'Malas'**
+  String get misc_malas;
+
+  /// No description provided for @leaderboard_malasToPass.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} malas to pass {playerName}'**
+  String leaderboard_malasToPass(Object count, Object playerName);
+
+  /// No description provided for @dialog_mic.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to record audio.'**
+  String get dialog_mic;
+
+  /// No description provided for @custom_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Your Mantra'**
+  String get custom_create;
+
+  /// No description provided for @custom_yourMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Mantra Name'**
+  String get custom_yourMantra;
+
+  /// No description provided for @custom_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Om Gurave Namah'**
+  String get custom_hint;
+
+  /// No description provided for @custom_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a background:'**
+  String get custom_back;
+
+  /// No description provided for @custom_addVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your voice (Optional):'**
+  String get custom_addVoice;
+
+  /// No description provided for @custom_recording.
+  ///
+  /// In en, this message translates to:
+  /// **'Recording...'**
+  String get custom_recording;
+
+  /// No description provided for @custom_tapToRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the mic to record'**
+  String get custom_tapToRecord;
+
+  /// No description provided for @custom_saveMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Mantra'**
+  String get custom_saveMantra;
+
+  /// No description provided for @custom_micAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to record audio.'**
+  String get custom_micAccess;
+
+  /// No description provided for @profile_yourCustomMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'My Custom Mantras'**
+  String get profile_yourCustomMantra;
+
+  /// No description provided for @profile_noCustoms.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t added any custom mantras yet.'**
+  String get profile_noCustoms;
+
+  /// No description provided for @profile_addNewMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Mantra'**
+  String get profile_addNewMantra;
+
+  /// No description provided for @dialog_profilePictureUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated!'**
+  String get dialog_profilePictureUpdate;
+
+  /// No description provided for @dialog_failedToUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image.'**
+  String get dialog_failedToUpload;
+
+  /// No description provided for @dialog_exceptionCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Shareable card context is not available.'**
+  String get dialog_exceptionCard;
+
+  /// No description provided for @dialog_checkoutMyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out my progress on the NaamJaap app!'**
+  String get dialog_checkoutMyProgress;
+
+  /// No description provided for @dialog_couldNotOpenPS.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open Play Store.'**
+  String get dialog_couldNotOpenPS;
+
+  /// No description provided for @profile_deleteMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{mantraName}\"?'**
+  String profile_deleteMantra(Object mantraName);
+
+  /// No description provided for @profile_deleteMantraSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure? All japa counts associated with this mantra will also be permanently deleted.'**
+  String get profile_deleteMantraSure;
+
+  /// No description provided for @profile_yesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete'**
+  String get profile_yesDelete;
+
+  /// No description provided for @profile_couldNotUserData.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load user data.'**
+  String get profile_couldNotUserData;
+
+  /// No description provided for @misc_anonymous.
+  ///
+  /// In en, this message translates to:
+  /// **'Anonymous'**
+  String get misc_anonymous;
 }
 
 class _AppLocalizationsDelegate

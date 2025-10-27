@@ -265,4 +265,86 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'মালা সম্পন্ন হয়েছে';
+
+  @override
+  String get misc_malas => 'মালা';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName-কে পার করতে $count মালা';
+  }
+
+  @override
+  String get dialog_mic =>
+      'অডিও রেকর্ড করার জন্য মাইক্রোফোনের অনুমতি প্রয়োজন।';
+
+  @override
+  String get custom_create => 'আপনার মন্ত্র তৈরি করুন';
+
+  @override
+  String get custom_yourMantra => 'মন্ত্রের নাম';
+
+  @override
+  String get custom_hint => 'যেমন, ওম গুরবে নমঃ';
+
+  @override
+  String get custom_back => 'একটি পটভূমি নির্বাচন করুন:';
+
+  @override
+  String get custom_addVoice => 'আপনার ভয়েস যোগ করুন (ঐচ্ছিক):';
+
+  @override
+  String get custom_recording => 'রেকর্ডিং চলছে...';
+
+  @override
+  String get custom_tapToRecord => 'রেকর্ড করতে মাইকে ট্যাপ করুন';
+
+  @override
+  String get custom_saveMantra => 'মন্ত্র সংরক্ষণ করুন';
+
+  @override
+  String get custom_micAccess =>
+      'অডিও রেকর্ড করার জন্য মাইক্রোফোনের অনুমতি প্রয়োজন।';
+
+  @override
+  String get profile_yourCustomMantra => 'আমার কাস্টম মন্ত্র';
+
+  @override
+  String get profile_noCustoms => 'আপনি এখনও কোনো কাস্টম মন্ত্র যোগ করেননি।';
+
+  @override
+  String get profile_addNewMantra => 'নতুন মন্ত্র যোগ করুন';
+
+  @override
+  String get dialog_profilePictureUpdate => 'প্রোফাইল ছবি আপডেট করা হয়েছে!';
+
+  @override
+  String get dialog_failedToUpload => 'ছবি আপলোড করতে ব্যর্থ।';
+
+  @override
+  String get dialog_exceptionCard => 'শেয়ারযোগ্য কার্ড কনটেক্সট উপলব্ধ নয়।';
+
+  @override
+  String get dialog_checkoutMyProgress => 'নামজাপ অ্যাপে আমার অগ্রগতি দেখুন!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'প্লে স্টোর খোলা যায়নি।';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" মুছবেন?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'আপনি কি নিশ্চিত? এই মন্ত্রের সাথে যুক্ত সমস্ত জপ গণনাও স্থায়ীভাবে মুছে ফেলা হবে।';
+
+  @override
+  String get profile_yesDelete => 'হ্যাঁ, মুছুন';
+
+  @override
+  String get profile_couldNotUserData => 'ব্যবহারকারীর ডেটা লোড করা যায়নি।';
+
+  @override
+  String get misc_anonymous => 'বেনামী';
 }

@@ -258,4 +258,83 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get garden_totalMala => '完成的念珠';
+
+  @override
+  String get misc_malas => '念珠';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '还需 $count 串念珠才能超过 $playerName';
+  }
+
+  @override
+  String get dialog_mic => '录制音频需要麦克风权限。';
+
+  @override
+  String get custom_create => '创建您的真言';
+
+  @override
+  String get custom_yourMantra => '真言名称';
+
+  @override
+  String get custom_hint => '例如：Om Gurave Namah';
+
+  @override
+  String get custom_back => '选择背景：';
+
+  @override
+  String get custom_addVoice => '添加您的声音（可选）：';
+
+  @override
+  String get custom_recording => '录音中...';
+
+  @override
+  String get custom_tapToRecord => '点击麦克风录音';
+
+  @override
+  String get custom_saveMantra => '保存真言';
+
+  @override
+  String get custom_micAccess => '录制音频需要麦克风权限。';
+
+  @override
+  String get profile_yourCustomMantra => '我的自定义真言';
+
+  @override
+  String get profile_noCustoms => '您尚未添加任何自定义真言。';
+
+  @override
+  String get profile_addNewMantra => '添加新真言';
+
+  @override
+  String get dialog_profilePictureUpdate => '个人资料图片已更新！';
+
+  @override
+  String get dialog_failedToUpload => '上传图片失败。';
+
+  @override
+  String get dialog_exceptionCard => '可共享卡片上下文不可用。';
+
+  @override
+  String get dialog_checkoutMyProgress => '在 NaamJaap 应用上查看我的进度！';
+
+  @override
+  String get dialog_couldNotOpenPS => '无法打开 Play 商店。';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '删除 \"$mantraName\"？';
+  }
+
+  @override
+  String get profile_deleteMantraSure => '您确定吗？与此真言相关的所有念诵计数也将被永久删除。';
+
+  @override
+  String get profile_yesDelete => '是的，删除';
+
+  @override
+  String get profile_couldNotUserData => '无法加载用户数据。';
+
+  @override
+  String get misc_anonymous => '匿名';
 }

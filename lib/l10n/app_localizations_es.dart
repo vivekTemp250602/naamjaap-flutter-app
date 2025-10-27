@@ -267,4 +267,90 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'Malas Completados';
+
+  @override
+  String get misc_malas => 'Malas';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$count malas para superar a $playerName';
+  }
+
+  @override
+  String get dialog_mic =>
+      'Se requiere permiso del micrófono para grabar audio.';
+
+  @override
+  String get custom_create => 'Crea tu Mantra';
+
+  @override
+  String get custom_yourMantra => 'Nombre del Mantra';
+
+  @override
+  String get custom_hint => 'ej., Om Gurave Namah';
+
+  @override
+  String get custom_back => 'Elige un fondo:';
+
+  @override
+  String get custom_addVoice => 'Añade tu voz (Opcional):';
+
+  @override
+  String get custom_recording => 'Grabando...';
+
+  @override
+  String get custom_tapToRecord => 'Toca el micrófono para grabar';
+
+  @override
+  String get custom_saveMantra => 'Guardar Mantra';
+
+  @override
+  String get custom_micAccess =>
+      'Se requiere permiso del micrófono para grabar audio.';
+
+  @override
+  String get profile_yourCustomMantra => 'Mis Mantras Personalizados';
+
+  @override
+  String get profile_noCustoms =>
+      'Aún no has añadido ningún mantra personalizado.';
+
+  @override
+  String get profile_addNewMantra => 'Añadir Nuevo Mantra';
+
+  @override
+  String get dialog_profilePictureUpdate => '¡Foto de perfil actualizada!';
+
+  @override
+  String get dialog_failedToUpload => 'Error al subir la imagen.';
+
+  @override
+  String get dialog_exceptionCard =>
+      'El contexto de la tarjeta compartible no está disponible.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      '¡Mira mi progreso en la app NaamJaap!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'No se pudo abrir Play Store.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '¿Eliminar \"$mantraName\"?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      '¿Estás seguro? Todos los recuentos de japa asociados con este mantra también se eliminarán permanentemente.';
+
+  @override
+  String get profile_yesDelete => 'Sí, Eliminar';
+
+  @override
+  String get profile_couldNotUserData =>
+      'No se pudieron cargar los datos del usuario.';
+
+  @override
+  String get misc_anonymous => 'Anónimo';
 }

@@ -263,4 +263,88 @@ class AppLocalizationsOr extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଥିବା ମାଳା';
+
+  @override
+  String get misc_malas => 'ମାଳା';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerNameଙ୍କୁ ଅତିକ୍ରମ କରିବା ପାଇଁ $count ମାଳା';
+  }
+
+  @override
+  String get dialog_mic => 'ଅଡିଓ ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ଆବଶ୍ୟକ।';
+
+  @override
+  String get custom_create => 'ଆପଣଙ୍କ ମନ୍ତ୍ର ସୃଷ୍ଟି କରନ୍ତୁ';
+
+  @override
+  String get custom_yourMantra => 'ମନ୍ତ୍ର ନାମ';
+
+  @override
+  String get custom_hint => 'ଯଥା, ଓଁ ଗୁରବେ ନମଃ';
+
+  @override
+  String get custom_back => 'ଏକ ପୃଷ୍ଠଭୂମି ବାଛନ୍ତୁ:';
+
+  @override
+  String get custom_addVoice => 'ଆପଣଙ୍କ ସ୍ୱର ଯୋଗ କରନ୍ତୁ (ବୈକଳ୍ପିକ):';
+
+  @override
+  String get custom_recording => 'ରେକର୍ଡିଂ ଚାଲିଛି...';
+
+  @override
+  String get custom_tapToRecord => 'ରେକର୍ଡ କରିବାକୁ ମାଇକ୍ ଟ୍ୟାପ୍ କରନ୍ତୁ';
+
+  @override
+  String get custom_saveMantra => 'ମନ୍ତ୍ର ସଂରକ୍ଷଣ କରନ୍ତୁ';
+
+  @override
+  String get custom_micAccess =>
+      'ଅଡିଓ ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ଆବଶ୍ୟକ।';
+
+  @override
+  String get profile_yourCustomMantra => 'ମୋ କଷ୍ଟମ୍ ମନ୍ତ୍ର';
+
+  @override
+  String get profile_noCustoms =>
+      'ଆପଣ ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି କଷ୍ଟମ୍ ମନ୍ତ୍ର ଯୋଗ କରିନାହାଁନ୍ତି।';
+
+  @override
+  String get profile_addNewMantra => 'ନୂଆ ମନ୍ତ୍ର ଯୋଗ କରନ୍ତୁ';
+
+  @override
+  String get dialog_profilePictureUpdate => 'ପ୍ରୋଫାଇଲ୍ ଚିତ୍ର ଅଦ୍ୟତନ କରାଯାଇଛି!';
+
+  @override
+  String get dialog_failedToUpload => 'ପ୍ରତିଛବି ଅପଲୋଡ୍ କରିବାରେ ବିଫଳ।';
+
+  @override
+  String get dialog_exceptionCard => 'ସେୟାରଯୋଗ୍ୟ କାର୍ଡ ପ୍ରସଙ୍ଗ ଉପଲବ୍ଧ ନାହିଁ।';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'ନାମଜପ୍ ଆପ୍‌ରେ ମୋର ଅଗ୍ରଗତି ଯାଞ୍ଚ କରନ୍ତୁ!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'ପ୍ଲେ ଷ୍ଟୋର୍ ଖୋଲିପାରିଲା ନାହିଁ।';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" ବିଲୋପ କରିବେ କି?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'ଆପଣ ନିଶ୍ଚିତ କି? ଏହି ମନ୍ତ୍ର ସହିତ ଜଡିତ ସମସ୍ତ ଜପ ଗଣନା ମଧ୍ୟ ସ୍ଥାୟୀ ଭାବରେ ବିଲୋପ କରାଯିବ।';
+
+  @override
+  String get profile_yesDelete => 'ହଁ, ବିଲୋପ କରନ୍ତୁ';
+
+  @override
+  String get profile_couldNotUserData =>
+      'ଉପଯୋଗକର୍ତ୍ତା ଡାଟା ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ।';
+
+  @override
+  String get misc_anonymous => 'ଅଜ୍ଞାତ';
 }

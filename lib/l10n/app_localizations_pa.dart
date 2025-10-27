@@ -264,4 +264,86 @@ class AppLocalizationsPa extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'ਪੂਰੀਆਂ ਹੋਈਆਂ ਮਾਲਾਵਾਂ';
+
+  @override
+  String get misc_malas => 'ਮਾਲਾਵਾਂ';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName ਨੂੰ ਪਾਰ ਕਰਨ ਲਈ $count ਮਾਲਾਵਾਂ';
+  }
+
+  @override
+  String get dialog_mic => 'ਆਡੀਓ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ੍ਰੋਫੋਨ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ।';
+
+  @override
+  String get custom_create => 'ਆਪਣਾ ਮੰਤਰ ਬਣਾਓ';
+
+  @override
+  String get custom_yourMantra => 'ਮੰਤਰ ਦਾ ਨਾਮ';
+
+  @override
+  String get custom_hint => 'ਜਿਵੇਂ ਕਿ, ਓਮ ਗੁਰਵੇ ਨਮਹ';
+
+  @override
+  String get custom_back => 'ਇੱਕ ਪਿਛੋਕੜ ਚੁਣੋ:';
+
+  @override
+  String get custom_addVoice => 'ਆਪਣੀ ਆਵਾਜ਼ ਸ਼ਾਮਲ ਕਰੋ (ਵਿਕਲਪਿਕ):';
+
+  @override
+  String get custom_recording => 'ਰਿਕਾਰਡਿੰਗ ਹੋ ਰਹੀ ਹੈ...';
+
+  @override
+  String get custom_tapToRecord => 'ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ \'ਤੇ ਟੈਪ ਕਰੋ';
+
+  @override
+  String get custom_saveMantra => 'ਮੰਤਰ ਸੁਰੱਖਿਅਤ ਕਰੋ';
+
+  @override
+  String get custom_micAccess =>
+      'ਆਡੀਓ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ੍ਰੋਫੋਨ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ।';
+
+  @override
+  String get profile_yourCustomMantra => 'ਮੇਰੇ ਕਸਟਮ ਮੰਤਰ';
+
+  @override
+  String get profile_noCustoms =>
+      'ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਕੋਈ ਕਸਟਮ ਮੰਤਰ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੇ ਹਨ।';
+
+  @override
+  String get profile_addNewMantra => 'ਨਵਾਂ ਮੰਤਰ ਸ਼ਾਮਲ ਕਰੋ';
+
+  @override
+  String get dialog_profilePictureUpdate => 'ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ!';
+
+  @override
+  String get dialog_failedToUpload => 'ਚਿੱਤਰ ਅੱਪਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।';
+
+  @override
+  String get dialog_exceptionCard => 'ਸਾਂਝਾ ਕਰਨ ਯੋਗ ਕਾਰਡ ਸੰਦਰਭ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get dialog_checkoutMyProgress => 'ਨਾਮਜਾਪ ਐਪ \'ਤੇ ਮੇਰੀ ਤਰੱਕੀ ਦੇਖੋ!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'ਪਲੇ ਸਟੋਰ ਨਹੀਂ ਖੋਲ੍ਹ ਸਕਿਆ।';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" ਨੂੰ ਮਿਟਾਉਣਾ ਹੈ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਹੋ? ਇਸ ਮੰਤਰ ਨਾਲ ਜੁੜੀਆਂ ਸਾਰੀਆਂ ਜਾਪ ਗਿਣਤੀਆਂ ਵੀ ਸਥਾਈ ਤੌਰ \'ਤੇ ਮਿਟਾ ਦਿੱਤੀਆਂ ਜਾਣਗੀਆਂ।';
+
+  @override
+  String get profile_yesDelete => 'ਹਾਂ, ਮਿਟਾਓ';
+
+  @override
+  String get profile_couldNotUserData => 'ਉਪਭੋਗਤਾ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।';
+
+  @override
+  String get misc_anonymous => 'ਅਗਿਆਤ';
 }

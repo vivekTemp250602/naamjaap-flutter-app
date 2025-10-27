@@ -262,4 +262,86 @@ class AppLocalizationsBh extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'पूरा भइल माला';
+
+  @override
+  String get misc_malas => 'माला';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName के पार करे खातिर $count माला';
+  }
+
+  @override
+  String get dialog_mic =>
+      'ऑडियो रिकार्ड करे खातिर माइक्रोफोन के अनुमति जरूरी बा।';
+
+  @override
+  String get custom_create => 'आपन मंत्र बनाईं';
+
+  @override
+  String get custom_yourMantra => 'मंत्र के नाम';
+
+  @override
+  String get custom_hint => 'जइसे, ॐ गुरवे नमः';
+
+  @override
+  String get custom_back => 'पृष्ठभूमि चुनीं:';
+
+  @override
+  String get custom_addVoice => 'आपन आवाज जोड़ीं (वैकल्पिक):';
+
+  @override
+  String get custom_recording => 'रिकार्डिंग हो रहल बा...';
+
+  @override
+  String get custom_tapToRecord => 'रिकार्ड करे खातिर माइक पर टैप करीं';
+
+  @override
+  String get custom_saveMantra => 'मंत्र सहेजीं';
+
+  @override
+  String get custom_micAccess =>
+      'ऑडियो रिकार्ड करे खातिर माइक्रोफोन के अनुमति जरूरी बा।';
+
+  @override
+  String get profile_yourCustomMantra => 'हमर कस्टम मंत्र';
+
+  @override
+  String get profile_noCustoms => 'रउआ अबहीं ले कवनो कस्टम मंत्र नइखीं जोड़ले।';
+
+  @override
+  String get profile_addNewMantra => 'नया मंत्र जोड़ीं';
+
+  @override
+  String get dialog_profilePictureUpdate => 'प्रोफाइल चित्र अपडेट हो गइल!';
+
+  @override
+  String get dialog_failedToUpload => 'छवि अपलोड करे में विफल।';
+
+  @override
+  String get dialog_exceptionCard => 'साझा करे लायक कार्ड संदर्भ उपलब्ध नइखे।';
+
+  @override
+  String get dialog_checkoutMyProgress => 'नामजाप ऐप पर हमार प्रगति देखीं!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'प्ले स्टोर ना खुल सकल।';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" हटाईं?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'का रउआ निश्चित बानी? एह मंत्र से जुड़ल सगरी जाप गिनती भी हमेशा खातिर हटा दिहल जाई।';
+
+  @override
+  String get profile_yesDelete => 'हँ, हटाईं';
+
+  @override
+  String get profile_couldNotUserData => 'उपयोगकर्ता डेटा लोड ना हो सकल।';
+
+  @override
+  String get misc_anonymous => 'गुमनाम';
 }

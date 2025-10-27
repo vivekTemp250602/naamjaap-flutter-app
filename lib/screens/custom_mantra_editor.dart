@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/l10n/app_localizations_bh.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -63,9 +65,8 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
       var status = await Permission.microphone.request();
       if (status != PermissionStatus.granted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content:
-                  Text('Microphone permission is required to record audio.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.custom_micAccess)),
         );
         return;
       }
@@ -93,8 +94,6 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
   }
 
   void _deleteRecording() {
-    // We don't need to delete the file yet, just clear the state.
-    // The file will be overwritten on next recording or discarded if user cancels.
     setState(() {
       _newAudioFilePath = null;
       _isAudioSaved = false;
@@ -105,7 +104,7 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Your Mantra"),
+        title: Text(AppLocalizations.of(context)!.custom_create),
       ),
       body: SafeArea(
         child: Column(
@@ -126,7 +125,7 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                       Center(
                         child: Text(
                           _textController.text.isEmpty
-                              ? "Your Mantra"
+                              ? AppLocalizations.of(context)!.custom_yourMantra
                               : _textController.text,
                           style: const TextStyle(
                               color: Colors.white,
@@ -154,15 +153,16 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                     children: [
                       TextField(
                         controller: _textController,
-                        decoration: const InputDecoration(
-                          labelText: "Mantra Name",
-                          hintText: "e.g., Om Gurave Namah",
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.custom_yourMantra,
+                          hintText: AppLocalizations.of(context)!.custom_hint,
+                          border: const OutlineInputBorder(),
                         ),
                         onChanged: (value) => setState(() {}), // Update preview
                       ),
                       const SizedBox(height: 24),
-                      Text("Choose a background:",
+                      Text(AppLocalizations.of(context)!.custom_back,
                           style: Theme.of(context).textTheme.titleSmall),
                       const SizedBox(height: 12),
                       SizedBox(
@@ -198,7 +198,7 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                       const SizedBox(height: 24),
 
                       // --- NEW: THE AUDIO RECORDING UI ---
-                      Text("Add your voice (Optional):",
+                      Text(AppLocalizations.of(context)!.custom_addVoice,
                           style: Theme.of(context).textTheme.titleSmall),
                       const SizedBox(height: 12),
                       Container(
@@ -220,7 +220,8 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                             ),
                             // The playback/status area
                             _isRecording
-                                ? const Text("Recording...")
+                                ? Text(AppLocalizations.of(context)!
+                                    .custom_recording)
                                 : _isAudioSaved
                                     ? Row(
                                         children: [
@@ -235,7 +236,8 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                                           ),
                                         ],
                                       )
-                                    : const Text("Tap the mic to record"),
+                                    : Text(AppLocalizations.of(context)!
+                                        .custom_tapToRecord),
                           ],
                         ),
                       ),
@@ -268,7 +270,8 @@ class _CustomMantraEditorState extends State<CustomMantraEditor> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-                          child: const Text("Save Mantra"),
+                          child: Text(
+                              AppLocalizations.of(context)!.custom_saveMantra),
                         ),
                       ),
                     ],

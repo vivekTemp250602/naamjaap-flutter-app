@@ -262,4 +262,88 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'પૂર્ણ થયેલી માળાઓ';
+
+  @override
+  String get misc_malas => 'માળાઓ';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName ને પસાર કરવા માટે $count માળાઓ';
+  }
+
+  @override
+  String get dialog_mic =>
+      'ઓડિયો રેકોર્ડ કરવા માટે માઇક્રોફોનની પરવાનગી જરૂરી છે.';
+
+  @override
+  String get custom_create => 'તમારો મંત્ર બનાવો';
+
+  @override
+  String get custom_yourMantra => 'મંત્રનું નામ';
+
+  @override
+  String get custom_hint => 'દા.ત., ઓમ ગુરવે નમઃ';
+
+  @override
+  String get custom_back => 'બેકગ્રાઉન્ડ પસંદ કરો:';
+
+  @override
+  String get custom_addVoice => 'તમારો અવાજ ઉમેરો (વૈકલ્પિક):';
+
+  @override
+  String get custom_recording => 'રેકોર્ડિંગ થઈ રહ્યું છે...';
+
+  @override
+  String get custom_tapToRecord => 'રેકોર્ડ કરવા માટે માઇક પર ટેપ કરો';
+
+  @override
+  String get custom_saveMantra => 'મંત્ર સાચવો';
+
+  @override
+  String get custom_micAccess =>
+      'ઓડિયો રેકોર્ડ કરવા માટે માઇક્રોફોનની પરવાનગી જરૂરી છે.';
+
+  @override
+  String get profile_yourCustomMantra => 'મારા કસ્ટમ મંત્રો';
+
+  @override
+  String get profile_noCustoms => 'તમે હજી સુધી કોઈ કસ્ટમ મંત્રો ઉમેર્યા નથી.';
+
+  @override
+  String get profile_addNewMantra => 'નવો મંત્ર ઉમેરો';
+
+  @override
+  String get dialog_profilePictureUpdate => 'પ્રોફાઇલ ચિત્ર અપડેટ થયું!';
+
+  @override
+  String get dialog_failedToUpload => 'છબી અપલોડ કરવામાં નિષ્ફળ.';
+
+  @override
+  String get dialog_exceptionCard =>
+      'શેર કરી શકાય તેવું કાર્ડ સંદર્ભ ઉપલબ્ધ નથી.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'નામજાપ એપ્લિકેશન પર મારી પ્રગતિ તપાસો!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'પ્લે સ્ટોર ખોલી શકાયું નથી.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" કાઢી નાખવું છે?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'શું તમે ચોક્કસ છો? આ મંત્ર સાથે સંકળાયેલ તમામ જાપ ગણતરીઓ પણ કાયમ માટે કાઢી નાખવામાં આવશે.';
+
+  @override
+  String get profile_yesDelete => 'હા, કાઢી નાખો';
+
+  @override
+  String get profile_couldNotUserData => 'વપરાશકર્તા ડેટા લોડ કરી શકાયો નથી.';
+
+  @override
+  String get misc_anonymous => 'અનામિક';
 }

@@ -267,4 +267,90 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'പൂർത്തിയാക്കിയ മാലകൾ';
+
+  @override
+  String get misc_malas => 'മാലകൾ';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName-യെ മറികടക്കാൻ $count മാലകൾ';
+  }
+
+  @override
+  String get dialog_mic =>
+      'ഓഡിയോ റെക്കോർഡ് ചെയ്യാൻ മൈക്രോഫോൺ അനുമതി ആവശ്യമാണ്.';
+
+  @override
+  String get custom_create => 'നിങ്ങളുടെ മന്ത്രം സൃഷ്ടിക്കുക';
+
+  @override
+  String get custom_yourMantra => 'മന്ത്രത്തിൻ്റെ പേര്';
+
+  @override
+  String get custom_hint => 'ഉദാ., ഓം ഗുരവേ നമഃ';
+
+  @override
+  String get custom_back => 'ഒരു പശ്ചാത്തലം തിരഞ്ഞെടുക്കുക:';
+
+  @override
+  String get custom_addVoice => 'നിങ്ങളുടെ ശബ്ദം ചേർക്കുക (ഓപ്ഷണൽ):';
+
+  @override
+  String get custom_recording => 'റെക്കോർഡ് ചെയ്യുന്നു...';
+
+  @override
+  String get custom_tapToRecord => 'റെക്കോർഡ് ചെയ്യാൻ മൈക്കിൽ ടാപ്പുചെയ്യുക';
+
+  @override
+  String get custom_saveMantra => 'മന്ത്രം സേവ് ചെയ്യുക';
+
+  @override
+  String get custom_micAccess =>
+      'ഓഡിയോ റെക്കോർഡ് ചെയ്യാൻ മൈക്രോഫോൺ അനുമതി ആവശ്യമാണ്.';
+
+  @override
+  String get profile_yourCustomMantra => 'എൻ്റെ ഇഷ്ടാനുസൃത മന്ത്രങ്ങൾ';
+
+  @override
+  String get profile_noCustoms =>
+      'നിങ്ങൾ ഇതുവരെ ഇഷ്ടാനുസൃത മന്ത്രങ്ങളൊന്നും ചേർത്തിട്ടില്ല.';
+
+  @override
+  String get profile_addNewMantra => 'പുതിയ മന്ത്രം ചേർക്കുക';
+
+  @override
+  String get dialog_profilePictureUpdate => 'പ്രൊഫൈൽ ചിത്രം അപ്ഡേറ്റ് ചെയ്തു!';
+
+  @override
+  String get dialog_failedToUpload =>
+      'ചിത്രം അപ്‌ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.';
+
+  @override
+  String get dialog_exceptionCard => 'പങ്കിടാവുന്ന കാർഡ് സന്ദർഭം ലഭ്യമല്ല.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'നാംജാപ് ആപ്പിലെ എൻ്റെ പുരോഗതി പരിശോധിക്കുക!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play Store തുറക്കാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" ഇല്ലാതാക്കണോ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ മന്ത്രവുമായി ബന്ധപ്പെട്ട എല്ലാ ജപ എണ്ണങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും.';
+
+  @override
+  String get profile_yesDelete => 'അതെ, ഇല്ലാതാക്കുക';
+
+  @override
+  String get profile_couldNotUserData =>
+      'ഉപയോക്തൃ ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get misc_anonymous => 'അജ്ഞാതൻ';
 }

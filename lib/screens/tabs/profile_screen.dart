@@ -159,13 +159,15 @@ class _ProfileScreenState extends State<ProfileScreen>
       await _firestoreService.updateUserProfilePicture(
           _currentUser.uid, downloadUrl);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile picture updated!')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.dialog_profilePictureUpdate)));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to upload image.')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.dialog_failedToUpload)));
       }
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -195,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   Future<void> _captureAndShareImage() async {
     try {
       if (_shareCardKey.currentContext == null) {
-        throw Exception("Shareable card context is not available.");
+        throw Exception(AppLocalizations.of(context)!.dialog_exceptionCard);
       }
 
       RenderRepaintBoundary boundary = _shareCardKey.currentContext!
@@ -211,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       await file.writeAsBytes(pngBytes);
 
       await Share.shareXFiles([XFile(file.path)],
-          text: 'Check out my progress on the NaamJaap app!');
+          text: AppLocalizations.of(context)!.dialog_checkoutMyProgress);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -304,7 +306,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open Play Store.')),
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context)!.dialog_couldNotOpenPS)),
         );
       }
     }
@@ -316,9 +320,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text('Delete "${mantra.name}"?'),
-        content: const Text(
-            'Are you sure? All japa counts associated with this mantra will also be permanently deleted.'),
+        title: Text(AppLocalizations.of(context)!
+            .profile_deleteMantra('{mantra.name}')),
+        content: Text(AppLocalizations.of(context)!.profile_deleteMantraSure),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
@@ -330,10 +334,10 @@ class _ProfileScreenState extends State<ProfileScreen>
               provider.deleteCustomMantra(mantra.id);
               Navigator.of(dialogContext).pop();
             },
-            child: const Text(
-              'Yes, Delete',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.profile_yesDelete,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -370,7 +374,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                  return const Center(child: Text("Could not load user data."));
+                  return Center(
+                      child: Text(AppLocalizations.of(context)!
+                          .profile_couldNotUserData));
                 }
 
                 final userData =
@@ -770,13 +776,14 @@ class _ProfileScreenState extends State<ProfileScreen>
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text("My Custom Mantras",
+                child: Text(
+                    AppLocalizations.of(context)!.profile_yourCustomMantra,
                     style: Theme.of(context).textTheme.titleLarge),
               ),
               if (customMantras.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text("You haven't added any custom mantras yet."),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(AppLocalizations.of(context)!.profile_noCustoms),
                 ),
               ...customMantras.map((mantra) {
                 return ListTile(
@@ -793,7 +800,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               ListTile(
                 leading:
                     const Icon(Icons.add_circle_outline, color: Colors.green),
-                title: const Text("Add New Mantra"),
+                title: Text(AppLocalizations.of(context)!.profile_addNewMantra),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

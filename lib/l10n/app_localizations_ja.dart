@@ -259,4 +259,84 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get garden_totalMala => '完了したマーラー';
+
+  @override
+  String get misc_malas => 'マーラー';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName を追い越すまであと $count マーラー';
+  }
+
+  @override
+  String get dialog_mic => '音声を録音するにはマイクの権限が必要です。';
+
+  @override
+  String get custom_create => 'あなたのマントラを作成';
+
+  @override
+  String get custom_yourMantra => 'マントラの名前';
+
+  @override
+  String get custom_hint => '例：Om Gurave Namah';
+
+  @override
+  String get custom_back => '背景を選択：';
+
+  @override
+  String get custom_addVoice => 'あなたの声を追加（任意）：';
+
+  @override
+  String get custom_recording => '録音中...';
+
+  @override
+  String get custom_tapToRecord => 'マイクをタップして録音';
+
+  @override
+  String get custom_saveMantra => 'マントラを保存';
+
+  @override
+  String get custom_micAccess => '音声を録音するにはマイクの権限が必要です。';
+
+  @override
+  String get profile_yourCustomMantra => 'マイカスタムマントラ';
+
+  @override
+  String get profile_noCustoms => 'まだカスタムマントラを追加していません。';
+
+  @override
+  String get profile_addNewMantra => '新しいマントラを追加';
+
+  @override
+  String get dialog_profilePictureUpdate => 'プロフィール写真が更新されました！';
+
+  @override
+  String get dialog_failedToUpload => '画像のアップロードに失敗しました。';
+
+  @override
+  String get dialog_exceptionCard => '共有可能なカードコンテキストは利用できません。';
+
+  @override
+  String get dialog_checkoutMyProgress => 'NaamJaap アプリでの私の進捗を見てください！';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play ストアを開けませんでした。';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" を削除しますか？';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'よろしいですか？ このマントラに関連するすべてのジャパカウントも完全に削除されます。';
+
+  @override
+  String get profile_yesDelete => 'はい、削除します';
+
+  @override
+  String get profile_couldNotUserData => 'ユーザーデータを読み込めませんでした。';
+
+  @override
+  String get misc_anonymous => '匿名';
 }

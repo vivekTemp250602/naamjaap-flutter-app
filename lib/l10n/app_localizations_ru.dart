@@ -267,4 +267,89 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'Завершенные Малы';
+
+  @override
+  String get misc_malas => 'Малы';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$count мал, чтобы обойти $playerName';
+  }
+
+  @override
+  String get dialog_mic =>
+      'Требуется разрешение на использование микрофона для записи аудио.';
+
+  @override
+  String get custom_create => 'Создайте свою Мантру';
+
+  @override
+  String get custom_yourMantra => 'Название Мантры';
+
+  @override
+  String get custom_hint => 'например, Om Gurave Namah';
+
+  @override
+  String get custom_back => 'Выберите фон:';
+
+  @override
+  String get custom_addVoice => 'Добавьте свой голос (Необязательно):';
+
+  @override
+  String get custom_recording => 'Запись...';
+
+  @override
+  String get custom_tapToRecord => 'Нажмите на микрофон для записи';
+
+  @override
+  String get custom_saveMantra => 'Сохранить Мантру';
+
+  @override
+  String get custom_micAccess =>
+      'Требуется разрешение на использование микрофона для записи аудио.';
+
+  @override
+  String get profile_yourCustomMantra => 'Мои пользовательские Мантры';
+
+  @override
+  String get profile_noCustoms =>
+      'Вы еще не добавили ни одной пользовательской мантры.';
+
+  @override
+  String get profile_addNewMantra => 'Добавить новую Мантру';
+
+  @override
+  String get dialog_profilePictureUpdate => 'Изображение профиля обновлено!';
+
+  @override
+  String get dialog_failedToUpload => 'Не удалось загрузить изображение.';
+
+  @override
+  String get dialog_exceptionCard => 'Контекст карточки для обмена недоступен.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'Посмотрите мой прогресс в приложении NaamJaap!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Не удалось открыть Play Store.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return 'Удалить \"$mantraName\"?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'Вы уверены? Все счетчики джапы, связанные с этой мантрой, также будут навсегда удалены.';
+
+  @override
+  String get profile_yesDelete => 'Да, Удалить';
+
+  @override
+  String get profile_couldNotUserData =>
+      'Не удалось загрузить данные пользователя.';
+
+  @override
+  String get misc_anonymous => 'Анонимный';
 }

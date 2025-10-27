@@ -259,4 +259,84 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get garden_totalMala => '완료된 말라';
+
+  @override
+  String get misc_malas => '말라';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName님을 추월하기까지 $count 말라';
+  }
+
+  @override
+  String get dialog_mic => '오디오를 녹음하려면 마이크 권한이 필요합니다.';
+
+  @override
+  String get custom_create => '나만의 만트라 만들기';
+
+  @override
+  String get custom_yourMantra => '만트라 이름';
+
+  @override
+  String get custom_hint => '예: Om Gurave Namah';
+
+  @override
+  String get custom_back => '배경 선택:';
+
+  @override
+  String get custom_addVoice => '음성 추가 (선택 사항):';
+
+  @override
+  String get custom_recording => '녹음 중...';
+
+  @override
+  String get custom_tapToRecord => '녹음하려면 마이크를 탭하세요';
+
+  @override
+  String get custom_saveMantra => '만트라 저장';
+
+  @override
+  String get custom_micAccess => '오디오를 녹음하려면 마이크 권한이 필요합니다.';
+
+  @override
+  String get profile_yourCustomMantra => '나의 맞춤 만트라';
+
+  @override
+  String get profile_noCustoms => '아직 추가한 맞춤 만트라가 없습니다.';
+
+  @override
+  String get profile_addNewMantra => '새 만트라 추가';
+
+  @override
+  String get dialog_profilePictureUpdate => '프로필 사진이 업데이트되었습니다!';
+
+  @override
+  String get dialog_failedToUpload => '이미지 업로드 실패.';
+
+  @override
+  String get dialog_exceptionCard => '공유 가능한 카드 컨텍스트를 사용할 수 없습니다.';
+
+  @override
+  String get dialog_checkoutMyProgress => 'NaamJaap 앱에서 제 진행 상황을 확인하세요!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play 스토어를 열 수 없습니다.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\"을(를) 삭제하시겠습니까?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      '확실하신가요? 이 만트라와 관련된 모든 자파 횟수도 영구적으로 삭제됩니다.';
+
+  @override
+  String get profile_yesDelete => '예, 삭제합니다';
+
+  @override
+  String get profile_couldNotUserData => '사용자 데이터를 로드할 수 없습니다.';
+
+  @override
+  String get misc_anonymous => '익명';
 }

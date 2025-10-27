@@ -267,4 +267,88 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'முழுமையான மாலைகள்';
+
+  @override
+  String get misc_malas => 'மாலைகள்';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName ஐ கடக்க $count மாலைகள்';
+  }
+
+  @override
+  String get dialog_mic => 'ஆடியோவைப் பதிவுசெய்ய மைக்ரோஃபோன் அனுமதி தேவை.';
+
+  @override
+  String get custom_create => 'உங்கள் மந்திரத்தை உருவாக்கவும்';
+
+  @override
+  String get custom_yourMantra => 'மந்திரத்தின் பெயர்';
+
+  @override
+  String get custom_hint => 'எ.கா., ஓம் குரவே நமஹ';
+
+  @override
+  String get custom_back => 'ஒரு பின்னணியைத் தேர்வுசெய்க:';
+
+  @override
+  String get custom_addVoice => 'உங்கள் குரலைச் சேர்க்கவும் (விருப்பத்தேர்வு):';
+
+  @override
+  String get custom_recording => 'பதிவுசெய்கிறது...';
+
+  @override
+  String get custom_tapToRecord => 'பதிவுசெய்ய மைக்கைத் தட்டவும்';
+
+  @override
+  String get custom_saveMantra => 'மந்திரத்தைச் சேமி';
+
+  @override
+  String get custom_micAccess =>
+      'ஆடியோவைப் பதிவுசெய்ய மைக்ரோஃபோன் அனுமதி தேவை.';
+
+  @override
+  String get profile_yourCustomMantra => 'எனது தனிப்பயன் மந்திரங்கள்';
+
+  @override
+  String get profile_noCustoms =>
+      'நீங்கள் இன்னும் எந்த தனிப்பயன் மந்திரங்களையும் சேர்க்கவில்லை.';
+
+  @override
+  String get profile_addNewMantra => 'புதிய மந்திரத்தைச் சேர்';
+
+  @override
+  String get dialog_profilePictureUpdate =>
+      'சுயவிவரப் படம் புதுப்பிக்கப்பட்டது!';
+
+  @override
+  String get dialog_failedToUpload => 'படத்தைப் பதிவேற்ற முடியவில்லை.';
+
+  @override
+  String get dialog_exceptionCard => 'பகிரக்கூடிய அட்டை சூழல் கிடைக்கவில்லை.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'நாம்ஜாப் பயன்பாட்டில் எனது முன்னேற்றத்தைப் பாருங்கள்!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Play Store ஐத் திறக்க முடியவில்லை.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" ஐ நீக்கவா?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'உங்களுக்கு உறுதியாகத் தெரியுமா? இந்த மந்திரத்துடன் தொடர்புடைய அனைத்து ஜப எண்ணிக்கைகளும் நிரந்தரமாக நீக்கப்படும்.';
+
+  @override
+  String get profile_yesDelete => 'ஆம், நீக்கு';
+
+  @override
+  String get profile_couldNotUserData => 'பயனர் தரவை ஏற்ற முடியவில்லை.';
+
+  @override
+  String get misc_anonymous => 'அடையாளம் தெரியாதவர்';
 }

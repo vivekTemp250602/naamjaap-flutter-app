@@ -186,17 +186,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                                         ? (userData['total_japps'] ?? 0)
                                         : (userData['weekly_total_japps'] ?? 0);
 
+                                    final malasCount =
+                                        (jappsCount / 108).floor();
+
                                     Widget card;
                                     if (rank <= 3) {
                                       card = _buildTopRankCard(context, rank,
-                                          userData, isCurrentUser, jappsCount);
+                                          userData, isCurrentUser, malasCount);
                                     } else {
                                       card = _buildStandardRankCard(
                                           context,
                                           rank,
                                           userData,
                                           isCurrentUser,
-                                          jappsCount);
+                                          malasCount);
                                     }
 
                                     return GestureDetector(
@@ -294,7 +297,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  userData['name'] ?? 'Anonymous',
+                  userData['name'] ??
+                      AppLocalizations.of(context)!.misc_anonymous,
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
@@ -354,8 +358,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
     // Build the "Race to the Top" subtitle text
     String buildSubtitle() {
-      if (currentUserRank == -1) return "Keep chanting to get on the board!";
-      if (currentUserRank == 1) return "You're at the top! ✨";
+      if (currentUserRank == -1)
+        return AppLocalizations.of(context)!.leaderboard_notOnBoard;
+      if (currentUserRank == 1)
+        return AppLocalizations.of(context)!.leaderboard_topOfBoard;
 
       final currentUserData = currentUserDoc!.data() as Map<String, dynamic>;
       final userAboveDoc = leaderboardDocs[
@@ -364,8 +370,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
       final japsNeeded = (userAboveData['total_japps'] ?? 0) -
           (currentUserData['total_japps'] ?? 0);
+
+      final malasNeeded = (japsNeeded / 108).floor();
+
       // return "$japsNeeded japps to pass ${userAboveData['name'] ?? '...'}!";
-      return "${AppLocalizations.of(context)!.leaderboard_jappsToPass(japsNeeded, "${userAboveData['name'] ?? '...'}")}!";
+      return "${AppLocalizations.of(context)!.leaderboard_malasToPass(malasNeeded, "${userAboveData['name'] ?? '...'}")}!";
     }
 
     return Card(
@@ -414,7 +423,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
         ),
         title: Text(userData['name'] ?? 'Anonymous'),
         subtitle:
-            Text('$jappsCount ${AppLocalizations.of(context)!.misc_japps}'),
+            Text('$jappsCount ${AppLocalizations.of(context)!.misc_malas}'),
         trailing: CircleAvatar(
           backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
         ),
@@ -477,7 +486,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
           ),
           subtitle: Text(
-            '$jappsCount ${AppLocalizations.of(context)!.misc_japps}',
+            '$jappsCount ${AppLocalizations.of(context)!.misc_malas}',
             style: TextStyle(color: Colors.white.withAlpha(200)),
           ),
           trailing: CircleAvatar(

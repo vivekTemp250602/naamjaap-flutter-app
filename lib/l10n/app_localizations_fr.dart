@@ -270,4 +270,90 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'Malas Terminés';
+
+  @override
+  String get misc_malas => 'Malas';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$count malas pour dépasser $playerName';
+  }
+
+  @override
+  String get dialog_mic =>
+      'L\'autorisation du microphone est requise pour enregistrer l\'audio.';
+
+  @override
+  String get custom_create => 'Créez votre Mantra';
+
+  @override
+  String get custom_yourMantra => 'Nom du Mantra';
+
+  @override
+  String get custom_hint => 'ex., Om Gurave Namah';
+
+  @override
+  String get custom_back => 'Choisissez un arrière-plan :';
+
+  @override
+  String get custom_addVoice => 'Ajoutez votre voix (Optionnel) :';
+
+  @override
+  String get custom_recording => 'Enregistrement...';
+
+  @override
+  String get custom_tapToRecord => 'Appuyez sur le micro pour enregistrer';
+
+  @override
+  String get custom_saveMantra => 'Enregistrer le Mantra';
+
+  @override
+  String get custom_micAccess =>
+      'L\'autorisation du microphone est requise pour enregistrer l\'audio.';
+
+  @override
+  String get profile_yourCustomMantra => 'Mes Mantras Personnalisés';
+
+  @override
+  String get profile_noCustoms =>
+      'Vous n\'avez pas encore ajouté de mantras personnalisés.';
+
+  @override
+  String get profile_addNewMantra => 'Ajouter un Nouveau Mantra';
+
+  @override
+  String get dialog_profilePictureUpdate => 'Photo de profil mise à jour !';
+
+  @override
+  String get dialog_failedToUpload => 'Échec du téléchargement de l\'image.';
+
+  @override
+  String get dialog_exceptionCard =>
+      'Le contexte de la carte partageable n\'est pas disponible.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'Découvrez ma progression sur l\'application NaamJaap !';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Impossible d\'ouvrir le Play Store.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return 'Supprimer \"$mantraName\" ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'Êtes-vous sûr ? Tous les comptes de japa associés à ce mantra seront également supprimés de façon permanente.';
+
+  @override
+  String get profile_yesDelete => 'Oui, Supprimer';
+
+  @override
+  String get profile_couldNotUserData =>
+      'Impossible de charger les données utilisateur.';
+
+  @override
+  String get misc_anonymous => 'Anonyme';
 }

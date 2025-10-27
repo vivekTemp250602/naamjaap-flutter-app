@@ -262,4 +262,86 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get garden_totalMala => 'Malas Completed';
+
+  @override
+  String get misc_malas => 'Malas';
+
+  @override
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$count malas to pass $playerName';
+  }
+
+  @override
+  String get dialog_mic => 'Microphone permission is required to record audio.';
+
+  @override
+  String get custom_create => 'Create Your Mantra';
+
+  @override
+  String get custom_yourMantra => 'Mantra Name';
+
+  @override
+  String get custom_hint => 'e.g., Om Gurave Namah';
+
+  @override
+  String get custom_back => 'Choose a background:';
+
+  @override
+  String get custom_addVoice => 'Add your voice (Optional):';
+
+  @override
+  String get custom_recording => 'Recording...';
+
+  @override
+  String get custom_tapToRecord => 'Tap the mic to record';
+
+  @override
+  String get custom_saveMantra => 'Save Mantra';
+
+  @override
+  String get custom_micAccess =>
+      'Microphone permission is required to record audio.';
+
+  @override
+  String get profile_yourCustomMantra => 'My Custom Mantras';
+
+  @override
+  String get profile_noCustoms => 'You haven\'t added any custom mantras yet.';
+
+  @override
+  String get profile_addNewMantra => 'Add New Mantra';
+
+  @override
+  String get dialog_profilePictureUpdate => 'Profile picture updated!';
+
+  @override
+  String get dialog_failedToUpload => 'Failed to upload image.';
+
+  @override
+  String get dialog_exceptionCard => 'Shareable card context is not available.';
+
+  @override
+  String get dialog_checkoutMyProgress =>
+      'Check out my progress on the NaamJaap app!';
+
+  @override
+  String get dialog_couldNotOpenPS => 'Could not open Play Store.';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return 'Delete \"$mantraName\"?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'Are you sure? All japa counts associated with this mantra will also be permanently deleted.';
+
+  @override
+  String get profile_yesDelete => 'Yes, Delete';
+
+  @override
+  String get profile_couldNotUserData => 'Could not load user data.';
+
+  @override
+  String get misc_anonymous => 'Anonymous';
 }

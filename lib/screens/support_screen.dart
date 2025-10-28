@@ -93,6 +93,7 @@ class _SupportScreenState extends State<SupportScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Pre-defined Currency options
               _buildAmountChip('21'),
               _buildAmountChip('51'),
               _buildAmountChip('101'),

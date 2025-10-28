@@ -398,4 +398,34 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'இலக்கு எண்ணிக்கை உங்கள் தற்போதைய எண்ணிக்கையை விட அதிகமாக இருக்க வேண்டும்.';
+
+  @override
+  String get support_openUPI => 'உங்கள் UPI செயலியைத் திறக்கிறது...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI செயலியைத் தொடங்க முடியவில்லை.';
+
+  @override
+  String get support_upiError =>
+      'பிழை: திறக்க UPI செயலி எதுவும் கிடைக்கவில்லை.';
+
+  @override
+  String get support_title => 'உங்கள் சேவை எங்கள் சமூகத்தை வளர்க்க உதவுகிறது';
+
+  @override
+  String get support_desc =>
+      'நாம் ஜாப் என்பது அன்பின் உழைப்பு, ஒரு தனி டெவலப்பரால் உருவாக்கப்பட்டது. உங்கள் தன்னலமற்ற பங்களிப்பு (சேவை) சேவையகங்களை இயங்க வைக்கவும், விளம்பரங்களைக் குறைக்கவும், அனைத்து பக்தர்களுக்கும் பயன்பாட்டை இலவசமாக வைத்திருக்கவும் உதவுகிறது.';
+
+  @override
+  String get support_chooseOffering => 'ஒரு காணிக்கையைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get support_enterAmt => 'அல்லது ஒரு விருப்பத் தொகையை உள்ளிடவும் (INR)';
+
+  @override
+  String get support_validAmt =>
+      'தயவுசெய்து சரியான தொகையைத் தேர்ந்தெடுக்கவும் அல்லது உள்ளிடவும்.';
+
+  @override
+  String get support_now => 'இப்போது ஆதரிக்கவும்';
 }

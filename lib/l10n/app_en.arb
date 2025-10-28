@@ -135,5 +135,14 @@
     "dialog_sankalpaSelectDate": "Select a date",
     "dialog_sankalpaSetPledge": "Set My Vow",
     "dialog_sankalpaError": "Please fill all fields correctly.",
-    "dialog_sankalpaErrorTarget": "Target count must be greater than your current count."
+    "dialog_sankalpaErrorTarget": "Target count must be greater than your current count.",
+    "support_openUPI": "Opening your UPI app...",
+    "support_cannotOpenUPI": "Could not launch UPI app.",
+    "support_upiError": "Error: Could not find a UPI app to open.",
+    "support_title": "Your Seva Helps Our Community Grow",
+    "support_desc": "Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.",
+    "support_chooseOffering": "CHOOSE AN OFFERING",
+    "support_enterAmt": "Or enter a custom amount (INR)",
+    "support_validAmt": "Please select or enter a valid amount.",
+    "support_now": "Support Now"
 }

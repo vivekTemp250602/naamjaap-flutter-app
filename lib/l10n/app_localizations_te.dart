@@ -400,4 +400,33 @@ class AppLocalizationsTe extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'లక్ష్య గణన మీ ప్రస్తుత గణన కంటే ఎక్కువగా ఉండాలి.';
+
+  @override
+  String get support_openUPI => 'మీ UPI యాప్ తెరవబడుతోంది...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI యాప్‌ను ప్రారంభించలేకపోయింది.';
+
+  @override
+  String get support_upiError => 'లోపం: తెరవడానికి UPI యాప్ కనుగొనబడలేదు.';
+
+  @override
+  String get support_title => 'మీ సేవ మా సంఘం వృద్ధి చెందడానికి సహాయపడుతుంది';
+
+  @override
+  String get support_desc =>
+      'నామ్ జాప్ అనేది ప్రేమతో చేసిన శ్రమ, దీనిని ఒక సోలో డెవలపర్ రూపొందించారు. మీ నిస్వార్థ సహకారం (సేవ) సర్వర్‌లను నడుపుతూ ఉంచడానికి, ప్రకటనలను కనిష్టంగా ఉంచడానికి మరియు భక్తులందరికీ యాప్‌ను ఉచితంగా ఉంచడానికి సహాయపడుతుంది.';
+
+  @override
+  String get support_chooseOffering => 'ఒక నైవేద్యాన్ని ఎంచుకోండి';
+
+  @override
+  String get support_enterAmt => 'లేదా అనుకూల మొత్తాన్ని నమోదు చేయండి (INR)';
+
+  @override
+  String get support_validAmt =>
+      'దయచేసి చెల్లుబాటు అయ్యే మొత్తాన్ని ఎంచుకోండి లేదా నమోదు చేయండి.';
+
+  @override
+  String get support_now => 'ఇప్పుడే మద్దతు ఇవ్వండి';
 }

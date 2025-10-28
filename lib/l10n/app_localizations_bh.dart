@@ -392,4 +392,32 @@ class AppLocalizationsBh extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'लक्ष्य गिनती राउर वर्तमान गिनती से अधिका होखे के चाहीं।';
+
+  @override
+  String get support_openUPI => 'रउआ UPI ऐप खुल रहल बा...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI ऐप लॉन्च ना हो सकल।';
+
+  @override
+  String get support_upiError => 'त्रुटि: खोले खातिर कवनो UPI ऐप ना मिलल।';
+
+  @override
+  String get support_title => 'रउआ सेवा हमनी के समुदाय के बढ़े में मदद करेला';
+
+  @override
+  String get support_desc =>
+      'नाम जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।';
+
+  @override
+  String get support_chooseOffering => 'एगो भेंट चुनीं';
+
+  @override
+  String get support_enterAmt => 'चाहे एगो कस्टम राशि डालीं (INR)';
+
+  @override
+  String get support_validAmt => 'कृपया एगो मान्य राशि चुनीं चाहे डालीं।';
+
+  @override
+  String get support_now => 'अबहीं समर्थन करीं';
 }

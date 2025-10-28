@@ -133,5 +133,14 @@
   "dialog_sankalpaSelectDate": "Datum auswählen",
   "dialog_sankalpaSetPledge": "Mein Gelübde festlegen",
   "dialog_sankalpaError": "Bitte fülle alle Felder korrekt aus.",
-  "dialog_sankalpaErrorTarget": "Die Zielanzahl muss größer sein als deine aktuelle Anzahl."
+  "dialog_sankalpaErrorTarget": "Die Zielanzahl muss größer sein als deine aktuelle Anzahl.",
+  "support_openUPI": "正在打开您的 UPI 应用...",
+  "support_cannotOpenUPI": "无法启动 UPI 应用。",
+  "support_upiError": "错误：找不到可打开的 UPI 应用。",
+  "support_title": "您的奉献帮助我们的社区成长",
+  "support_desc": "Naam Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。",
+  "support_chooseOffering": "选择一份供养",
+  "support_enterAmt": "或输入自定义金额 (INR)",
+  "support_validAmt": "请输入或选择有效金额。",
+  "support_now": "立即支持"
 }

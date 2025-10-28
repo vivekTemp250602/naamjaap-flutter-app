@@ -385,4 +385,32 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'Die Zielanzahl muss größer sein als deine aktuelle Anzahl.';
+
+  @override
+  String get support_openUPI => '正在打开您的 UPI 应用...';
+
+  @override
+  String get support_cannotOpenUPI => '无法启动 UPI 应用。';
+
+  @override
+  String get support_upiError => '错误：找不到可打开的 UPI 应用。';
+
+  @override
+  String get support_title => '您的奉献帮助我们的社区成长';
+
+  @override
+  String get support_desc =>
+      'Naam Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。';
+
+  @override
+  String get support_chooseOffering => '选择一份供养';
+
+  @override
+  String get support_enterAmt => '或输入自定义金额 (INR)';
+
+  @override
+  String get support_validAmt => '请输入或选择有效金额。';
+
+  @override
+  String get support_now => '立即支持';
 }

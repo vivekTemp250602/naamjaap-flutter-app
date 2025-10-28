@@ -385,4 +385,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dialog_sankalpaErrorTarget => '목표 횟수는 현재 횟수보다 커야 합니다.';
+
+  @override
+  String get support_openUPI => 'UPI 앱을 여는 중...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI 앱을 실행할 수 없습니다.';
+
+  @override
+  String get support_upiError => '오류: 열 수 있는 UPI 앱을 찾을 수 없습니다.';
+
+  @override
+  String get support_title => '당신의 봉사는 우리 커뮤니티 성장에 도움이 됩니다';
+
+  @override
+  String get support_desc =>
+      'Naam Jaap은 한 명의 개발자가 사랑으로 만든 앱입니다. 당신의 이타적인 기여(봉사)는 서버를 운영하고, 광고를 최소화하며, 모든 신자들이 앱을 무료로 사용할 수 있도록 돕습니다.';
+
+  @override
+  String get support_chooseOffering => '공양 선택하기';
+
+  @override
+  String get support_enterAmt => '또는 사용자 지정 금액 입력 (INR)';
+
+  @override
+  String get support_validAmt => '유효한 금액을 선택하거나 입력해주세요.';
+
+  @override
+  String get support_now => '지금 지원하기';
 }

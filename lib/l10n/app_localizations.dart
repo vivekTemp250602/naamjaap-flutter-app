@@ -857,6 +857,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Target count must be greater than your current count.'**
   String get dialog_sankalpaErrorTarget;
+
+  /// No description provided for @support_openUPI.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening your UPI app...'**
+  String get support_openUPI;
+
+  /// No description provided for @support_cannotOpenUPI.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not launch UPI app.'**
+  String get support_cannotOpenUPI;
+
+  /// No description provided for @support_upiError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: Could not find a UPI app to open.'**
+  String get support_upiError;
+
+  /// No description provided for @support_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Seva Helps Our Community Grow'**
+  String get support_title;
+
+  /// No description provided for @support_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
+  String get support_desc;
+
+  /// No description provided for @support_chooseOffering.
+  ///
+  /// In en, this message translates to:
+  /// **'CHOOSE AN OFFERING'**
+  String get support_chooseOffering;
+
+  /// No description provided for @support_enterAmt.
+  ///
+  /// In en, this message translates to:
+  /// **'Or enter a custom amount (INR)'**
+  String get support_enterAmt;
+
+  /// No description provided for @support_validAmt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select or enter a valid amount.'**
+  String get support_validAmt;
+
+  /// No description provided for @support_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Now'**
+  String get support_now;
 }
 
 class _AppLocalizationsDelegate

@@ -400,4 +400,34 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'Целевое количество должно быть больше вашего текущего количества.';
+
+  @override
+  String get support_openUPI => 'Открываем ваше приложение UPI...';
+
+  @override
+  String get support_cannotOpenUPI => 'Не удалось запустить приложение UPI.';
+
+  @override
+  String get support_upiError =>
+      'Ошибка: Не удалось найти приложение UPI для открытия.';
+
+  @override
+  String get support_title => 'Ваше Сева помогает нашему сообществу расти';
+
+  @override
+  String get support_desc =>
+      'Naam Jaap — это труд любви, созданный одним разработчиком. Ваш бескорыстный вклад (Сева) помогает поддерживать работу серверов, минимизировать рекламу и делать приложение бесплатным для всех преданных.';
+
+  @override
+  String get support_chooseOffering => 'ВЫБЕРИТЕ ПОДНОШЕНИЕ';
+
+  @override
+  String get support_enterAmt => 'Или введите свою сумму (INR)';
+
+  @override
+  String get support_validAmt =>
+      'Пожалуйста, выберите или введите действительную сумму.';
+
+  @override
+  String get support_now => 'Поддержать сейчас';
 }

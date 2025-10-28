@@ -401,4 +401,35 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'ലക്ഷ്യ എണ്ണം നിങ്ങളുടെ നിലവിലെ എണ്ണത്തേക്കാൾ വലുതായിരിക്കണം.';
+
+  @override
+  String get support_openUPI => 'നിങ്ങളുടെ UPI ആപ്പ് തുറക്കുന്നു...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI ആപ്പ് ലോഞ്ച് ചെയ്യാൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get support_upiError =>
+      'പിശക്: തുറക്കാൻ ഒരു UPI ആപ്പ് കണ്ടെത്താൻ കഴിഞ്ഞില്ല.';
+
+  @override
+  String get support_title =>
+      'നിങ്ങളുടെ സേവനം ഞങ്ങളുടെ സമൂഹത്തെ വളരാൻ സഹായിക്കുന്നു';
+
+  @override
+  String get support_desc =>
+      'നാം ജാപ് സ്നേഹത്തിൻ്റെ പ്രയത്നമാണ്, ഒരു സോളോ ഡെവലപ്പർ നിർമ്മിച്ചത്. നിങ്ങളുടെ നിസ്വാർത്ഥ സംഭാവന (സേവനം) സെർവറുകൾ പ്രവർത്തിപ്പിക്കാനും പരസ്യങ്ങൾ കുറയ്ക്കാനും എല്ലാ ഭക്തർക്കും ആപ്പ് സൗജന്യമായി നിലനിർത്താനും സഹായിക്കുന്നു.';
+
+  @override
+  String get support_chooseOffering => 'ഒരു വഴിപാട് തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get support_enterAmt => 'അല്ലെങ്കിൽ ഒരു ഇഷ്ടാനുസൃത തുക നൽകുക (INR)';
+
+  @override
+  String get support_validAmt =>
+      'ദയവായി സാധുവായ ഒരു തുക തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ നൽകുക.';
+
+  @override
+  String get support_now => 'ഇപ്പോൾ പിന്തുണയ്ക്കുക';
 }

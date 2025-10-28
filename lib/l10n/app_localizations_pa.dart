@@ -393,4 +393,33 @@ class AppLocalizationsPa extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'ਟੀਚਾ ਗਿਣਤੀ ਤੁਹਾਡੀ ਮੌਜੂਦਾ ਗਿਣਤੀ ਤੋਂ ਵੱਧ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।';
+
+  @override
+  String get support_openUPI => 'ਤੁਹਾਡੀ UPI ਐਪ ਖੁੱਲ੍ਹ ਰਹੀ ਹੈ...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI ਐਪ ਲਾਂਚ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ।';
+
+  @override
+  String get support_upiError => 'ਤਰੁੱਟੀ: ਖੋਲ੍ਹਣ ਲਈ ਕੋਈ UPI ਐਪ ਨਹੀਂ ਮਿਲੀ।';
+
+  @override
+  String get support_title =>
+      'ਤੁਹਾਡੀ ਸੇਵਾ ਸਾਡੇ ਭਾਈਚਾਰੇ ਨੂੰ ਵਧਣ ਵਿੱਚ ਮਦਦ ਕਰਦੀ ਹੈ';
+
+  @override
+  String get support_desc =>
+      'ਨਾਮ ਜਾਪ ਪਿਆਰ ਦੀ ਮਿਹਨਤ ਹੈ, ਜੋ ਇੱਕ ਇਕੱਲੇ ਡਿਵੈਲਪਰ ਦੁਆਰਾ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਤੁਹਾਡਾ ਨਿਰਸਵਾਰਥ ਯੋਗਦਾਨ (ਸੇਵਾ) ਸਰਵਰਾਂ ਨੂੰ ਚਾਲੂ ਰੱਖਣ, ਇਸ਼ਤਿਹਾਰਾਂ ਨੂੰ ਘੱਟ ਤੋਂ ਘੱਟ ਰੱਖਣ, ਅਤੇ ਸਾਰੇ ਸ਼ਰਧਾਲੂਆਂ ਲਈ ਐਪ ਨੂੰ ਮੁਫਤ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।';
+
+  @override
+  String get support_chooseOffering => 'ਇੱਕ ਭੇਟਾ ਚੁਣੋ';
+
+  @override
+  String get support_enterAmt => 'ਜਾਂ ਇੱਕ ਕਸਟਮ ਰਕਮ ਦਾਖਲ ਕਰੋ (INR)';
+
+  @override
+  String get support_validAmt => 'ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਰਕਮ ਚੁਣੋ ਜਾਂ ਦਾਖਲ ਕਰੋ।';
+
+  @override
+  String get support_now => 'ਹੁਣੇ ਸਮਰਥਨ ਕਰੋ';
 }

@@ -393,4 +393,33 @@ class AppLocalizationsGu extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'લક્ષ્ય ગણતરી તમારી વર્તમાન ગણતરી કરતાં વધુ હોવી જોઈએ.';
+
+  @override
+  String get support_openUPI => 'તમારી UPI એપ્લિકેશન ખુલી રહી છે...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI એપ્લિકેશન લૉન્ચ કરી શકાઈ નથી.';
+
+  @override
+  String get support_upiError => 'ભૂલ: ખોલવા માટે કોઈ UPI એપ્લિકેશન મળી નથી.';
+
+  @override
+  String get support_title =>
+      'તમારી સેવા અમારા સમુદાયને વૃદ્ધિ કરવામાં મદદ કરે છે';
+
+  @override
+  String get support_desc =>
+      'નામ જાપ એ પ્રેમનો શ્રમ છે, જે એક સોલો ડેવલપર દ્વારા બનાવવામાં આવ્યો છે. તમારું નિઃસ્વાર્થ યોગદાન (સેવા) સર્વરને ચાલુ રાખવામાં, જાહેરાતોને ન્યૂનતમ રાખવામાં અને બધા ભક્તો માટે એપ્લિકેશનને મફત રાખવામાં મદદ કરે છે.';
+
+  @override
+  String get support_chooseOffering => 'એક અર્પણ પસંદ કરો';
+
+  @override
+  String get support_enterAmt => 'અથવા કસ્ટમ રકમ દાખલ કરો (INR)';
+
+  @override
+  String get support_validAmt => 'કૃપા કરીને માન્ય રકમ પસંદ કરો અથવા દાખલ કરો.';
+
+  @override
+  String get support_now => 'હવે સપોર્ટ કરો';
 }

@@ -396,4 +396,35 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'লক্ষ্য গণনা আপনার বর্তমান গণনার চেয়ে বেশি হতে হবে।';
+
+  @override
+  String get support_openUPI => 'আপনার UPI অ্যাপ খোলা হচ্ছে...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI অ্যাপ চালু করা যায়নি।';
+
+  @override
+  String get support_upiError =>
+      'ত্রুটি: খোলার জন্য কোনো UPI অ্যাপ পাওয়া যায়নি।';
+
+  @override
+  String get support_title =>
+      'আপনার সেবা আমাদের সম্প্রদায়কে বৃদ্ধি করতে সাহায্য করে';
+
+  @override
+  String get support_desc =>
+      'নাম জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
+
+  @override
+  String get support_chooseOffering => 'একটি অর্ঘ্য চয়ন করুন';
+
+  @override
+  String get support_enterAmt => 'অথবা একটি কাস্টম পরিমাণ লিখুন (INR)';
+
+  @override
+  String get support_validAmt =>
+      'অনুগ্রহ করে একটি বৈধ পরিমাণ নির্বাচন করুন বা লিখুন।';
+
+  @override
+  String get support_now => 'এখন সমর্থন করুন';
 }

@@ -133,5 +133,14 @@
     "dialog_sankalpaSelectDate": "Sélectionner une date",
     "dialog_sankalpaSetPledge": "Définir mon Vœu",
     "dialog_sankalpaError": "Veuillez remplir tous les champs correctement.",
-    "dialog_sankalpaErrorTarget": "Le nombre cible doit être supérieur à votre nombre actuel."
+    "dialog_sankalpaErrorTarget": "Le nombre cible doit être supérieur à votre nombre actuel.",
+    "support_openUPI": "Ouverture de votre application UPI...",
+    "support_cannotOpenUPI": "Impossible de lancer l'application UPI.",
+    "support_upiError": "Erreur : Impossible de trouver une application UPI à ouvrir.",
+    "support_title": "Votre Seva Aide Notre Communauté à Grandir",
+    "support_desc": "Naam Jaap est un travail d'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l'application gratuite pour tous les dévots.",
+    "support_chooseOffering": "CHOISISSEZ UNE OFFRANDE",
+    "support_enterAmt": "Ou entrez un montant personnalisé (INR)",
+    "support_validAmt": "Veuillez sélectionner ou entrer un montant valide.",
+    "support_now": "Soutenir maintenant"
 }

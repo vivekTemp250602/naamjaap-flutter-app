@@ -405,4 +405,35 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'Le nombre cible doit être supérieur à votre nombre actuel.';
+
+  @override
+  String get support_openUPI => 'Ouverture de votre application UPI...';
+
+  @override
+  String get support_cannotOpenUPI =>
+      'Impossible de lancer l\'application UPI.';
+
+  @override
+  String get support_upiError =>
+      'Erreur : Impossible de trouver une application UPI à ouvrir.';
+
+  @override
+  String get support_title => 'Votre Seva Aide Notre Communauté à Grandir';
+
+  @override
+  String get support_desc =>
+      'Naam Jaap est un travail d\'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l\'application gratuite pour tous les dévots.';
+
+  @override
+  String get support_chooseOffering => 'CHOISISSEZ UNE OFFRANDE';
+
+  @override
+  String get support_enterAmt => 'Ou entrez un montant personnalisé (INR)';
+
+  @override
+  String get support_validAmt =>
+      'Veuillez sélectionner ou entrer un montant valide.';
+
+  @override
+  String get support_now => 'Soutenir maintenant';
 }

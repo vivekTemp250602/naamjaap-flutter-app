@@ -391,4 +391,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'Target count must be greater than your current count.';
+
+  @override
+  String get support_openUPI => 'Opening your UPI app...';
+
+  @override
+  String get support_cannotOpenUPI => 'Could not launch UPI app.';
+
+  @override
+  String get support_upiError => 'Error: Could not find a UPI app to open.';
+
+  @override
+  String get support_title => 'Your Seva Helps Our Community Grow';
+
+  @override
+  String get support_desc =>
+      'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.';
+
+  @override
+  String get support_chooseOffering => 'CHOOSE AN OFFERING';
+
+  @override
+  String get support_enterAmt => 'Or enter a custom amount (INR)';
+
+  @override
+  String get support_validAmt => 'Please select or enter a valid amount.';
+
+  @override
+  String get support_now => 'Support Now';
 }

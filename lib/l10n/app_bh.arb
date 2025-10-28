@@ -133,5 +133,14 @@
     "dialog_sankalpaSelectDate": "एगो तिथि चुनीं",
     "dialog_sankalpaSetPledge": "हमर संकल्प निर्धारित करीं",
     "dialog_sankalpaError": "कृपया सगरी फील्ड सही ढंग से भरीं।",
-    "dialog_sankalpaErrorTarget": "लक्ष्य गिनती राउर वर्तमान गिनती से अधिका होखे के चाहीं।"
+    "dialog_sankalpaErrorTarget": "लक्ष्य गिनती राउर वर्तमान गिनती से अधिका होखे के चाहीं।",
+    "support_openUPI": "रउआ UPI ऐप खुल रहल बा...",
+    "support_cannotOpenUPI": "UPI ऐप लॉन्च ना हो सकल।",
+    "support_upiError": "त्रुटि: खोले खातिर कवनो UPI ऐप ना मिलल।",
+    "support_title": "रउआ सेवा हमनी के समुदाय के बढ़े में मदद करेला",
+    "support_desc": "नाम जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।",
+    "support_chooseOffering": "एगो भेंट चुनीं",
+    "support_enterAmt": "चाहे एगो कस्टम राशि डालीं (INR)",
+    "support_validAmt": "कृपया एगो मान्य राशि चुनीं चाहे डालीं।",
+    "support_now": "अबहीं समर्थन करीं"
 }

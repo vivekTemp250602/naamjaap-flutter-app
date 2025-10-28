@@ -397,4 +397,34 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'ಗುರಿ ಎಣಿಕೆಯು ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಎಣಿಕೆಗಿಂತ ಹೆಚ್ಚಿರಬೇಕು.';
+
+  @override
+  String get support_openUPI => 'ನಿಮ್ಮ UPI ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ...';
+
+  @override
+  String get support_cannotOpenUPI =>
+      'UPI ಅಪ್ಲಿಕೇಶನ್ ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.';
+
+  @override
+  String get support_upiError => 'ದೋಷ: ತೆರೆಯಲು UPI ಅಪ್ಲಿಕೇಶನ್ ಕಂಡುಬಂದಿಲ್ಲ.';
+
+  @override
+  String get support_title => 'ನಿಮ್ಮ ಸೇವೆ ನಮ್ಮ ಸಮುದಾಯ ಬೆಳೆಯಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ';
+
+  @override
+  String get support_desc =>
+      'ನಾಮ್ ಜಾಪ್ ಪ್ರೀತಿಯ ಶ್ರಮವಾಗಿದೆ, ಇದನ್ನು ಒಬ್ಬರೇ ಡೆವಲಪರ್ ನಿರ್ಮಿಸಿದ್ದಾರೆ. ನಿಮ್ಮ ನಿಸ್ವಾರ್ಥ ಕೊಡುಗೆ (ಸೇವೆ) ಸರ್ವರ್‌ಗಳನ್ನು ಚಾಲನೆಯಲ್ಲಿಡಲು, ಜಾಹೀರಾತುಗಳನ್ನು ಕನಿಷ್ಠವಾಗಿಡಲು ಮತ್ತು ಎಲ್ಲಾ ಭಕ್ತರಿಗೆ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಉಚಿತವಾಗಿಡಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.';
+
+  @override
+  String get support_chooseOffering => 'ಒಂದು ಅರ್ಪಣೆಯನ್ನು ಆರಿಸಿ';
+
+  @override
+  String get support_enterAmt => 'ಅಥವಾ ಕಸ್ಟಮ್ ಮೊತ್ತವನ್ನು ನಮೂದಿಸಿ (INR)';
+
+  @override
+  String get support_validAmt =>
+      'ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಮೊತ್ತವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ನಮೂದಿಸಿ.';
+
+  @override
+  String get support_now => 'ಈಗ ಬೆಂಬಲಿಸಿ';
 }

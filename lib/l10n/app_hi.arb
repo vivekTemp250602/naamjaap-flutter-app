@@ -133,5 +133,14 @@
     "dialog_sankalpaSelectDate": "एक तिथि चुनें",
     "dialog_sankalpaSetPledge": "मेरा संकल्प निर्धारित करें",
     "dialog_sankalpaError": "कृपया सभी फ़ील्ड सही ढंग से भरें।",
-    "dialog_sankalpaErrorTarget": "लक्ष्य गणना आपकी वर्तमान गणना से अधिक होनी चाहिए।"
+    "dialog_sankalpaErrorTarget": "लक्ष्य गणना आपकी वर्तमान गणना से अधिक होनी चाहिए।",
+    "support_openUPI": "आपकी UPI ऐप खुल रही है...",
+    "support_cannotOpenUPI": "UPI ऐप लॉन्च नहीं हो सका।",
+    "support_upiError": "त्रुटि: खोलने के लिए कोई UPI ऐप नहीं मिला।",
+    "support_title": "आपकी सेवा हमारे समुदाय को बढ़ने में मदद करती है",
+    "support_desc": "नाम जाप प्रेम का श्रम है, जिसे एक अकेले डेवलपर ने बनाया है। आपका निःस्वार्थ योगदान (सेवा) सर्वर को चालू रखने, विज्ञापनों को न्यूनतम रखने और सभी भक्तों के लिए ऐप को मुफ्त रखने में मदद करता है।",
+    "support_chooseOffering": "एक भेंट चुनें",
+    "support_enterAmt": "या एक कस्टम राशि दर्ज करें (INR)",
+    "support_validAmt": "कृपया एक मान्य राशि चुनें या दर्ज करें।",
+    "support_now": "अभी समर्थन करें"
 }

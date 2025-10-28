@@ -393,4 +393,33 @@ class AppLocalizationsMr extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'लक्ष्य संख्या तुमच्या सध्याच्या संख्येपेक्षा जास्त असणे आवश्यक आहे.';
+
+  @override
+  String get support_openUPI => 'तुमचे UPI अॅप उघडत आहे...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI अॅप सुरू करू शकले नाही.';
+
+  @override
+  String get support_upiError =>
+      'त्रुटी: उघडण्यासाठी कोणतेही UPI अॅप सापडले नाही.';
+
+  @override
+  String get support_title => 'तुमची सेवा आमच्या समुदायाला वाढण्यास मदत करते';
+
+  @override
+  String get support_desc =>
+      'नाम जाप हे प्रेमाचे श्रम आहे, जे एका सोलो डेव्हलपरने तयार केले आहे. तुमचे निःस्वार्थ योगदान (सेवा) सर्व्हर चालू ठेवण्यास, जाहिराती कमी ठेवण्यास आणि सर्व भक्तांसाठी अॅप विनामूल्य ठेवण्यास मदत करते.';
+
+  @override
+  String get support_chooseOffering => 'एक अर्पण निवडा';
+
+  @override
+  String get support_enterAmt => 'किंवा कस्टम रक्कम प्रविष्ट करा (INR)';
+
+  @override
+  String get support_validAmt => 'कृपया वैध रक्कम निवडा किंवा प्रविष्ट करा.';
+
+  @override
+  String get support_now => 'आता समर्थन करा';
 }

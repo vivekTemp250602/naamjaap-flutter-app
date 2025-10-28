@@ -17,8 +17,8 @@ class _SupportScreenState extends State<SupportScreen> {
   Future<void> _launchUPI(String amount) async {
     // We show a snackbar here for a great UX
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Opening your UPI app...'),
+      SnackBar(
+        content: Text(AppLocalizations.of(context)!.support_openUPI),
         backgroundColor: Colors.green,
       ),
     );
@@ -31,13 +31,13 @@ class _SupportScreenState extends State<SupportScreen> {
       if (await canLaunchUrl(upiUri)) {
         await launchUrl(upiUri, mode: LaunchMode.externalApplication);
       } else {
-        throw 'Could not launch UPI app.';
+        throw AppLocalizations.of(context)!.support_cannotOpenUPI;
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('Error: Could not find a UPI app to open.')),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.support_upiError)),
         );
       }
     }
@@ -70,13 +70,13 @@ class _SupportScreenState extends State<SupportScreen> {
                   size: 80, color: Colors.red.shade300),
               const SizedBox(height: 24),
               Text(
-                "Your Seva Helps Our Community Grow",
+                AppLocalizations.of(context)!.support_title,
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
               Text(
-                "Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.",
+                AppLocalizations.of(context)!.support_desc,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Colors.grey.shade700,
@@ -87,7 +87,7 @@ class _SupportScreenState extends State<SupportScreen> {
           const SizedBox(height: 48),
 
           // 2. The "Offering" Buttons
-          Text("CHOOSE AN OFFERING",
+          Text(AppLocalizations.of(context)!.support_chooseOffering,
               style: Theme.of(context).textTheme.labelSmall),
           const SizedBox(height: 12),
           Row(
@@ -107,10 +107,10 @@ class _SupportScreenState extends State<SupportScreen> {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
             ],
-            decoration: const InputDecoration(
-              labelText: 'Or enter a custom amount (INR)',
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.support_enterAmt,
               prefixText: '₹',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             onChanged: (value) {
               setState(() {
@@ -134,15 +134,16 @@ class _SupportScreenState extends State<SupportScreen> {
 
               if (amount.isEmpty || (double.tryParse(amount) ?? 0) <= 0) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Please select or enter a valid amount.')),
+                  SnackBar(
+                      content:
+                          Text(AppLocalizations.of(context)!.support_validAmt)),
                 );
                 return;
               }
 
               _launchUPI(amount);
             },
-            child: const Text("Support Now"),
+            child: Text(AppLocalizations.of(context)!.support_now),
           ),
         ],
       ),

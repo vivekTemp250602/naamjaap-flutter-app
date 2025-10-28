@@ -395,4 +395,34 @@ class AppLocalizationsOr extends AppLocalizations {
   @override
   String get dialog_sankalpaErrorTarget =>
       'ଲକ୍ଷ୍ୟ ଗଣନା ଆପଣଙ୍କ ବର୍ତ୍ତମାନର ଗଣନାଠାରୁ ଅଧିକ ହେବା ଆବଶ୍ୟକ।';
+
+  @override
+  String get support_openUPI => 'ଆପଣଙ୍କ UPI ଆପ୍ ଖୋଲୁଛି...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI ଆପ୍ ଲଞ୍ଚ ହୋଇପାରିଲା ନାହିଁ।';
+
+  @override
+  String get support_upiError =>
+      'ତ୍ରୁଟି: ଖୋଲିବା ପାଇଁ କୌଣସି UPI ଆପ୍ ମିଳିଲା ନାହିଁ।';
+
+  @override
+  String get support_title => 'ଆପଣଙ୍କ ସେବା ଆମ ସମ୍ପ୍ରଦାୟକୁ ବଢିବାରେ ସାହାଯ୍ୟ କରେ';
+
+  @override
+  String get support_desc =>
+      'ନାମ ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
+
+  @override
+  String get support_chooseOffering => 'ଏକ ପ୍ରସାଦ ବାଛନ୍ତୁ';
+
+  @override
+  String get support_enterAmt => 'କିମ୍ବା ଏକ କଷ୍ଟମ୍ ପରିମାଣ ଏଣ୍ଟର୍ କରନ୍ତୁ (INR)';
+
+  @override
+  String get support_validAmt =>
+      'ଦୟାକରି ଏକ ବୈଧ ପରିମାଣ ଚୟନ କରନ୍ତୁ କିମ୍ବା ଏଣ୍ଟର୍ କରନ୍ତୁ।';
+
+  @override
+  String get support_now => 'ଏବେ ସମର୍ଥନ କରନ୍ତୁ';
 }

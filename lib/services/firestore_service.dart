@@ -186,8 +186,13 @@ class FirestoreService {
     return _db.collection('users').doc(uid).update({'photoURL': newPhotoUrl});
   }
 
-  Stream<DocumentSnapshot> getDailyQuoteStream() {
-    return _db.collection('app_config').doc('daily_quote').snapshots();
+  Stream<DocumentSnapshot> getDailyGitaQuoteStream() {
+    return _db.collection('app_config').doc('daily_gita_quote').snapshots();
+  }
+
+  /// NEW: This stream gets the new RAMAYANA quote.
+  Stream<DocumentSnapshot> getDailyRamayanaQuoteStream() {
+    return _db.collection('app_config').doc('daily_ramayana_quote').snapshots();
   }
 
   Future<void> saveUserToken(String uid, String token) {

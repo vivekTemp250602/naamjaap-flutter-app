@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-// An enum to make our language state clear and readable.
-enum QuoteLanguage { hindi, english, sanskrit }
+enum QuoteLanguage { english, hindi, sanskrit }
 
 class QuoteCard extends StatefulWidget {
-  final String textHI;
-  final String textEN;
-  final String textSA;
-  final String source;
+  final String textEN, textHI, textSA, source;
+
+  // NEW: A callback function to trigger the share
+  final Function(String quote, String source, String langCode) onShare;
 
   const QuoteCard({
     super.key,
-    required this.textHI,
     required this.textEN,
+    required this.textHI,
     required this.textSA,
     required this.source,
+    required this.onShare, // NEW
   });
 
   @override
@@ -22,106 +22,129 @@ class QuoteCard extends StatefulWidget {
 }
 
 class _QuoteCardState extends State<QuoteCard> {
-  // State variable to track the currently selected language.
   QuoteLanguage _selectedLanguage = QuoteLanguage.hindi;
 
-  // Helper method to get the correct text based on the selected language.
-  String get _displayText {
-    switch (_selectedLanguage) {
+  TextStyle _getQuoteTextStyle(QuoteLanguage language) {
+    switch (language) {
       case QuoteLanguage.hindi:
-        return widget.textHI;
       case QuoteLanguage.sanskrit:
-        return widget.textSA;
+        // Use Noto Sans Devanagari for clear Hindi/Sanskrit rendering
+        return const TextStyle(
+          fontFamily: 'NotoSansDevanagari',
+          fontSize: 20,
+          height: 1.7, // Slightly more height for Devanagari script
+          fontStyle: FontStyle.italic,
+          color: Colors.black87,
+        );
       case QuoteLanguage.english:
-        return widget.textEN;
+        // Use Inter for English
+        return const TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 20,
+          height: 1.6,
+          fontStyle: FontStyle.italic,
+          color: Colors.black87,
+        );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    String displayText;
+    String displayLangCode;
+
+    switch (_selectedLanguage) {
+      case QuoteLanguage.english:
+        displayText = widget.textEN;
+        displayLangCode = 'en';
+        break;
+      case QuoteLanguage.sanskrit:
+        displayText = widget.textSA;
+        displayLangCode = 'sa';
+        break;
+      case QuoteLanguage.hindi:
+        displayText = widget.textHI;
+        displayLangCode = 'hi';
+    }
+
     return Card(
       elevation: 4,
-      shadowColor: Colors.black.withAlpha(45),
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Container(
+      shadowColor: Colors.orange.withAlpha(80),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
         padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
-          gradient: LinearGradient(
-            colors: [
-              Colors.amber.shade100,
-              Theme.of(context).colorScheme.surface,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
         child: Column(
           children: [
-            const Text(
-              '📜 Wisdom for Today 📜',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: Colors.brown,
-              ),
-            ),
-            const SizedBox(height: 16),
-            // The main text now dynamically displays the selected language.
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
-                '"$_displayText"',
-                key: ValueKey<QuoteLanguage>(_selectedLanguage),
+            Text(displayText,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black87,
-                  height: 1.5, // Improves readability for longer quotes
-                ),
-              ),
-            ),
+                style: _getQuoteTextStyle(_selectedLanguage)),
             const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                '— ${widget.source}',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
+            Text(
+              "— ${widget.source}",
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade700,
+                fontSize: 15,
               ),
             ),
-            const Divider(height: 24),
-            // The new language toggle buttons.
-            ToggleButtons(
-              isSelected: [
-                _selectedLanguage == QuoteLanguage.hindi,
-                _selectedLanguage == QuoteLanguage.english,
-                _selectedLanguage == QuoteLanguage.sanskrit,
-              ],
-              onPressed: (index) {
-                setState(() {
-                  _selectedLanguage = QuoteLanguage.values[index];
-                });
-              },
-              borderRadius: BorderRadius.circular(8.0),
-              selectedBorderColor: Colors.brown,
-              selectedColor: Colors.white,
-              fillColor: Colors.brown.shade400,
-              color: Colors.brown.shade400,
-              constraints: const BoxConstraints(minHeight: 36.0),
-              children: const [
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text('हिन्दी')),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text('English')),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Text('Sanskrit')),
+            const Divider(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ToggleButtons(
+                  isSelected: [
+                    _selectedLanguage == QuoteLanguage.hindi,
+                    _selectedLanguage == QuoteLanguage.english,
+                    _selectedLanguage == QuoteLanguage.sanskrit,
+                  ],
+                  onPressed: (index) {
+                    setState(() {
+                      // Corrected logic for 3 toggles
+                      if (index == 0) _selectedLanguage = QuoteLanguage.hindi;
+                      if (index == 1) _selectedLanguage = QuoteLanguage.english;
+                      if (index == 2)
+                        _selectedLanguage = QuoteLanguage.sanskrit;
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(8.0),
+                  children: const [
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text(
+                          'हिन्दी',
+                          style: TextStyle(
+                              fontFamily: 'NotoSansDevanagari',
+                              fontWeight: FontWeight.w600),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text(
+                          'English',
+                          style: TextStyle(
+                              fontFamily: 'Inter', fontWeight: FontWeight.w600),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text(
+                          'Sanskrit',
+                          style: TextStyle(
+                              fontFamily: 'NotoSansDevanagari',
+                              fontWeight: FontWeight.w600),
+                        )),
+                  ],
+                ),
+
+                // --- NEW: The Share Button ---
+                const Spacer(),
+                IconButton(
+                  icon: Icon(Icons.share,
+                      color: Theme.of(context).colorScheme.primary),
+                  onPressed: () {
+                    // We pass the *currently displayed* text to the share function
+                    widget.onShare(displayText, widget.source, displayLangCode);
+                  },
+                ),
               ],
             ),
           ],

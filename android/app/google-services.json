@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "287482200316-j8h6aeqmpaeo0281m4egf9jummmu3ehq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivek.naamjaap",
+            "certificate_hash": "0dd6ef5334a6b29b6532a85a013a2f1c8ab881b1"
+          }
+        },
+        {
           "client_id": "287482200316-p3hi5a76563v54buua0ij5qju87a7lkc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

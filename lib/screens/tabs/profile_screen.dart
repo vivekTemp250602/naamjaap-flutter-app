@@ -621,9 +621,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                     children: [
                       CircleAvatar(
                         radius: 60,
-                        backgroundImage:
-                            NetworkImage(userData['photoURL'] ?? ''),
+                        backgroundImage: (userData['photoURL'] != null &&
+                                userData['photoURL']!.isNotEmpty)
+                            ? NetworkImage(userData['photoURL'])
+                            : null,
                         backgroundColor: Colors.grey.shade300,
+                        child: (userData['photoURL'] == null ||
+                                userData['photoURL']!.isEmpty)
+                            ? const Icon(Icons.person,
+                                size: 60, color: Colors.white) // Fallback icon
+                            : null,
                       ),
                       if (_isUploading)
                         const CircularProgressIndicator(

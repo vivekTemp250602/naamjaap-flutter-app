@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
 import 'dart:async';
 import 'dart:ui';
@@ -9,7 +10,6 @@ import 'package:naamjaap/providers/locale_provider.dart';
 import 'package:naamjaap/screens/animated_splash_screen.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -20,6 +20,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug, // IMPORTANT
+  );
+
   runZonedGuarded<Future<void>>(() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     PlatformDispatcher.instance.onError = (error, stack) {
@@ -72,34 +77,32 @@ class NaamJaapApp extends StatelessWidget {
 
     final localeProvider = Provider.of<LocaleProvider>(context);
 
-    return OverlaySupport.global(
-      child: Consumer<LocaleProvider>(
-        builder: (context, provider, child) {
-          return MaterialApp(
-            title: "Naam Jaap",
-            theme: theme,
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: localeProvider.locale,
-            localeResolutionCallback: (locale, supportedLocales) {
-              if (locale == null) {
-                return supportedLocales.first;
+    return Consumer<LocaleProvider>(
+      builder: (context, provider, child) {
+        return MaterialApp(
+          title: "Naam Jaap",
+          theme: theme,
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: localeProvider.locale,
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (locale == null) {
+              return supportedLocales.first;
+            }
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode) {
+                return supportedLocale;
               }
-              for (var supportedLocale in supportedLocales) {
-                if (supportedLocale.languageCode == locale.languageCode) {
-                  return supportedLocale;
-                }
-              }
-              if (locale.languageCode == 'bho') {
-                return const Locale('hi');
-              }
-              return const Locale('en');
-            },
-            home: const AnimatedSplashScreen(),
-          );
-        },
-      ),
+            }
+            if (locale.languageCode == 'bho') {
+              return const Locale('hi');
+            }
+            return const Locale('en');
+          },
+          home: const AnimatedSplashScreen(),
+        );
+      },
     );
   }
 }

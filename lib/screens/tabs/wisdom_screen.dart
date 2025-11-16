@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/widgets/shareable_quote_template.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -30,7 +29,6 @@ class _WisdomScreenState extends State<WisdomScreen>
   static const String _screenName = 'wisdom';
   String _shareableLangCode = 'hi';
   final AdService _adService = AdService();
-  BannerAd? _bannerAd;
 
   late TabController _tabController;
   bool _isPremium = false;
@@ -127,7 +125,6 @@ class _WisdomScreenState extends State<WisdomScreen>
                     'Could not create shareable image. Please try again.')),
           );
         }
-        print("Error sharing quote: $e");
       } finally {
         // 7. ALWAYS clean up the UI
         if (mounted) {
@@ -171,7 +168,7 @@ class _WisdomScreenState extends State<WisdomScreen>
                         borderRadius: BorderRadius.circular(30.0),
                         boxShadow: [
                           BoxShadow(
-                            color: theme.colorScheme.primary.withOpacity(0.5),
+                            color: theme.colorScheme.primary.withAlpha(140),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),

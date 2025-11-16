@@ -293,7 +293,15 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
               children: [
                 CircleAvatar(
                   radius: 45,
-                  backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
+                  backgroundImage: (userData['photoURL'] != null &&
+                          userData['photoURL']!.isNotEmpty)
+                      ? NetworkImage(userData['photoURL'])
+                      : null,
+                  backgroundColor: Colors.grey.shade300,
+                  child: (userData['photoURL'] == null ||
+                          userData['photoURL']!.isEmpty)
+                      ? const Icon(Icons.person, size: 45, color: Colors.white)
+                      : null,
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -425,7 +433,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
         subtitle:
             Text('$jappsCount ${AppLocalizations.of(context)!.misc_malas}'),
         trailing: CircleAvatar(
-          backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
+          backgroundImage:
+              (userData['photoURL'] != null && userData['photoURL']!.isNotEmpty)
+                  ? NetworkImage(userData['photoURL'])
+                  : null,
+          backgroundColor: Colors.grey.shade300,
+          child: (userData['photoURL'] == null || userData['photoURL']!.isEmpty)
+              ? const Icon(Icons.person, size: 45, color: Colors.white)
+              : null,
         ),
       ),
     );
@@ -491,7 +506,15 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
           ),
           trailing: CircleAvatar(
             radius: 25,
-            backgroundImage: NetworkImage(userData['photoURL'] ?? ''),
+            backgroundImage: (userData['photoURL'] != null &&
+                    userData['photoURL']!.isNotEmpty)
+                ? NetworkImage(userData['photoURL'])
+                : null,
+            backgroundColor: Colors.grey.shade300,
+            child:
+                (userData['photoURL'] == null || userData['photoURL']!.isEmpty)
+                    ? const Icon(Icons.person, size: 45, color: Colors.white)
+                    : null,
           ),
         ),
       ),

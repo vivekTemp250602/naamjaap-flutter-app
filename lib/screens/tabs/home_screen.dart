@@ -19,6 +19,7 @@ import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
@@ -97,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   // State variables
   int _totalMantraCount = 0;
-  int _streakCount = 0;
   Map<String, int> _pendingJappsLedger = {};
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
@@ -178,7 +178,6 @@ class _HomeScreenState extends State<HomeScreen>
 
     setState(() {
       _totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
-      _streakCount = userData['currentStreak'] ?? 0;
     });
   }
 
@@ -191,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen>
 
     setState(() {
       _totalMantraCount = jappsMap[mantraId] as int? ?? 0;
-      _streakCount = userData['currentStreak'] ?? 0;
     });
   }
 
@@ -425,14 +423,30 @@ class _HomeScreenState extends State<HomeScreen>
             body: SafeArea(
                 child: Column(
               children: [
-                Chip(
-                  avatar: Icon(Icons.local_fire_department,
-                      color: Colors.orange.shade800),
-                  label: Text(
-                      '$_streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  backgroundColor: Colors.white.withAlpha(190),
-                  elevation: 4,
+                StreamBuilder<DocumentSnapshot>(
+                  stream: _firestoreService.getUserStatsStream(_uid),
+                  builder: (context, snapshot) {
+                    // Default to 0
+                    int streakCount = 0;
+
+                    // If we have data, get the real streak count
+                    if (snapshot.hasData && snapshot.data!.exists) {
+                      final userData =
+                          snapshot.data!.data() as Map<String, dynamic>;
+                      streakCount = userData['currentStreak'] ?? 0;
+                    }
+
+                    // Return the same Chip, but with the live data
+                    return Chip(
+                      avatar: Icon(Icons.local_fire_department,
+                          color: Colors.orange.shade800),
+                      label: Text(
+                          '$streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      backgroundColor: Colors.white.withAlpha(190),
+                      elevation: 4,
+                    );
+                  },
                 ),
 
                 // Mantra Selector

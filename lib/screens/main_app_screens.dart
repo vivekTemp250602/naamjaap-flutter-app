@@ -12,6 +12,8 @@ import 'package:naamjaap/screens/tabs/settings_screen.dart';
 import 'package:naamjaap/screens/tabs/wisdom_screen.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
 
 class MainAppScreens extends StatefulWidget {
   final User user;
@@ -96,89 +98,94 @@ class _MainAppScreensState extends State<MainAppScreens> {
       Text(l10n.nav_profile),
     ];
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
+    return ChangeNotifierProvider(
+      create: (context) => MantraProvider(widget.user.uid),
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
 
-        if (_currentIndex != 0) {
-          setState(() {
-            _currentIndex = 0;
-          });
-        } else {
-          final now = DateTime.now();
-          if (_lastBackPressed == null ||
-              now.difference(_lastBackPressed!) > const Duration(seconds: 2)) {
-            _lastBackPressed = now;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content:
-                      Text(AppLocalizations.of(context)!.dialog_pressBack)),
-            );
+          if (_currentIndex != 0) {
+            setState(() {
+              _currentIndex = 0;
+            });
           } else {
-            SystemNavigator.pop();
+            final now = DateTime.now();
+            if (_lastBackPressed == null ||
+                now.difference(_lastBackPressed!) >
+                    const Duration(seconds: 2)) {
+              _lastBackPressed = now;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content:
+                        Text(AppLocalizations.of(context)!.dialog_pressBack)),
+              );
+            } else {
+              SystemNavigator.pop();
+            }
           }
-        }
-      },
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          flexibleSpace: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(45),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.white.withAlpha(80),
-                      width: 1.0,
+        },
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            flexibleSpace: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha(45),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.white.withAlpha(80),
+                        width: 1.0,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+            centerTitle: true,
+            title: DefaultTextStyle(
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4.0,
+                      color: Colors.black54,
+                      offset: Offset(1.0, 1.0),
+                    )
+                  ]),
+              child: screenTitles[_currentIndex],
+            ),
+            actions: [
+              if (_currentIndex == 3) // Profile Screen
+                IconButton(
+                  icon:
+                      const Icon(Icons.settings_outlined, color: Colors.white),
+                  onPressed: () {
+                    // This context is now a child of the Provider,
+                    // so the SettingsScreen can find it!
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    );
+                  },
+                  tooltip: 'Settings',
+                ),
+            ],
           ),
-          centerTitle: true,
-          title: DefaultTextStyle(
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                shadows: [
-                  Shadow(
-                    blurRadius: 4.0,
-                    color: Colors.black54,
-                    offset: Offset(1.0, 1.0),
-                  )
-                ]),
-            child: screenTitles[_currentIndex],
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+            children: _screens,
           ),
-          actions: [
-            if (_currentIndex == 3) // Profile Screen
-              IconButton(
-                icon: const Icon(Icons.settings_outlined, color: Colors.white),
-                onPressed: () {
-                  // This context is now a child of the Provider,
-                  // so the SettingsScreen can find it!
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                  );
-                },
-                tooltip: 'Settings',
-              ),
-          ],
-        ),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          children: _screens,
-        ),
-        bottomNavigationBar: BottomNavBar(
-          currentIndex: _currentIndex,
-          onTap: _onTabTapped,
+          bottomNavigationBar: BottomNavBar(
+            currentIndex: _currentIndex,
+            onTap: _onTabTapped,
+          ),
         ),
       ),
     );

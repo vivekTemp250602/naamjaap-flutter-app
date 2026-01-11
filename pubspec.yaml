@@ -2,7 +2,7 @@ name: naamjaap
 description: "Moksha Mala Jaap: Your personal sacred space for daily chanting."
 publish_to: 'none'
 
-version: 4.0.0+19
+version: 5.0.0+20
 
 environment:
   sdk: '>=3.2.6 <4.0.0'

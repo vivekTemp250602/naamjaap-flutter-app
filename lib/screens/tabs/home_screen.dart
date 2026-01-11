@@ -100,8 +100,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   // State variables
   int _totalMantraCount = 0;
-  // int _streakCount = 0; // REMOVED: No longer needed, we use StreamBuilder
-  Map<String, int> _pendingJappsLedger = {};
+  Map<String, dynamic> _pendingEvents = {};
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
@@ -200,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen>
   void _onSyncComplete(MantraProvider provider) {
     if (mounted) {
       setState(() {
-        _pendingJappsLedger = {};
+        _pendingEvents.clear();
       });
       // We get the mantraId from the provider
       _loadInitialCounts();
@@ -225,21 +224,23 @@ class _HomeScreenState extends State<HomeScreen>
     final mantraKey =
         Provider.of<MantraProvider>(context, listen: false).selectedMantra!.id;
 
+    final String eventId = DateTime.now().microsecondsSinceEpoch.toString();
+
     setState(() {
-      _pendingJappsLedger[mantraKey] =
-          (_pendingJappsLedger[mantraKey] ?? 0) + 1;
+      _pendingEvents[eventId] = {'mantraId': mantraKey};
     });
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        'pendingJappsLedger', json.encode(_pendingJappsLedger));
+    await prefs.setString('pendingJappsLedger', json.encode(_pendingEvents));
 
     _syncTimer?.cancel();
     _syncTimer = Timer(
         const Duration(seconds: 5), () => _syncService?.syncPendingData());
 
-    final currentTotal =
-        _totalMantraCount + (_pendingJappsLedger[mantraKey] ?? 0);
+    final int pendingForMantra =
+        _pendingEvents.values.where((e) => e['mantraId'] == mantraKey).length;
+
+    final int currentTotal = _totalMantraCount + pendingForMantra;
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _malaConfettiController.play();
       _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
@@ -568,8 +569,9 @@ class _HomeScreenState extends State<HomeScreen>
 
       // Variables
       final mantraKey = selectedMantra.id;
-      final pendingCount = _pendingJappsLedger[mantraKey] ?? 0;
-      final displayTotal = _totalMantraCount + pendingCount;
+      final pendingForMantra =
+          _pendingEvents.values.where((e) => e['mantraId'] == mantraKey).length;
+      final displayTotal = _totalMantraCount + pendingForMantra;
       final malaProgressCounter = displayTotal % 108;
       return Stack(
         children: [

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -24,6 +25,15 @@ class ConnectivityService with ChangeNotifier {
     _connectionStatus = result;
     if (wasOnline != isOnline) {
       notifyListeners();
+    }
+  }
+
+  Future<bool> hasInternetAccess() async {
+    try {
+      final result = await InternetAddress.lookup('firestore.googleapis.com');
+      return result.isNotEmpty;
+    } catch (_) {
+      return false;
     }
   }
 

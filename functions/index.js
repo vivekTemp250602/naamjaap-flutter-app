@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-// 1. Initialize admin first.
 const admin = require("firebase-admin");
 admin.initializeApp();
 
@@ -123,6 +122,7 @@ exports.sendDailyReminders = onSchedule(
             notification: {
               title: "🌟 Your spiritual journey awaits!",
               body:
+              // eslint-disable-next-line max-len
               "A moment of peace is just a tap away. Let's continue our Japa practice.",
             },
             token: fcmToken,
@@ -302,3 +302,42 @@ exports.addQuotesInBatch = onRequest(async (req, res) => {
     res.status(500).send("Error adding quotes.");
   }
 });
+
+// --------------------------------------------------
+// AUTO CLEANER: Remove old japa_events (SAFE)
+// --------------------------------------------------
+exports.cleanOldJapaEvents = onSchedule({
+  schedule: "every day 03:00", // Daily at 3 AM IST
+  timeZone: "Asia/Kolkata",
+},
+async () => {
+  const RETENTION_DAYS = 14; // ✅ safe default
+
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - RETENTION_DAYS);
+
+  console.log(`🧹 Cleaning japa_events older than ${RETENTION_DAYS} days`);
+
+  const usersSnapshot = await db.collection("users").get();
+
+  let deletedCount = 0;
+
+  for (const userDoc of usersSnapshot.docs) {
+    const eventsRef = userDoc.ref.collection("japa_events");
+
+    const oldEventsSnapshot = await eventsRef.where("createdAt", "<", cutoffDate).limit(500).get();
+
+    if (oldEventsSnapshot.empty) continue;
+
+    const batch = db.batch();
+    oldEventsSnapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+      deletedCount++;
+    });
+
+    await batch.commit();
+  }
+
+  console.log(`✅ Deleted ${deletedCount} old japa_events`);
+},
+);

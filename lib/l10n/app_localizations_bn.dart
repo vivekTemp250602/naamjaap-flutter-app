@@ -9,12 +9,6 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'নাম জপ-এ স্বাগতম';
-
-  @override
   String get login_subtitle => 'আপনার ব্যক্তিগত ডিজিটাল জপ সঙ্গী।';
 
   @override
@@ -140,13 +134,7 @@ class AppLocalizationsBn extends AppLocalizations {
       'আপনার মোট সংখ্যা এখানে দেখতে জপ শুরু করুন!';
 
   @override
-  String get profile_shareApp => 'নাম জপ শেয়ার করুন';
-
-  @override
   String get profile_rateApp => 'আমাদের অ্যাপ রেট করুন';
-
-  @override
-  String get profile_supportTitle => 'নাম জপ সমর্থন করুন';
 
   @override
   String get profile_supportSubtitle => 'অ্যাপটি চালু রাখতে সাহায্য করুন';
@@ -231,10 +219,6 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get dialog_update => 'আপডেট প্রয়োজন';
-
-  @override
-  String get dialog_updateDesc =>
-      'গুরুত্বপূর্ণ আপডেট সহ নাম জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
 
   @override
   String get dialog_updateNow => 'এখন আপডেট করুন';
@@ -408,14 +392,6 @@ class AppLocalizationsBn extends AppLocalizations {
       'ত্রুটি: খোলার জন্য কোনো UPI অ্যাপ পাওয়া যায়নি।';
 
   @override
-  String get support_title =>
-      'আপনার সেবা আমাদের সম্প্রদায়কে বৃদ্ধি করতে সাহায্য করে';
-
-  @override
-  String get support_desc =>
-      'নাম জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
-
-  @override
   String get support_chooseOffering => 'একটি অর্ঘ্য চয়ন করুন';
 
   @override
@@ -427,4 +403,109 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get support_now => 'এখন সমর্থন করুন';
+
+  @override
+  String get home_chooseMala => 'আপনার মালা চয়ন করুন';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'এমন একটি শৈলী নির্বাচন করুন যা আপনার আত্মার সাথে অনুরণিত হয়।';
+
+  @override
+  String get tour_title1 => 'ডিজিটাল জপ মালা';
+
+  @override
+  String get tour_body1 =>
+      'জপ করতে ট্যাপ করুন। আমরা আপনার পুতি গণনা করি, মালা ট্র্যাক করি এবং আপনার স্ট্রিক স্বয়ংক্রিয়ভাবে বজায় রাখি।';
+
+  @override
+  String get tour_title2 => 'গ্লোবাল লিডারবোর্ড';
+
+  @override
+  String get tour_body2 =>
+      'হাজার হাজারের সাথে জপ করুন। আধ্যাত্মিক উন্নতি এবং ধারাবাহিকতার মাধ্যমে উপরে উঠুন।';
+
+  @override
+  String get tour_title3 => 'দৈনিক জ্ঞান';
+
+  @override
+  String get tour_body3 =>
+      'প্রাচীন গ্রন্থ থেকে কিউরেটেড শ্লোকগুলি পান — একাধিক ভাষায় উপলব্ধ।';
+
+  @override
+  String get tour_title4 => 'আপনার আধ্যাত্মিক যাত্রা';
+
+  @override
+  String get tour_body4 =>
+      'মাইলফলক ট্র্যাক করুন, সংকল্প নির্ধারণ করুন এবং আপনার বৃদ্ধি এবং কৃতিত্বের উপর প্রতিফলন করুন।';
+
+  @override
+  String get dialog_getStarted => 'শুরু করুন';
+
+  @override
+  String get dialog_next => 'পরবর্তী';
+
+  @override
+  String get dialog_skip => 'এড়িয়ে যান';
+
+  @override
+  String get malatype_regular => 'নিয়মিত';
+
+  @override
+  String get malatype_crystal => 'স্ফটিক';
+
+  @override
+  String get malatype_royal => 'রাজকীয় সোনা';
+
+  @override
+  String get profile_abandon => 'সংকল্প ত্যাগ করুন';
+
+  @override
+  String get profile_progress => 'অগ্রগতি';
+
+  @override
+  String get profile_deadline => 'শেষ সময়সীমা';
+
+  @override
+  String get profile_achieved => 'অর্জিত!';
+
+  @override
+  String get support_donate => 'দান করুন';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay দ্বারা নিরাপদে পেমেন্ট প্রসেস করা হয়';
+
+  @override
+  String get support_thank => '🙏 ধন্যবাদ';
+
+  @override
+  String get home_customizeMala => 'মালা কাস্টমাইজ করুন';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'মোক্ষ মালা জপ-এ স্বাগতম';
+
+  @override
+  String get profile_shareApp => 'মোক্ষ মালা জপ শেয়ার করুন';
+
+  @override
+  String get profile_supportTitle => 'মোক্ষ মালা জপ সমর্থন করুন';
+
+  @override
+  String get dialog_updateDesc =>
+      'গুরুত্বপূর্ণ আপডেট সহ মোক্ষ মালা জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
+
+  @override
+  String get support_desc =>
+      'মোক্ষ মালা জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
+
+  @override
+  String get support_title => 'মোক্ষ মালা জপ প্রকল্প সমর্থন করুন';
+
+  @override
+  String get support_afterTitile =>
+      'মোক্ষ মালা জপ সমর্থন করার জন্য ধন্যবাদ — প্রতিটি অবদান সাহায্য করে।';
 }

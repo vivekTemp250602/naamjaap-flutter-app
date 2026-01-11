@@ -9,12 +9,6 @@ class AppLocalizationsKo extends AppLocalizations {
   AppLocalizationsKo([String locale = 'ko']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'Naam Jaap에 오신 것을 환영합니다';
-
-  @override
   String get login_subtitle => '당신만의 디지털 만트라 챈팅 동반자.';
 
   @override
@@ -136,13 +130,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get profile_mantrasEmpty => '챈팅을 시작하여 여기에서 총계를 확인하세요!';
 
   @override
-  String get profile_shareApp => 'Naam Jaap 공유하기';
-
-  @override
   String get profile_rateApp => '앱 평가하기';
-
-  @override
-  String get profile_supportTitle => 'Naam Jaap 지원하기';
 
   @override
   String get profile_supportSubtitle => '앱 운영을 도와주세요';
@@ -225,10 +213,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dialog_update => '업데이트 필요';
-
-  @override
-  String get dialog_updateDesc =>
-      '중요한 업데이트가 포함된 Naam Jaap의 새 버전을 사용할 수 있습니다. 계속하려면 앱을 업데이트하세요.';
 
   @override
   String get dialog_updateNow => '지금 업데이트';
@@ -396,13 +380,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get support_upiError => '오류: 열 수 있는 UPI 앱을 찾을 수 없습니다.';
 
   @override
-  String get support_title => '당신의 봉사는 우리 커뮤니티 성장에 도움이 됩니다';
-
-  @override
-  String get support_desc =>
-      'Naam Jaap은 한 명의 개발자가 사랑으로 만든 앱입니다. 당신의 이타적인 기여(봉사)는 서버를 운영하고, 광고를 최소화하며, 모든 신자들이 앱을 무료로 사용할 수 있도록 돕습니다.';
-
-  @override
   String get support_chooseOffering => '공양 선택하기';
 
   @override
@@ -413,4 +390,103 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get support_now => '지금 지원하기';
+
+  @override
+  String get home_chooseMala => '말라 선택하기';
+
+  @override
+  String get home_chooseMalaDesc => '당신의 영혼과 공명하는 스타일을 선택하세요.';
+
+  @override
+  String get tour_title1 => '디지털 자파 말라';
+
+  @override
+  String get tour_body1 => '탭하여 챈팅하세요. 구슬 수를 세고, 말라를 추적하며, 연속 기록을 자동으로 유지합니다.';
+
+  @override
+  String get tour_title2 => '글로벌 리더보드';
+
+  @override
+  String get tour_body2 => '수천 명과 함께 챈팅하세요. 영적인 발전과 꾸준함을 통해 성장하세요.';
+
+  @override
+  String get tour_title3 => '오늘의 지혜';
+
+  @override
+  String get tour_body3 => '고대 문헌에서 엄선된 구절을 받아보세요 — 다국어로 제공됩니다.';
+
+  @override
+  String get tour_title4 => '당신의 영적 여정';
+
+  @override
+  String get tour_body4 => '이정표를 추적하고, 산칼파를 설정하며, 당신의 성장과 성취를 되돌아보세요.';
+
+  @override
+  String get dialog_getStarted => '시작하기';
+
+  @override
+  String get dialog_next => '다음';
+
+  @override
+  String get dialog_skip => '건너뛰기';
+
+  @override
+  String get malatype_regular => '일반';
+
+  @override
+  String get malatype_crystal => '크리스탈';
+
+  @override
+  String get malatype_royal => '로열 골드';
+
+  @override
+  String get profile_abandon => '서원 포기';
+
+  @override
+  String get profile_progress => '진행 상황';
+
+  @override
+  String get profile_deadline => '마감일';
+
+  @override
+  String get profile_achieved => '달성!';
+
+  @override
+  String get support_donate => '기부하기';
+
+  @override
+  String get support_paymentSucc => 'Razorpay에 의해 안전하게 처리된 결제';
+
+  @override
+  String get support_thank => '🙏 감사합니다';
+
+  @override
+  String get home_customizeMala => '말라 사용자 지정';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'Moksha Mala Jaap에 오신 것을 환영합니다';
+
+  @override
+  String get profile_shareApp => 'Moksha Mala Jaap 공유하기';
+
+  @override
+  String get profile_supportTitle => 'Moksha Mala Jaap 지원하기';
+
+  @override
+  String get dialog_updateDesc =>
+      '중요한 업데이트가 포함된 Moksha Mala Jaap의 새 버전을 사용할 수 있습니다. 계속하려면 앱을 업데이트하세요.';
+
+  @override
+  String get support_desc =>
+      'Moksha Mala Jaap은 한 명의 개발자가 사랑으로 만든 앱입니다. 당신의 이타적인 기여(봉사)는 서버를 운영하고, 광고를 최소화하며, 모든 신자들이 앱을 무료로 사용할 수 있도록 돕습니다.';
+
+  @override
+  String get support_title => 'Moksha Mala Jaap 프로젝트 후원';
+
+  @override
+  String get support_afterTitile =>
+      'Moksha Mala Jaap을 후원해 주셔서 감사합니다 — 모든 기여가 큰 힘이 됩니다.';
 }

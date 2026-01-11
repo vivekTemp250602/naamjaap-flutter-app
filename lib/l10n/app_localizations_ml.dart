@@ -9,12 +9,6 @@ class AppLocalizationsMl extends AppLocalizations {
   AppLocalizationsMl([String locale = 'ml']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'നാം ജപിലേക്ക് സ്വാഗതം';
-
-  @override
   String get login_subtitle => 'നിങ്ങളുടെ വ്യക്തിഗത ഡിജിറ്റൽ ജപ സഹായി.';
 
   @override
@@ -139,13 +133,7 @@ class AppLocalizationsMl extends AppLocalizations {
       'നിങ്ങളുടെ ആകെ എണ്ണം ഇവിടെ കാണാൻ ജപിക്കാൻ തുടങ്ങൂ!';
 
   @override
-  String get profile_shareApp => 'നാം ജാപ് പങ്കിടുക';
-
-  @override
   String get profile_rateApp => 'ഞങ്ങളുടെ അപ്ലിക്കേഷൻ റേറ്റ് ചെയ്യുക';
-
-  @override
-  String get profile_supportTitle => 'നാം ജാപിനെ പിന്തുണയ്ക്കുക';
 
   @override
   String get profile_supportSubtitle =>
@@ -232,10 +220,6 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get dialog_update => 'അപ്ഡേറ്റ് ആവശ്യമാണ്';
-
-  @override
-  String get dialog_updateDesc =>
-      'പ്രധാനപ്പെട്ട അപ്‌ഡേറ്റുകളോടെ നാം ജാപിന്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്. തുടരാൻ ദയവായി അപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുക.';
 
   @override
   String get dialog_updateNow => 'ഇപ്പോൾ അപ്ഡേറ്റ് ചെയ്യുക';
@@ -413,14 +397,6 @@ class AppLocalizationsMl extends AppLocalizations {
       'പിശക്: തുറക്കാൻ ഒരു UPI ആപ്പ് കണ്ടെത്താൻ കഴിഞ്ഞില്ല.';
 
   @override
-  String get support_title =>
-      'നിങ്ങളുടെ സേവനം ഞങ്ങളുടെ സമൂഹത്തെ വളരാൻ സഹായിക്കുന്നു';
-
-  @override
-  String get support_desc =>
-      'നാം ജാപ് സ്നേഹത്തിൻ്റെ പ്രയത്നമാണ്, ഒരു സോളോ ഡെവലപ്പർ നിർമ്മിച്ചത്. നിങ്ങളുടെ നിസ്വാർത്ഥ സംഭാവന (സേവനം) സെർവറുകൾ പ്രവർത്തിപ്പിക്കാനും പരസ്യങ്ങൾ കുറയ്ക്കാനും എല്ലാ ഭക്തർക്കും ആപ്പ് സൗജന്യമായി നിലനിർത്താനും സഹായിക്കുന്നു.';
-
-  @override
   String get support_chooseOffering => 'ഒരു വഴിപാട് തിരഞ്ഞെടുക്കുക';
 
   @override
@@ -432,4 +408,109 @@ class AppLocalizationsMl extends AppLocalizations {
 
   @override
   String get support_now => 'ഇപ്പോൾ പിന്തുണയ്ക്കുക';
+
+  @override
+  String get home_chooseMala => 'നിങ്ങളുടെ മാല തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'നിങ്ങളുടെ ആത്മാവിനോട് ഇണങ്ങുന്ന ഒരു ശൈലി തിരഞ്ഞെടുക്കുക.';
+
+  @override
+  String get tour_title1 => 'ഡിജിറ്റൽ ജപ മാല';
+
+  @override
+  String get tour_body1 =>
+      'ജപിക്കാൻ ടാപ്പ് ചെയ്യുക. ഞങ്ങൾ നിങ്ങളുടെ മുത്തുകൾ എണ്ണുന്നു, മാലകൾ ട്രാക്ക് ചെയ്യുന്നു, നിങ്ങളുടെ സ്ട്രീക്ക് സ്വയമേവ നിലനിർത്തുന്നു.';
+
+  @override
+  String get tour_title2 => 'ഗ്ലോബൽ ലീഡർബോർഡ്';
+
+  @override
+  String get tour_body2 =>
+      'ആയിരക്കണക്കിന് ആളുകൾക്കൊപ്പം ജപിക്കുക. ആത്മീയ പുരോഗതിയിലൂടെയും സ്ഥിരതയിലൂടെയും ഉയരുക.';
+
+  @override
+  String get tour_title3 => 'ദിവസേനയുള്ള ജ്ഞാനം';
+
+  @override
+  String get tour_body3 =>
+      'പുരാതന ഗ്രന്ഥങ്ങളിൽ നിന്ന് തിരഞ്ഞെടുത്ത ശ്ലോകങ്ങൾ സ്വീകരിക്കുക — ഒന്നിലധികം ഭാഷകളിൽ ലഭ്യമാണ്.';
+
+  @override
+  String get tour_title4 => 'നിങ്ങളുടെ ആത്മീയ യാത്ര';
+
+  @override
+  String get tour_body4 =>
+      'നാഴികക്കല്ലുകൾ ട്രാക്കുചെയ്യുക, സങ്കൽപ്പങ്ങൾ സജ്ജമാക്കുക, നിങ്ങളുടെ വളർച്ചയും നേട്ടങ്ങളും ചിന്തിക്കുക.';
+
+  @override
+  String get dialog_getStarted => 'ആരംഭിക്കുക';
+
+  @override
+  String get dialog_next => 'അടുത്തത്';
+
+  @override
+  String get dialog_skip => 'ഒഴിവാക്കുക';
+
+  @override
+  String get malatype_regular => 'സാധാരണ';
+
+  @override
+  String get malatype_crystal => 'സ്ഫടികം';
+
+  @override
+  String get malatype_royal => 'റോയൽ ഗോൾഡ്';
+
+  @override
+  String get profile_abandon => 'പ്രതിജ്ഞ ഉപേക്ഷിക്കുക';
+
+  @override
+  String get profile_progress => 'പുരോഗതി';
+
+  @override
+  String get profile_deadline => 'സമയപരിധി';
+
+  @override
+  String get profile_achieved => 'നേടി!';
+
+  @override
+  String get support_donate => 'സംഭാവന ചെയ്യുക';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay വഴി പേയ്‌മെൻ്റുകൾ സുരക്ഷിതമായി പ്രോസസ്സ് ചെയ്യുന്നു';
+
+  @override
+  String get support_thank => '🙏 നന്ദി';
+
+  @override
+  String get home_customizeMala => 'മാല ഇഷ്‌ടാനുസൃതമാക്കുക';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'മോക്ഷ മാല ജപത്തിലേക്ക് സ്വാഗതം';
+
+  @override
+  String get profile_shareApp => 'മോക്ഷ മാല ജപം പങ്കിടുക';
+
+  @override
+  String get profile_supportTitle => 'മോക്ഷ മാല ജപത്തെ പിന്തുണയ്ക്കുക';
+
+  @override
+  String get dialog_updateDesc =>
+      'പ്രധാനപ്പെട്ട അപ്‌ഡേറ്റുകളോടെ മോക്ഷ മാല ജപത്തിൻ്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്. തുടരാൻ ദയവായി അപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുക.';
+
+  @override
+  String get support_desc =>
+      'മോക്ഷ മാല ജപം സ്നേഹത്തിൻ്റെ പ്രയത്നമാണ്, ഒരു സോളോ ഡെവലപ്പർ നിർമ്മിച്ചത്. നിങ്ങളുടെ നിസ്വാർത്ഥ സംഭാവന (സേവനം) സെർവറുകൾ പ്രവർത്തിപ്പിക്കാനും പരസ്യങ്ങൾ കുറയ്ക്കാനും എല്ലാ ഭക്തർക്കും ആപ്പ് സൗജന്യമായി നിലനിർത്താനും സഹായിക്കുന്നു.';
+
+  @override
+  String get support_title => 'മോക്ഷ മാല ജപം പദ്ധതിയെ പിന്തുണയ്ക്കുക';
+
+  @override
+  String get support_afterTitile =>
+      'മോക്ഷ മാല ജപത്തെ പിന്തുണച്ചതിന് നന്ദി — ഓരോ സംഭാവനയും സഹായിക്കുന്നു.';
 }

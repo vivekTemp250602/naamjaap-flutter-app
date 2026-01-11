@@ -9,12 +9,6 @@ class AppLocalizationsBh extends AppLocalizations {
   AppLocalizationsBh([String locale = 'bh']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'नाम जाप में राउर स्वागत बा';
-
-  @override
   String get login_subtitle => 'राउर व्यक्तिगत डिजिटल जाप साथी।';
 
   @override
@@ -137,13 +131,7 @@ class AppLocalizationsBh extends AppLocalizations {
   String get profile_mantrasEmpty => 'आपन कुल योग देखे खातिर जाप शुरू करीं!';
 
   @override
-  String get profile_shareApp => 'नाम जाप साझा करीं';
-
-  @override
   String get profile_rateApp => 'हमनी के ऐप के रेट करीं';
-
-  @override
-  String get profile_supportTitle => 'नाम जाप के समर्थन करीं';
 
   @override
   String get profile_supportSubtitle => 'ऐप के चलावत रखे में मदद करीं';
@@ -228,10 +216,6 @@ class AppLocalizationsBh extends AppLocalizations {
 
   @override
   String get dialog_update => 'अपडेट के जरूरत बा';
-
-  @override
-  String get dialog_updateDesc =>
-      'नाम जाप के एगो नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध बा। जारी रखे खातिर कृपया ऐप के अपडेट करीं।';
 
   @override
   String get dialog_updateNow => 'अब अपडेट करीं';
@@ -403,13 +387,6 @@ class AppLocalizationsBh extends AppLocalizations {
   String get support_upiError => 'त्रुटि: खोले खातिर कवनो UPI ऐप ना मिलल।';
 
   @override
-  String get support_title => 'रउआ सेवा हमनी के समुदाय के बढ़े में मदद करेला';
-
-  @override
-  String get support_desc =>
-      'नाम जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।';
-
-  @override
   String get support_chooseOffering => 'एगो भेंट चुनीं';
 
   @override
@@ -420,4 +397,109 @@ class AppLocalizationsBh extends AppLocalizations {
 
   @override
   String get support_now => 'अबहीं समर्थन करीं';
+
+  @override
+  String get home_chooseMala => 'आपन माला चुनीं';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'एगो अइसन शैली चुनीं जवन रउआ आत्मा के भावे।';
+
+  @override
+  String get tour_title1 => 'डिजिटल जप माला';
+
+  @override
+  String get tour_body1 =>
+      'जाप करे खातिर टैप करीं। हमनी के रउआ मनका के गिनती करेनी जा, माला के ट्रैक करेनी जा, आ रउआ स्ट्रीक के अपने आप बनवले रखेनी जा।';
+
+  @override
+  String get tour_title2 => 'ग्लोबल लीडरबोर्ड';
+
+  @override
+  String get tour_body2 =>
+      'हजारन लोग के साथ जाप करीं। आध्यात्मिक प्रगति आ निरंतरता के माध्यम से ऊपर उठीं।';
+
+  @override
+  String get tour_title3 => 'दैनिक ज्ञान';
+
+  @override
+  String get tour_body3 =>
+      'प्राचीन ग्रंथन से चुनल श्लोक प्राप्त करीं — कई गो भाषा में उपलब्ध बा।';
+
+  @override
+  String get tour_title4 => 'रउआ आध्यात्मिक यात्रा';
+
+  @override
+  String get tour_body4 =>
+      'मील के पत्थर ट्रैक करीं, संकल्प निर्धारित करीं, आ आपन विकास आ उपलब्धियन पर विचार करीं।';
+
+  @override
+  String get dialog_getStarted => 'शुरू करीं';
+
+  @override
+  String get dialog_next => 'अगिला';
+
+  @override
+  String get dialog_skip => 'छोड़ीं';
+
+  @override
+  String get malatype_regular => 'साधारण';
+
+  @override
+  String get malatype_crystal => 'स्फटिक';
+
+  @override
+  String get malatype_royal => 'शाही सोना';
+
+  @override
+  String get profile_abandon => 'संकल्प त्यागीं';
+
+  @override
+  String get profile_progress => 'प्रगति';
+
+  @override
+  String get profile_deadline => 'अंतिम समय';
+
+  @override
+  String get profile_achieved => 'प्राप्त हो गइल!';
+
+  @override
+  String get support_donate => 'दान करीं';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay द्वारा सुरक्षित रूप से भुगतान संसाधित';
+
+  @override
+  String get support_thank => '🙏 धन्यवाद';
+
+  @override
+  String get home_customizeMala => 'माला कस्टमाइज़ करीं';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'मोक्ष माला जाप में राउर स्वागत बा';
+
+  @override
+  String get profile_shareApp => 'मोक्ष माला जाप साझा करीं';
+
+  @override
+  String get profile_supportTitle => 'मोक्ष माला जाप के समर्थन करीं';
+
+  @override
+  String get dialog_updateDesc =>
+      'मोक्ष माला जाप के एगो नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध बा। जारी रखे खातिर कृपया ऐप के अपडेट करीं।';
+
+  @override
+  String get support_desc =>
+      'मोक्ष माला जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।';
+
+  @override
+  String get support_title => 'मोक्ष माला जाप प्रोजेक्ट के समर्थन करीं';
+
+  @override
+  String get support_afterTitile =>
+      'मोक्ष माला जाप के समर्थन करे खातिर धन्यवाद — हर योगदान मदद करेला।';
 }

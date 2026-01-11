@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/services/achievements_service.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
@@ -16,10 +18,10 @@ import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/mantra_info_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:naamjaap/utils/mala_type.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
@@ -98,11 +100,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   // State variables
   int _totalMantraCount = 0;
+  // int _streakCount = 0; // REMOVED: No longer needed, we use StreamBuilder
   Map<String, int> _pendingJappsLedger = {};
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
-  // bool _isZenMode = false;
   Timer? _syncTimer;
 
   @override
@@ -178,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     setState(() {
       _totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
+      // _streakCount = userData['currentStreak'] ?? 0; // REMOVED
     });
   }
 
@@ -190,13 +193,12 @@ class _HomeScreenState extends State<HomeScreen>
 
     setState(() {
       _totalMantraCount = jappsMap[mantraId] as int? ?? 0;
+      // _streakCount = userData['currentStreak'] ?? 0; // REMOVED
     });
   }
 
-  // This is the command that the SyncService runs after it successfully uploads data.
   void _onSyncComplete(MantraProvider provider) {
     if (mounted) {
-      print("Sync complete! Refreshing totals from Firestore.");
       setState(() {
         _pendingJappsLedger = {};
       });
@@ -204,11 +206,6 @@ class _HomeScreenState extends State<HomeScreen>
       _loadInitialCounts();
     }
   }
-
-  // Future<void> _saveSelectedMantra(String mantraId) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString(AppConstants.prefsKeySelectedMantra, mantraId);
-  // }
 
   void _onMantraSelected(Mantra mantra) async {
     await _syncService?.syncPendingData();
@@ -273,6 +270,185 @@ class _HomeScreenState extends State<HomeScreen>
     });
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.prefsKeyVibrationEnabled, newStatus);
+  }
+
+  // --- Bottom Sheet for Mala Styles ---
+  void _showMalaStyleSheet(BuildContext context) {
+    final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled:
+          true, // Allows the sheet to take up more space if needed
+      builder: (sheetContext) {
+        return ChangeNotifierProvider.value(
+          value: mantraProvider,
+          child: Consumer<MantraProvider>(
+            builder: (context, provider, child) {
+              final selectedMala = provider.selectedMalaType;
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(28)), // Softer curve
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(80),
+                      blurRadius: 30,
+                      offset: const Offset(0, -10),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.fromLTRB(
+                    24.0, 16.0, 24.0, 40.0), // More bottom padding
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle Bar
+                    Center(
+                      child: Container(
+                        width: 48,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(2.5),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+
+                    // Title
+                    Text(
+                      AppLocalizations.of(context)!.home_chooseMala,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black87,
+                                letterSpacing: 0.5,
+                              ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.home_chooseMalaDesc,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey.shade600,
+                          ),
+                    ),
+                    const SizedBox(height: 28),
+
+                    // Horizontal Scrollable List of Styles
+                    SizedBox(
+                      height: 150, // Taller to accommodate shadows and padding
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: MalaType.values.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 16),
+                        itemBuilder: (context, index) {
+                          final malaType = MalaType.values[index];
+                          final isSelected = selectedMala == malaType;
+                          final primaryColor =
+                              Theme.of(context).colorScheme.primary;
+
+                          return GestureDetector(
+                            onTap: () {
+                              provider.setSelectedMalaType(malaType);
+                              HapticFeedback
+                                  .selectionClick(); // Nice haptic feel
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeOut,
+                              width: 110,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 2), // Space for shadow
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? primaryColor.withAlpha(10)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? primaryColor
+                                      : Colors.grey.shade200,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                boxShadow: [
+                                  if (isSelected)
+                                    BoxShadow(
+                                      color: primaryColor.withAlpha(40),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    )
+                                  else
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(10),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Preview Circle Container
+                                  Container(
+                                    width: 64,
+                                    height: 64,
+                                    padding: const EdgeInsets.all(
+                                        2), // Gap between border and bead
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: isSelected
+                                          ? Border.all(
+                                              color: primaryColor.withAlpha(90),
+                                              width: 2)
+                                          : null,
+                                    ),
+                                    child: CustomPaint(
+                                      painter: MalaPainter(
+                                        beadCount: 1,
+                                        activeBeadIndex: 0,
+                                        malaType: malaType,
+                                        context: context,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    malaType.getDisplayName(context),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
+                                      fontSize: 13,
+                                      color: isSelected
+                                          ? primaryColor
+                                          : Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   void _showMantraInfo(String mantraName) {
@@ -378,7 +554,6 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
-    // final connectivityService = Provider.of<ConnectivityService>(context);
 
     return Consumer<MantraProvider>(builder: (context, mantraProvider, child) {
       if (mantraProvider.isLoading || mantraProvider.selectedMantra == null) {
@@ -423,20 +598,17 @@ class _HomeScreenState extends State<HomeScreen>
             body: SafeArea(
                 child: Column(
               children: [
+                // --- STREAK CHIP FIX ---
                 StreamBuilder<DocumentSnapshot>(
                   stream: _firestoreService.getUserStatsStream(_uid),
                   builder: (context, snapshot) {
-                    // Default to 0
                     int streakCount = 0;
-
-                    // If we have data, get the real streak count
                     if (snapshot.hasData && snapshot.data!.exists) {
                       final userData =
                           snapshot.data!.data() as Map<String, dynamic>;
                       streakCount = userData['currentStreak'] ?? 0;
                     }
 
-                    // Return the same Chip, but with the live data
                     return Chip(
                       avatar: Icon(Icons.local_fire_department,
                           color: Colors.orange.shade800),
@@ -448,6 +620,7 @@ class _HomeScreenState extends State<HomeScreen>
                     );
                   },
                 ),
+                // --- END STREAK CHIP FIX ---
 
                 // Mantra Selector
                 Padding(
@@ -459,53 +632,129 @@ class _HomeScreenState extends State<HomeScreen>
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
-                        children: allMantras.map((mantra) {
-                          final isSelected = selectedMantra.id == mantra.id;
-                          return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: GestureDetector(
-                              onTap: () => _onMantraSelected(mantra),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? Colors.orange.withAlpha(210)
-                                      : Colors.black.withAlpha(70),
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(
+                        children: [
+                          // 1. The Existing Mantras
+                          ...allMantras.map((mantra) {
+                            final isSelected = selectedMantra.id == mantra.id;
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: GestureDetector(
+                                onTap: () => _onMantraSelected(mantra),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
                                     color: isSelected
-                                        ? Colors.orange.shade300
-                                        : Colors.white.withAlpha(128),
-                                    width: 2,
+                                        ? Colors.orange.withAlpha(210)
+                                        : Colors.black.withAlpha(70),
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Colors.orange.shade300
+                                          : Colors.white.withAlpha(128),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    mantra.name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal),
                                   ),
                                 ),
-                                child: Text(
-                                  mantra.name,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.normal),
+                              ),
+                            );
+                          }),
+
+                          // 2. The NEW "Add Mantra" Button
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                // Navigate to CustomMantraEditor
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        ChangeNotifierProvider.value(
+                                      value: mantraProvider,
+                                      child: const CustomMantraEditor(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withAlpha(40),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(
+                                    color: Colors.white.withAlpha(180),
+                                    width: 1,
+                                    style: BorderStyle
+                                        .solid, // or BorderStyle.none
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.add,
+                                        color: Colors.white, size: 18),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "Add",
+                                      style: TextStyle(
+                                        color: Colors.white.withAlpha(200),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
 
-                // Mantra Info Button
-                TextButton.icon(
-                  onPressed: () => _showMantraInfo(selectedMantra.name),
-                  icon: const Icon(Icons.info_outline),
-                  label: Text(AppLocalizations.of(context)!.home_mantraInfo),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white.withAlpha(220),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Mantra Info Button
+                      TextButton.icon(
+                        onPressed: () => _showMantraInfo(selectedMantra.name),
+                        icon: const Icon(Icons.info_outline),
+                        label:
+                            Text(AppLocalizations.of(context)!.home_mantraInfo),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white.withAlpha(220),
+                        ),
+                      ),
+
+                      TextButton.icon(
+                        onPressed: () => _showMalaStyleSheet(context),
+                        icon: const Icon(Icons.style, color: Colors.white),
+                        label: Text(
+                          AppLocalizations.of(context)!.home_customizeMala,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.black.withAlpha(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: Colors.white.withAlpha(50)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -550,87 +799,90 @@ class _HomeScreenState extends State<HomeScreen>
                   child: GestureDetector(
                     onHorizontalDragEnd: (details) =>
                         _onMantraSwiped(details, allMantras, selectedMantra),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 340,
-                          height: 340,
-                          child: CustomPaint(
-                            painter: MalaPainter(
-                              beadCount: 108,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: SizedBox(
+                        width: 340,
+                        height: 340,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            MalaWidget(
                               activeBeadIndex: malaProgressCounter,
+                              beadCount: 109,
                             ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: _incrementCounter,
-                          child: Container(
-                            width: 260,
-                            height: 260,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.orange.shade700,
-                              gradient: RadialGradient(colors: [
-                                Colors.orange.shade500,
-                                Colors.orange.shade800
-                              ]),
-                              boxShadow: [
-                                BoxShadow(
-                                    color:
-                                        Colors.orange.shade900.withAlpha(160),
-                                    spreadRadius: 2,
-                                    blurRadius: 20,
-                                    offset: const Offset(0, 10)),
-                                BoxShadow(
-                                    color: Colors.black.withAlpha(129),
-                                    spreadRadius: 10,
-                                    blurRadius: 40),
-                              ],
-                            ),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 200),
-                                    transitionBuilder: (Widget child,
-                                        Animation<double> animation) {
-                                      return ScaleTransition(
-                                          scale: animation, child: child);
-                                    },
-                                    child: Text(
-                                      (malaProgressCounter == 0 &&
-                                              displayTotal > 0)
-                                          ? "108"
-                                          : (malaProgressCounter).toString(),
-                                      key: ValueKey<int>(displayTotal),
-                                      style: const TextStyle(
-                                        fontSize: 72,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        shadows: [
-                                          Shadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.black54,
-                                              offset: Offset(2.0, 2.0))
-                                        ],
+                            GestureDetector(
+                              onTap: _incrementCounter,
+                              child: Container(
+                                width: 260,
+                                height: 260,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.orange.shade700,
+                                  gradient: RadialGradient(colors: [
+                                    Colors.orange.shade500,
+                                    Colors.orange.shade800
+                                  ]),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.orange.shade900
+                                            .withAlpha(160),
+                                        spreadRadius: 2,
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 10)),
+                                    BoxShadow(
+                                        color: Colors.black.withAlpha(129),
+                                        spreadRadius: 10,
+                                        blurRadius: 40),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        transitionBuilder: (Widget child,
+                                            Animation<double> animation) {
+                                          return ScaleTransition(
+                                              scale: animation, child: child);
+                                        },
+                                        child: Text(
+                                          (malaProgressCounter == 0 &&
+                                                  displayTotal > 0)
+                                              ? "108"
+                                              : (malaProgressCounter)
+                                                  .toString(),
+                                          key: ValueKey<int>(displayTotal),
+                                          style: const TextStyle(
+                                            fontSize: 72,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(
+                                                  blurRadius: 10.0,
+                                                  color: Colors.black54,
+                                                  offset: Offset(2.0, 2.0))
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Text(
+                                        '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
+                                        style: TextStyle(
+                                          color: Colors.white.withAlpha(170),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
-                                    style: TextStyle(
-                                      color: Colors.white.withAlpha(170),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

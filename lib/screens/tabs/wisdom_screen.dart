@@ -279,35 +279,49 @@ class _WisdomScreenState extends State<WisdomScreen>
 
   Widget _buildQuoteStream(
       Stream<DocumentSnapshot> stream, Map<String, String> defaultQuote) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      children: [
-        StreamBuilder<DocumentSnapshot>(
-          stream: stream,
-          builder: (context, quoteSnapshot) {
-            if (quoteSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            Map<String, dynamic> quoteData;
-            if (quoteSnapshot.hasError ||
-                !quoteSnapshot.hasData ||
-                !quoteSnapshot.data!.exists) {
-              quoteData = defaultQuote;
-            } else {
-              quoteData = quoteSnapshot.data!.data() as Map<String, dynamic>;
-            }
+    // Wrapped in RefreshIndicator to allow manual refresh
+    return RefreshIndicator(
+      onRefresh: () async {
+        // This is a bit of a hack since it's a stream, but calling setState
+        // can sometimes force a rebuild if parameters changed.
+        // Ideally, we'd reload the stream, but Firestore streams are live.
+        // This is mostly for UX feedback.
+        setState(() {});
+        await Future.delayed(const Duration(seconds: 1));
+      },
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        children: [
+          StreamBuilder<DocumentSnapshot>(
+            stream: stream,
+            builder: (context, quoteSnapshot) {
+              if (quoteSnapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 300,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              Map<String, dynamic> quoteData;
+              if (quoteSnapshot.hasError ||
+                  !quoteSnapshot.hasData ||
+                  !quoteSnapshot.data!.exists) {
+                quoteData = defaultQuote;
+              } else {
+                quoteData = quoteSnapshot.data!.data() as Map<String, dynamic>;
+              }
 
-            return QuoteCard(
-              textEN: quoteData['text_en'] ?? '...',
-              textHI: quoteData['text_hi'] ?? '...',
-              textSA: quoteData['text_sa'] ?? '...',
-              source: quoteData['source'] ?? '...',
-              onShare: (quote, source, langCode) =>
-                  _onShareQuote(quote, source, langCode),
-            );
-          },
-        ),
-      ],
+              return QuoteCard(
+                textEN: quoteData['text_en'] ?? '...',
+                textHI: quoteData['text_hi'] ?? '...',
+                textSA: quoteData['text_sa'] ?? '...',
+                source: quoteData['source'] ?? '...',
+                onShare: (quote, source, langCode) =>
+                    _onShareQuote(quote, source, langCode),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

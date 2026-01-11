@@ -24,11 +24,12 @@ class _SupportScreenState extends State<SupportScreen>
 
   // ---- Animation controllers ----
   late AnimationController _headerController;
-  late Animation<Offset> _headerOffset = AlwaysStoppedAnimation(Offset.zero);
-  late Animation<double> _headerOpacity = AlwaysStoppedAnimation(1.0);
+  late Animation<Offset> _headerOffset =
+      const AlwaysStoppedAnimation(Offset.zero);
+  late Animation<double> _headerOpacity = const AlwaysStoppedAnimation(1.0);
 
   late AnimationController _heartController;
-  late Animation<double> _heartScale = AlwaysStoppedAnimation(1.0);
+  late Animation<double> _heartScale = const AlwaysStoppedAnimation(1.0);
 
   late AnimationController _buttonGlowController;
 
@@ -247,7 +248,7 @@ class _SupportScreenState extends State<SupportScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.deepOrange.withOpacity(0.22),
+                  color: Colors.deepOrange.withAlpha(92),
                   blurRadius: 18,
                   spreadRadius: 1,
                 )
@@ -305,7 +306,7 @@ class _SupportScreenState extends State<SupportScreen>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(selected ? 0.18 : 0.08),
+                    color: Colors.black.withAlpha(selected ? 70 : 20),
                     blurRadius: selected ? 24 : 10,
                     offset: const Offset(0, 8),
                   )
@@ -334,7 +335,7 @@ class _SupportScreenState extends State<SupportScreen>
                                 color: Colors.brown.shade900,
                               )),
                           const SizedBox(height: 6),
-                          Text('Support the Naam Jaap project',
+                          Text(AppLocalizations.of(context)!.support_title,
                               style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
@@ -352,26 +353,27 @@ class _SupportScreenState extends State<SupportScreen>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.white.withOpacity(0.98),
-                                    Colors.white.withOpacity(0.85)
+                                    Colors.white.withAlpha(220),
+                                    Colors.white.withAlpha(200)
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(26),
                                 boxShadow: [
                                   BoxShadow(
-                                    color:
-                                        Colors.orange.withOpacity(0.12 * glow),
+                                    color: Colors.orange
+                                        .withAlpha((50 * glow).toInt()),
                                     blurRadius: 18 * glow,
                                     spreadRadius: 1.2 * glow,
                                   )
                                 ],
                               ),
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(Icons.volunteer_activism,
+                                  const Icon(Icons.volunteer_activism,
                                       color: Colors.deepOrange),
-                                  SizedBox(width: 8),
-                                  Text('Donate'),
+                                  const SizedBox(width: 8),
+                                  Text(AppLocalizations.of(context)!
+                                      .support_donate),
                                 ],
                               ),
                             );
@@ -394,7 +396,7 @@ class _SupportScreenState extends State<SupportScreen>
       children: [
         const SizedBox(height: 8),
         Text(
-          'Thank you for supporting Naam Jaap — every contribution helps.',
+          AppLocalizations.of(context)!.support_afterTitile,
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme
@@ -403,7 +405,7 @@ class _SupportScreenState extends State<SupportScreen>
         ),
         const SizedBox(height: 22),
         Text(
-          'Payments processed securely by Razorpay',
+          AppLocalizations.of(context)!.support_paymentSucc,
           style: Theme.of(context).textTheme.labelSmall,
         ),
       ],
@@ -412,7 +414,7 @@ class _SupportScreenState extends State<SupportScreen>
 
   Widget _buildLoadingOverlay() {
     return Container(
-      color: Colors.black.withOpacity(0.35),
+      color: Colors.black.withAlpha(100),
       child: const Center(child: CircularProgressIndicator()),
     );
   }
@@ -432,14 +434,16 @@ class _SupportScreenState extends State<SupportScreen>
             borderRadius: BorderRadius.circular(20),
             boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 18)],
           ),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.emoji_people, size: 48, color: Colors.deepOrange),
-              SizedBox(height: 12),
+              const Icon(Icons.emoji_people,
+                  size: 48, color: Colors.deepOrange),
+              const SizedBox(height: 12),
               Text(
-                '🙏 Thank you',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                AppLocalizations.of(context)!.support_thank,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ],
           ),

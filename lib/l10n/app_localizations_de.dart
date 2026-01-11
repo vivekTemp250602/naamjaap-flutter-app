@@ -9,12 +9,6 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'Willkommen bei Naam Jaap';
-
-  @override
   String get login_subtitle =>
       'Dein persönlicher digitaler Chanting-Begleiter.';
 
@@ -141,13 +135,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Beginne zu chanten, um deine Summen hier zu sehen!';
 
   @override
-  String get profile_shareApp => 'Naam Jaap teilen';
-
-  @override
   String get profile_rateApp => 'Bewerte unsere App';
-
-  @override
-  String get profile_supportTitle => 'Unterstütze Naam Jaap';
 
   @override
   String get profile_supportSubtitle => 'Hilf, die App am Laufen zu halten';
@@ -233,10 +221,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dialog_update => 'Update erforderlich';
-
-  @override
-  String get dialog_updateDesc =>
-      'Eine neue Version von Naam Jaap ist mit wichtigen Updates verfügbar. Bitte aktualisiere die App, um fortzufahren.';
 
   @override
   String get dialog_updateNow => 'Jetzt aktualisieren';
@@ -415,13 +399,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler: Konnte keine UPI-App zum Öffnen finden.';
 
   @override
-  String get support_title => 'Dein Seva hilft unserer Gemeinschaft zu wachsen';
-
-  @override
-  String get support_desc =>
-      'Naam Jaap ist eine Liebesarbeit, erstellt von einem einzelnen Entwickler. Dein selbstloser Beitrag (Seva) hilft, die Server am Laufen zu halten, die Werbung minimal zu halten und die App für alle Anhänger kostenlos zu halten.';
-
-  @override
   String get support_chooseOffering => 'WÄHLE EIN OPFER';
 
   @override
@@ -434,4 +411,109 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get support_now => 'Jetzt unterstützen';
+
+  @override
+  String get home_chooseMala => 'Wähle deine Mala';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'Wähle einen Stil, der mit deinem Geist resoniert.';
+
+  @override
+  String get tour_title1 => 'Digitale Japa Mala';
+
+  @override
+  String get tour_body1 =>
+      'Tippe zum Chanten. Wir zählen deine Perlen, verfolgen Malas und halten deine Serie automatisch aufrecht.';
+
+  @override
+  String get tour_title2 => 'Globale Bestenliste';
+
+  @override
+  String get tour_body2 =>
+      'Chante mit Tausenden. Steige auf durch spirituellen Fortschritt und Beständigkeit.';
+
+  @override
+  String get tour_title3 => 'Tägliche Weisheit';
+
+  @override
+  String get tour_body3 =>
+      'Erhalte ausgewählte Verse aus alten Texten — verfügbar in mehreren Sprachen.';
+
+  @override
+  String get tour_title4 => 'Deine spirituelle Reise';
+
+  @override
+  String get tour_body4 =>
+      'Verfolge Meilensteine, setze Sankalpas und reflektiere über dein Wachstum und deine Erfolge.';
+
+  @override
+  String get dialog_getStarted => 'Loslegen';
+
+  @override
+  String get dialog_next => 'Weiter';
+
+  @override
+  String get dialog_skip => 'Überspringen';
+
+  @override
+  String get malatype_regular => 'Regulär';
+
+  @override
+  String get malatype_crystal => 'Kristall';
+
+  @override
+  String get malatype_royal => 'Königliches Gold';
+
+  @override
+  String get profile_abandon => 'Gelübde aufgeben';
+
+  @override
+  String get profile_progress => 'FORTSCHRITT';
+
+  @override
+  String get profile_deadline => 'FRIST';
+
+  @override
+  String get profile_achieved => 'Erreicht!';
+
+  @override
+  String get support_donate => 'Spenden';
+
+  @override
+  String get support_paymentSucc =>
+      'Zahlungen sicher verarbeitet durch Razorpay';
+
+  @override
+  String get support_thank => '🙏 Danke';
+
+  @override
+  String get home_customizeMala => 'Mala anpassen';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'Willkommen bei Moksha Mala Jaap';
+
+  @override
+  String get profile_shareApp => 'Moksha Mala Jaap teilen';
+
+  @override
+  String get profile_supportTitle => 'Unterstütze Moksha Mala Jaap';
+
+  @override
+  String get dialog_updateDesc =>
+      'Eine neue Version von Moksha Mala Jaap ist mit wichtigen Updates verfügbar. Bitte aktualisiere die App, um fortzufahren.';
+
+  @override
+  String get support_desc =>
+      'Moksha Mala Jaap ist eine Liebesarbeit, erstellt von einem einzelnen Entwickler. Dein selbstloser Beitrag (Seva) hilft, die Server am Laufen zu halten, die Werbung minimal zu halten und die App für alle Anhänger kostenlos zu halten.';
+
+  @override
+  String get support_title => 'Unterstütze das Moksha Mala Jaap Projekt';
+
+  @override
+  String get support_afterTitile =>
+      'Danke, dass du Moksha Mala Jaap unterstützt — jeder Beitrag hilft.';
 }

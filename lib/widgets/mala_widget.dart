@@ -1,171 +1,297 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/utils/mala_type.dart';
+import 'package:provider/provider.dart';
+
+class MalaWidget extends StatelessWidget {
+  final int beadCount;
+  final int activeBeadIndex;
+
+  const MalaWidget({
+    super.key,
+    this.beadCount = 109,
+    required this.activeBeadIndex,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final malaType = Provider.of<MantraProvider>(context).selectedMalaType;
+
+    return SizedBox(
+      width: 340,
+      height: 340,
+      child: ClipRect(
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: MalaPainter(
+              beadCount: beadCount,
+              activeBeadIndex: activeBeadIndex,
+              malaType: malaType,
+              context: context,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class MalaPainter extends CustomPainter {
   final int beadCount;
   final int activeBeadIndex;
+  final MalaType malaType;
+  final BuildContext context;
 
-  MalaPainter({required this.beadCount, required this.activeBeadIndex});
+  MalaPainter({
+    required this.beadCount,
+    required this.activeBeadIndex,
+    required this.malaType,
+    required this.context,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 25;
-    final beadRadius = 10.0;
-    final guruBeadRadius = 18.0;
+    final radius = min(size.width, size.height) / 2 - 20;
+    final double angleStep = 2 * pi / beadCount;
 
-    // --- 1. Define all our paints ---
-    final threadPaint = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset(center.dx - 5, 0),
-        Offset(center.dx + 5, 0),
-        [Colors.red.shade900, Colors.red.shade700],
-      )
-      ..strokeWidth = 4.0
-      ..style = PaintingStyle.stroke;
+    // --- Thread ---
+    final Paint threadPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = malaType == MalaType.royal ? 3.0 : 1.6
+      ..color = (malaType == MalaType.royal)
+          ? const Color(0xFFD4AF37).withAlpha(200)
+          : (malaType == MalaType.crystal)
+              ? Colors.white.withAlpha(125)
+              : Colors.brown[900]!.withAlpha(160);
 
-    // Paint for the standard Rudraksha beads
-    Paint rudrakshaPaint(Offset beadCenter) => Paint()
-      ..shader = ui.Gradient.radial(
-        beadCenter,
-        beadRadius * 1.5,
-        [Colors.brown.shade200, Colors.brown.shade700, Colors.brown.shade900],
-        [0.0, 0.6, 1.0],
-        TileMode.clamp,
-      );
+    canvas.drawCircle(center, radius, threadPaint);
 
-    // Paint for the BIG WHITE TRAVERSING BEAD
-    final whiteActiveBeadPaint = Paint()
-      ..shader = ui.Gradient.radial(
-        // This shader is applied when drawing
-        Offset.zero,
-        beadRadius * 2.5,
-        [Colors.white, Colors.white70, Colors.lightBlue.shade100],
-        [0.0, 0.7, 1.0],
-      )
-      ..maskFilter = const MaskFilter.blur(
-          BlurStyle.normal, 2.0); // Slight blur for a soft edge
-
-    final texturePaint = Paint()
-      ..color = Colors.black.withAlpha(70)
-      ..strokeWidth = 1.2
-      ..style = PaintingStyle.stroke;
-
-    // --- 2. Draw the Sacred Thread ---
-    final path = Path();
-    const gapAngle = 0.25;
-    path.addArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -pi / 2 + gapAngle,
-      2 * pi - (gapAngle * 2),
-    );
-    canvas.drawPath(path, threadPaint);
-
-    // --- 3. Draw the 108 Beads ---
+    // --- Beads ---
     for (int i = 0; i < beadCount; i++) {
-      final angle =
-          (i / beadCount) * (2 * pi - (gapAngle * 2)) + (-pi / 2 + gapAngle);
+      final angle = -pi / 2 + i * angleStep;
       final beadCenter = Offset(
         center.dx + radius * cos(angle),
         center.dy + radius * sin(angle),
       );
 
-      if (i == activeBeadIndex) {
-        // --- DRAW THE BIG WHITE BEAD INSTEAD OF GLOWING ---
-        const bigBeadRadius =
-            16.0; // Define a new, larger radius for the active bead
+      final beadRadius = i == activeBeadIndex ? 10.0 : 6.5;
 
-        // 1. Apply a wide, blurred halo effect (optional, but enhances the "big" feel)
-        final haloPaint = Paint()
-          ..color = Colors.white.withOpacity(0.5)
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 15.0);
-        canvas.drawCircle(beadCenter, bigBeadRadius + 5, haloPaint);
+      _drawBead(canvas, beadCenter, beadRadius, i == activeBeadIndex);
+    }
 
-        // 2. Draw the main big white bead
-        // Since the shader requires the center, we must create a new Paint instance
-        // or apply the shader before drawing if possible. Since the shader uses Offset.zero
-        // above, we use `canvas.drawCircle` with the correct center and a new paint
-        Paint finalWhitePaint = Paint()
-          ..shader = ui.Gradient.radial(
-            beadCenter,
-            bigBeadRadius * 1.5,
-            [Colors.white, Colors.white70, Colors.lightBlue.shade100],
-            [0.0, 0.7, 1.0],
-          )
-          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
+    // --- Meru bead ---
+    final meruCenter = Offset(center.dx, center.dy - radius - 12);
+    _drawMeruBead(canvas, meruCenter);
+  }
 
-        canvas.drawCircle(beadCenter, bigBeadRadius, finalWhitePaint);
+  // ---------------- DRAW BEAD -------------------
+  void _drawBead(Canvas canvas, Offset center, double radius, bool isActive) {
+    final Paint paint = Paint()..style = PaintingStyle.fill;
 
-        // Skip drawing the small rudraksha bead underneath
-      } else {
-        // Draw the standard small rudraksha bead
-        _drawBead(canvas, beadCenter, beadRadius, rudrakshaPaint(beadCenter),
-            texturePaint);
+    // ACTIVE BEAD — CUSTOM FOR EACH TYPE
+    if (isActive) {
+      switch (malaType) {
+        // ----------------- Regular 🟤 -----------------
+        case MalaType.regular:
+          double bigR = radius + 6;
+
+          canvas.drawCircle(
+            center,
+            bigR + 4,
+            Paint()
+              ..color = Colors.white.withAlpha(135)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+          );
+
+          canvas.drawCircle(
+            center,
+            bigR,
+            Paint()
+              ..shader = ui.Gradient.radial(
+                center,
+                bigR * 1.4,
+                [Colors.white, Colors.white70, Colors.orange.shade200],
+                [0.0, 0.45, 1.0],
+              ),
+          );
+          return;
+
+        // ----------------- Crystal 🤍 -----------------
+        case MalaType.crystal:
+          double bigR2 = radius + 8;
+
+          canvas.drawCircle(
+            center,
+            bigR2 + 4,
+            Paint()
+              ..color = Colors.blue.shade100.withAlpha(120)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20),
+          );
+
+          canvas.drawCircle(
+            center,
+            bigR2,
+            Paint()
+              ..shader = ui.Gradient.radial(
+                center,
+                bigR2 * 1.5,
+                [
+                  Colors.white.withAlpha(220),
+                  Colors.blueGrey.shade50,
+                  Colors.blueGrey.shade200.withAlpha(160),
+                ],
+                [0.0, 0.35, 1.0],
+              ),
+          );
+
+          canvas.drawCircle(
+            center + Offset(-bigR2 * 0.3, -bigR2 * 0.3),
+            bigR2 * 0.25,
+            Paint()..color = Colors.white.withAlpha(210),
+          );
+          return;
+
+        // ----------------- Royal Gold 👑 -----------------
+        case MalaType.royal:
+          double glowR = radius + 10;
+
+          // Soft dark backing for contrast on any background
+          canvas.drawCircle(
+            center,
+            glowR + 6,
+            Paint()
+              ..color = Colors.black.withAlpha(110)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18),
+          );
+
+          // Controlled golden aura
+          canvas.drawCircle(
+            center,
+            glowR + 3,
+            Paint()
+              ..color = Colors.amber.shade200.withAlpha(110)
+              ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14),
+          );
+
+          // Clean metallic gold bead - smoother gradient
+          canvas.drawCircle(
+            center,
+            glowR,
+            Paint()
+              ..shader = ui.Gradient.radial(
+                center,
+                glowR * 1.25,
+                [
+                  const Color(0xFFFFF8D8), // bright top
+                  const Color(0xFFFFD36B), // mid
+                  const Color(0xFFB8860B), // shadow gold
+                ],
+                [0.0, 0.55, 1.0],
+              ),
+          );
+
+          // Subtle highlight
+          canvas.drawCircle(
+            center + Offset(-glowR * 0.28, -glowR * 0.28),
+            glowR * 0.22,
+            Paint()..color = Colors.white.withAlpha(155),
+          );
+
+          return;
       }
     }
 
-    // --- 4. Draw the Guru Bead & Tassel ---
-    final guruBeadCenter = Offset(center.dx, center.dy - radius);
-    _drawBead(canvas, guruBeadCenter, guruBeadRadius,
-        rudrakshaPaint(guruBeadCenter), texturePaint);
-    _drawTassel(canvas, guruBeadCenter, guruBeadRadius, threadPaint);
-  }
+    // NON-ACTIVE BEADS
+    switch (malaType) {
+      case MalaType.regular:
+        paint.color = Colors.brown[700]!;
+        canvas.drawCircle(center, radius, paint);
+        break;
 
-  void _drawBead(Canvas canvas, Offset center, double radius, Paint beadPaint,
-      Paint texturePaint) {
-    canvas.drawCircle(center, radius, beadPaint);
-    final path = Path();
-    path.moveTo(center.dx - radius * 0.4, center.dy - radius * 0.7);
-    path.quadraticBezierTo(
-      center.dx - radius * 0.2,
-      center.dy,
-      center.dx - radius * 0.4,
-      center.dy + radius * 0.7,
-    );
-    path.moveTo(center.dx + radius * 0.4, center.dy - radius * 0.7);
-    path.quadraticBezierTo(
-      center.dx + radius * 0.2,
-      center.dy,
-      center.dx + radius * 0.4,
-      center.dy + radius * 0.7,
-    );
-    canvas.drawPath(path, texturePaint);
-  }
+      case MalaType.crystal:
+        paint.shader = ui.Gradient.radial(
+          center,
+          radius * 1.2,
+          [
+            Colors.white.withAlpha(210),
+            Colors.blueGrey.shade100.withAlpha(90),
+          ],
+        );
+        canvas.drawCircle(center, radius, paint);
+        break;
 
-  void _drawTassel(
-      Canvas canvas, Offset guruCenter, double guruRadius, Paint threadPaint) {
-    final tasselKnot = Offset(guruCenter.dx, guruCenter.dy + guruRadius + 10);
+      case MalaType.royal:
+        // Thin crisp outline
+        canvas.drawCircle(
+          center,
+          radius + 1.2,
+          Paint()
+            ..color = Colors.black.withAlpha(120)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.4,
+        );
 
-    canvas.drawLine(Offset(guruCenter.dx, guruCenter.dy + guruRadius),
-        tasselKnot, threadPaint..strokeWidth = 3);
+        // Metallic gold bead
+        paint.shader = ui.Gradient.radial(
+          center,
+          radius * 1.4,
+          [
+            const Color(0xFFFFF6CC),
+            const Color(0xFFFFCC4D),
+            const Color(0xFFB07A0A),
+          ],
+          [0.0, 0.55, 1.0],
+        );
 
-    final knotPaint = Paint()
-      ..shader = ui.Gradient.radial(
-        tasselKnot,
-        8,
-        [Colors.amber.shade200, Colors.amber.shade700],
-      );
-    canvas.drawCircle(tasselKnot, 8, knotPaint);
+        canvas.drawCircle(center, radius, paint);
 
-    final tasselCenterBottom = Offset(guruCenter.dx, tasselKnot.dy + 30);
-    final tasselStrandPaint = Paint()
-      ..color = Colors.red.shade800.withAlpha(200)
-      ..strokeWidth = 1.0
-      ..strokeCap = StrokeCap.round;
-
-    for (int i = -4; i <= 4; i++) {
-      canvas.drawLine(
-        tasselKnot,
-        Offset(tasselCenterBottom.dx + i * 4,
-            tasselCenterBottom.dy + (i.abs() % 2) * 5),
-        tasselStrandPaint,
-      );
+        // tiny highlight
+        canvas.drawCircle(
+          center + Offset(-radius * 0.25, -radius * 0.25),
+          radius * 0.18,
+          Paint()..color = Colors.white.withAlpha(140),
+        );
+        break;
     }
+  }
+
+  // ---------------- DRAW MERU BEAD -------------------
+  void _drawMeruBead(Canvas canvas, Offset center) {
+    double radius = 14;
+    final Paint paint = Paint()..style = PaintingStyle.fill;
+
+    switch (malaType) {
+      case MalaType.regular:
+        paint.color = Colors.red.shade900;
+        break;
+
+      case MalaType.crystal:
+        paint.color = Colors.blue.shade100;
+        break;
+
+      case MalaType.royal:
+        paint.shader = ui.Gradient.radial(
+          center,
+          radius * 1.3,
+          [
+            const Color(0xFFFFF4C0),
+            const Color(0xFFFFBF3F),
+            const Color(0xFF9C6A1F),
+          ],
+          [0.0, 0.5, 1.0],
+        );
+        break;
+    }
+
+    canvas.drawCircle(center, radius, paint);
   }
 
   @override
   bool shouldRepaint(covariant MalaPainter oldDelegate) {
-    return oldDelegate.activeBeadIndex != activeBeadIndex;
+    return oldDelegate.activeBeadIndex != activeBeadIndex ||
+        oldDelegate.malaType != malaType;
   }
 }

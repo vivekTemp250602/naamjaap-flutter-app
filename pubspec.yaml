@@ -1,8 +1,8 @@
 name: naamjaap
-description: "A digital japa mala application."
+description: "Moksha Mala Jaap: Your personal sacred space for daily chanting."
 publish_to: 'none'
 
-version: 3.0.1+14
+version: 4.0.0+19
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
@@ -46,9 +46,11 @@ dependencies:
   firebase_in_app_messaging: ^0.8.0+1
   firebase_storage: ^12.1.0
   firebase_app_check: ^0.3.2+10
+  introduction_screen: ^3.1.14
   # showcaseview: ^5.0.1
   flutter_sound: ^9.27.0
   permission_handler: ^11.0.0
+  lottie: ^3.0.0
 
   connectivity_plus: ^6.0.3
   
@@ -69,6 +71,7 @@ flutter:
     - assets/audio/
     - assets/images/
     - assets/fonts/
+    - assets/tour/
   
   fonts:
     - family: Poppins

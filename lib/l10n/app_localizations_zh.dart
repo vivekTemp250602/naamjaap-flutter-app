@@ -9,12 +9,6 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => '欢迎来到 Naam Jaap';
-
-  @override
   String get login_subtitle => '您的个人数字诵经伴侣。';
 
   @override
@@ -136,13 +130,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get profile_mantrasEmpty => '开始诵经以在此处查看您的总数！';
 
   @override
-  String get profile_shareApp => '分享 Naam Jaap';
-
-  @override
   String get profile_rateApp => '评价我们的应用';
-
-  @override
-  String get profile_supportTitle => '支持 Naam Jaap';
 
   @override
   String get profile_supportSubtitle => '帮助维持应用运行';
@@ -225,9 +213,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dialog_update => '需要更新';
-
-  @override
-  String get dialog_updateDesc => 'Naam Jaap 有包含重要更新的新版本。请更新应用以继续。';
 
   @override
   String get dialog_updateNow => '立即更新';
@@ -396,13 +381,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get support_upiError => '错误：找不到可打开的 UPI 应用。';
 
   @override
-  String get support_title => '您的奉献帮助我们的社区成长';
-
-  @override
-  String get support_desc =>
-      'Naam Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。';
-
-  @override
   String get support_chooseOffering => '选择一份供养';
 
   @override
@@ -413,4 +391,101 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get support_now => '立即支持';
+
+  @override
+  String get home_chooseMala => '选择您的念珠';
+
+  @override
+  String get home_chooseMalaDesc => '选择一种与您的精神产生共鸣的风格。';
+
+  @override
+  String get tour_title1 => '数字持咒念珠';
+
+  @override
+  String get tour_body1 => '点击诵经。我们会自动计算您的念珠数，跟踪念珠串数并保持您的连续记录。';
+
+  @override
+  String get tour_title2 => '全球排行榜';
+
+  @override
+  String get tour_body2 => '与成千上万的人一起诵经。通过精神进步和坚持不懈来提升。';
+
+  @override
+  String get tour_title3 => '每日智慧';
+
+  @override
+  String get tour_body3 => '接收来自古代文本的精选诗句 — 提供多种语言版本。';
+
+  @override
+  String get tour_title4 => '您的精神之旅';
+
+  @override
+  String get tour_body4 => '跟踪里程碑，设定誓愿，并反思您的成长和成就。';
+
+  @override
+  String get dialog_getStarted => '开始';
+
+  @override
+  String get dialog_next => '下一步';
+
+  @override
+  String get dialog_skip => '跳过';
+
+  @override
+  String get malatype_regular => '常规';
+
+  @override
+  String get malatype_crystal => '水晶';
+
+  @override
+  String get malatype_royal => '皇家金';
+
+  @override
+  String get profile_abandon => '放弃誓愿';
+
+  @override
+  String get profile_progress => '进度';
+
+  @override
+  String get profile_deadline => '截止日期';
+
+  @override
+  String get profile_achieved => '已达成！';
+
+  @override
+  String get support_donate => '捐赠';
+
+  @override
+  String get support_paymentSucc => '由 Razorpay 安全处理付款';
+
+  @override
+  String get support_thank => '🙏 谢谢';
+
+  @override
+  String get home_customizeMala => '自定义念珠';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => '欢迎来到 Moksha Mala Jaap';
+
+  @override
+  String get profile_shareApp => '分享 Moksha Mala Jaap';
+
+  @override
+  String get profile_supportTitle => '支持 Moksha Mala Jaap';
+
+  @override
+  String get dialog_updateDesc => 'Moksha Mala Jaap 有包含重要更新的新版本。请更新应用以继续。';
+
+  @override
+  String get support_desc =>
+      'Moksha Mala Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。';
+
+  @override
+  String get support_title => '支持 Moksha Mala Jaap 项目';
+
+  @override
+  String get support_afterTitile => '感谢您支持 Moksha Mala Jaap — 每一份贡献都有帮助。';
 }

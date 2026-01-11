@@ -132,18 +132,6 @@ abstract class AppLocalizations {
     Locale('zh')
   ];
 
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Naam Jaap'**
-  String get appTitle;
-
-  /// No description provided for @login_welcome.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to Naam Jaap'**
-  String get login_welcome;
-
   /// No description provided for @login_subtitle.
   ///
   /// In en, this message translates to:
@@ -378,23 +366,11 @@ abstract class AppLocalizations {
   /// **'Start chanting to see your totals here!'**
   String get profile_mantrasEmpty;
 
-  /// No description provided for @profile_shareApp.
-  ///
-  /// In en, this message translates to:
-  /// **'Share Naam Jaap'**
-  String get profile_shareApp;
-
   /// No description provided for @profile_rateApp.
   ///
   /// In en, this message translates to:
   /// **'Rate Our App'**
   String get profile_rateApp;
-
-  /// No description provided for @profile_supportTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Support Naam Jaap'**
-  String get profile_supportTitle;
 
   /// No description provided for @profile_supportSubtitle.
   ///
@@ -557,12 +533,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update Required'**
   String get dialog_update;
-
-  /// No description provided for @dialog_updateDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version of Naam Jaap is available with important updates. Please update the app to continue.'**
-  String get dialog_updateDesc;
 
   /// No description provided for @dialog_updateNow.
   ///
@@ -876,18 +846,6 @@ abstract class AppLocalizations {
   /// **'Error: Could not find a UPI app to open.'**
   String get support_upiError;
 
-  /// No description provided for @support_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Seva Helps Our Community Grow'**
-  String get support_title;
-
-  /// No description provided for @support_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
-  String get support_desc;
-
   /// No description provided for @support_chooseOffering.
   ///
   /// In en, this message translates to:
@@ -911,6 +869,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Support Now'**
   String get support_now;
+
+  /// No description provided for @home_chooseMala.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Mala'**
+  String get home_chooseMala;
+
+  /// No description provided for @home_chooseMalaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a style that resonates with your spirit.'**
+  String get home_chooseMalaDesc;
+
+  /// No description provided for @tour_title1.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Japa Mala'**
+  String get tour_title1;
+
+  /// No description provided for @tour_body1.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to chant. We count your beads, track malas, and maintain your streak automatically.'**
+  String get tour_body1;
+
+  /// No description provided for @tour_title2.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Leaderboard'**
+  String get tour_title2;
+
+  /// No description provided for @tour_body2.
+  ///
+  /// In en, this message translates to:
+  /// **'Chant with thousands. Rise through spiritual progress and consistency.'**
+  String get tour_body2;
+
+  /// No description provided for @tour_title3.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Wisdom'**
+  String get tour_title3;
+
+  /// No description provided for @tour_body3.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive curated verses from ancient texts — available in multiple languages.'**
+  String get tour_body3;
+
+  /// No description provided for @tour_title4.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Spiritual Journey'**
+  String get tour_title4;
+
+  /// No description provided for @tour_body4.
+  ///
+  /// In en, this message translates to:
+  /// **'Track milestones, set Sankalpas, and reflect on your growth and achievements.'**
+  String get tour_body4;
+
+  /// No description provided for @dialog_getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get dialog_getStarted;
+
+  /// No description provided for @dialog_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get dialog_next;
+
+  /// No description provided for @dialog_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get dialog_skip;
+
+  /// No description provided for @malatype_regular.
+  ///
+  /// In en, this message translates to:
+  /// **'Regular'**
+  String get malatype_regular;
+
+  /// No description provided for @malatype_crystal.
+  ///
+  /// In en, this message translates to:
+  /// **'Crystal'**
+  String get malatype_crystal;
+
+  /// No description provided for @malatype_royal.
+  ///
+  /// In en, this message translates to:
+  /// **'Royal Gold'**
+  String get malatype_royal;
+
+  /// No description provided for @profile_abandon.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon Vow'**
+  String get profile_abandon;
+
+  /// No description provided for @profile_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'PROGRESS'**
+  String get profile_progress;
+
+  /// No description provided for @profile_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'DEADLINE'**
+  String get profile_deadline;
+
+  /// No description provided for @profile_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved!'**
+  String get profile_achieved;
+
+  /// No description provided for @support_donate.
+  ///
+  /// In en, this message translates to:
+  /// **'Donate'**
+  String get support_donate;
+
+  /// No description provided for @support_paymentSucc.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments processed securely by Razorpay'**
+  String get support_paymentSucc;
+
+  /// No description provided for @support_thank.
+  ///
+  /// In en, this message translates to:
+  /// **'🙏 Thank you'**
+  String get support_thank;
+
+  /// No description provided for @home_customizeMala.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize Mala'**
+  String get home_customizeMala;
+
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Moksha Mala Jaap'**
+  String get appTitle;
+
+  /// No description provided for @login_welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Moksha Mala Jaap'**
+  String get login_welcome;
+
+  /// No description provided for @profile_shareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Moksha Mala Jaap'**
+  String get profile_shareApp;
+
+  /// No description provided for @profile_supportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Moksha Mala Jaap'**
+  String get profile_supportTitle;
+
+  /// No description provided for @dialog_updateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of Moksha Mala Jaap is available with important updates. Please update the app to continue.'**
+  String get dialog_updateDesc;
+
+  /// No description provided for @support_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Moksha Mala Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
+  String get support_desc;
+
+  /// No description provided for @support_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Support the Moksha Mala Jaap project'**
+  String get support_title;
+
+  /// No description provided for @support_afterTitile.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for supporting Moksha Mala Jaap — every contribution helps.'**
+  String get support_afterTitile;
 }
 
 class _AppLocalizationsDelegate

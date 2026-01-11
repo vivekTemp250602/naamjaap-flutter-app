@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:naamjaap/utils/mala_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class MantraProvider extends ChangeNotifier {
   List<Mantra> _allMantras = [];
   Mantra? _selectedMantra;
   bool _isLoading = true;
+
+  MalaType _selectedMalaType = MalaType.regular;
+  MalaType get selectedMalaType => _selectedMalaType;
 
   late StreamSubscription<DocumentSnapshot> _userStreamSubscription;
 
@@ -38,6 +42,13 @@ class MantraProvider extends ChangeNotifier {
 
   Future<void> _buildMantraList(Map<String, dynamic> userData) async {
     final prefs = await SharedPreferences.getInstance();
+
+    final String malaTypeName =
+        prefs.getString(prefsKeyMalaType) ?? MalaType.regular.name;
+    _selectedMalaType = MalaType.values.firstWhere(
+      (e) => e.name == malaTypeName,
+      orElse: () => MalaType.regular,
+    );
 
     // 1. Get Global Mantras
     final List<Mantra> globalMantras =
@@ -141,6 +152,14 @@ class MantraProvider extends ChangeNotifier {
       await setSelectedMantra(_allMantras.first);
     }
     // The stream will see this change and call _buildMantraList automatically.
+  }
+
+  Future<void> setSelectedMalaType(MalaType type) async {
+    _selectedMalaType = type;
+    notifyListeners(); // This will rebuild the HomeScreen!
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(prefsKeyMalaType, type.name);
   }
 
   @override

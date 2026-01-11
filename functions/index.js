@@ -162,55 +162,48 @@ exports.resetWeeklyLeaderboard = onSchedule(
       );
     });
 
-exports.sendDailyQuote = onSchedule(
-    {schedule: "every day 07:00", timeZone: "Asia/Kolkata"},
-    async (event) => {
-      try {
-        const quoteDoc = await db
-            .collection("app_config")
-            .doc("daily_gita_quote")
-            .get();
-        if (!quoteDoc.exists) {
-          console.log("Daily quote document not found.");
-          return;
-        }
-        const quoteData = quoteDoc.data();
-        const quoteText = quoteData.text;
-        const sourceText = quoteData.source;
+exports.sendDailyQuote = onSchedule({
+  schedule: "0 1 * * *", // 1:00 AM IST
+  timeZone: "Asia/Kolkata",
+}, async (event) => {
+  console.log("Running 'Grand Library' daily quote function...");
+  try {
+    // --- 1. Get the Bhagavad Gita Quote ---
+    const gitaQuotesSnapshot = await db.collection("quotes").get();
+    if (!gitaQuotesSnapshot.empty) {
+      const gitaQuotes = gitaQuotesSnapshot.docs;
+      // Pick a random index based on the current date to ensure rotation
+      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+      const gitaIndex = dayOfYear % gitaQuotes.length;
+      const gitaQuote = gitaQuotes[gitaIndex].data();
+      // Add a timestamp field so the client knows it's new
+      await db.collection("app_config").doc("daily_gita_quote").set({
+        ...gitaQuote,
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      console.log(`Successfully set daily Gita quote: ${gitaQuote.source}`);
+    }
 
-        const usersSnapshot = await db
-            .collection("users")
-            .where("fcmToken", "!=", null)
-            .get();
-        if (usersSnapshot.empty) {
-          console.log("No users with FCM tokens found.");
-          return;
-        }
+    // --- 2. Get the Ramayana Quote ---
+    const ramayanaQuotesSnapshot = await db.collection("ramayana_quotes").get();
+    if (!ramayanaQuotesSnapshot.empty) {
+      const ramayanaQuotes = ramayanaQuotesSnapshot.docs;
+      // Same logic for Ramayana
+      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+      const ramayanaIndex = (dayOfYear + 5) % ramayanaQuotes.length; // Offset by 5 to desync from Gita
 
-        const tokens = usersSnapshot.docs.map((doc) => doc.data().fcmToken);
-        const uniqueTokens = [...new Set(tokens)];
-
-        if (uniqueTokens.length === 0) {
-          console.log("No unique FCM tokens.");
-          return;
-        }
-
-        const message = {
-          notification: {
-            title: `🌟 Verse of the Day (${sourceText})`,
-            body: quoteText,
-          },
-          tokens: uniqueTokens,
-        };
-
-        const response = await admin.messaging().sendMulticast(message);
-        console.log(
-            `Successfully sent daily quote to ${response.successCount} users.`,
-        );
-      } catch (error) {
-        console.error("Error sending daily quote:", error);
-      }
-    });
+      const ramayanaQuote = ramayanaQuotes[ramayanaIndex].data();
+      await db.collection("app_config").doc("daily_ramayana_quote").set({
+        ...ramayanaQuote,
+        lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      console.log(`Successfully set daily Ramayana quote: ${ramayanaQuote.source}`);
+    }
+    console.log("Daily wisdom documents have been successfully updated.");
+  } catch (error) {
+    console.error("Error setting daily quotes:", error);
+  }
+});
 
 // eslint-disable-next-line valid-jsdoc
 /**

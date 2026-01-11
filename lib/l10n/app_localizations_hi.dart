@@ -9,12 +9,6 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'नाम जाप में आपका स्वागत है';
-
-  @override
   String get login_subtitle => 'आपका व्यक्तिगत डिजिटल जाप साथी।';
 
   @override
@@ -140,13 +134,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'अपना कुल योग यहां देखने के लिए जाप शुरू करें!';
 
   @override
-  String get profile_shareApp => 'नाम जाप साझा करें';
-
-  @override
   String get profile_rateApp => 'हमारे ऐप को रेट करें';
-
-  @override
-  String get profile_supportTitle => 'नाम जाप का समर्थन करें';
 
   @override
   String get profile_supportSubtitle => 'ऐप को चालू रखने में मदद करें';
@@ -232,10 +220,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dialog_update => 'अपडेट आवश्यक है';
-
-  @override
-  String get dialog_updateDesc =>
-      'नाम जाप का एक नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध है। जारी रखने के लिए कृपया ऐप को अपडेट करें।';
 
   @override
   String get dialog_updateNow => 'अभी अपडेट करें';
@@ -408,13 +392,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get support_upiError => 'त्रुटि: खोलने के लिए कोई UPI ऐप नहीं मिला।';
 
   @override
-  String get support_title => 'आपकी सेवा हमारे समुदाय को बढ़ने में मदद करती है';
-
-  @override
-  String get support_desc =>
-      'नाम जाप प्रेम का श्रम है, जिसे एक अकेले डेवलपर ने बनाया है। आपका निःस्वार्थ योगदान (सेवा) सर्वर को चालू रखने, विज्ञापनों को न्यूनतम रखने और सभी भक्तों के लिए ऐप को मुफ्त रखने में मदद करता है।';
-
-  @override
   String get support_chooseOffering => 'एक भेंट चुनें';
 
   @override
@@ -425,4 +402,108 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get support_now => 'अभी समर्थन करें';
+
+  @override
+  String get home_chooseMala => 'अपनी माला चुनें';
+
+  @override
+  String get home_chooseMalaDesc => 'ऐसी शैली चुनें जो आपकी आत्मा को भाए।';
+
+  @override
+  String get tour_title1 => 'डिजिटल जप माला';
+
+  @override
+  String get tour_body1 =>
+      'जाप करने के लिए टैप करें। हम आपके मनकों की गिनती करते हैं, मालाओं को ट्रैक करते हैं, और आपकी स्ट्रीक को स्वचालित रूप से बनाए रखते हैं।';
+
+  @override
+  String get tour_title2 => 'ग्लोबल लीडरबोर्ड';
+
+  @override
+  String get tour_body2 =>
+      'हजारों के साथ जाप करें। आध्यात्मिक प्रगति और निरंतरता के माध्यम से ऊपर उठें।';
+
+  @override
+  String get tour_title3 => 'दैनिक ज्ञान';
+
+  @override
+  String get tour_body3 =>
+      'प्राचीन ग्रंथों से चुने हुए श्लोक प्राप्त करें — कई भाषाओं में उपलब्ध।';
+
+  @override
+  String get tour_title4 => 'आपकी आध्यात्मिक यात्रा';
+
+  @override
+  String get tour_body4 =>
+      'मील के पत्थर ट्रैक करें, संकल्प निर्धारित करें, और अपने विकास और उपलब्धियों पर विचार करें।';
+
+  @override
+  String get dialog_getStarted => 'शुरू करें';
+
+  @override
+  String get dialog_next => 'अगला';
+
+  @override
+  String get dialog_skip => 'छोड़ें';
+
+  @override
+  String get malatype_regular => 'साधारण';
+
+  @override
+  String get malatype_crystal => 'स्फटिक';
+
+  @override
+  String get malatype_royal => 'शाही सोना';
+
+  @override
+  String get profile_abandon => 'संकल्प त्यागें';
+
+  @override
+  String get profile_progress => 'प्रगति';
+
+  @override
+  String get profile_deadline => 'समय सीमा';
+
+  @override
+  String get profile_achieved => 'प्राप्त किया!';
+
+  @override
+  String get support_donate => 'दान करें';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay द्वारा सुरक्षित रूप से भुगतान संसाधित';
+
+  @override
+  String get support_thank => '🙏 धन्यवाद';
+
+  @override
+  String get home_customizeMala => 'माला कस्टमाइज़ करें';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'मोक्ष माला जाप में आपका स्वागत है';
+
+  @override
+  String get profile_shareApp => 'मोक्ष माला जाप साझा करें';
+
+  @override
+  String get profile_supportTitle => 'मोक्ष माला जाप का समर्थन करें';
+
+  @override
+  String get dialog_updateDesc =>
+      'मोक्ष माला जाप का एक नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध है। जारी रखने के लिए कृपया ऐप को अपडेट करें।';
+
+  @override
+  String get support_desc =>
+      'मोक्ष माला जाप प्रेम का श्रम है, जिसे एक अकेले डेवलपर ने बनाया है। आपका निःस्वार्थ योगदान (सेवा) सर्वर को चालू रखने, विज्ञापनों को न्यूनतम रखने और सभी भक्तों के लिए ऐप को मुफ्त रखने में मदद करता है।';
+
+  @override
+  String get support_title => 'मोक्ष माला जाप प्रोजेक्ट का समर्थन करें';
+
+  @override
+  String get support_afterTitile =>
+      'मोक्ष माला जाप का समर्थन करने के लिए धन्यवाद — हर योगदान मदद करता है।';
 }

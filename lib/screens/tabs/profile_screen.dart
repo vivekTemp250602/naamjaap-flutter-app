@@ -16,6 +16,7 @@ import 'package:naamjaap/screens/support_screen.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:naamjaap/utils/mala_type.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/rendering.dart';
@@ -514,6 +515,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
     final int totalMalas = userData['total_malas'] ?? 0;
     final List<dynamic> badges = userData['badges'] ?? [];
+    final selectedMala = mantraProvider.selectedMalaType;
 
     return ListView(
       padding: const EdgeInsets.all(16.0),
@@ -881,6 +883,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           height: 20,
         ),
 
+        // Custom Mantra Option
         Card(
           child: Column(
             children: [
@@ -1243,7 +1246,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       _resetSankalpaEditor();
                     });
                   },
-                  tooltip: 'Abandon Vow',
+                  tooltip: AppLocalizations.of(context)!.profile_abandon,
                 )
               ],
             ),
@@ -1314,7 +1317,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("PROGRESS",
+                      Text(AppLocalizations.of(context)!.profile_progress,
                           style: Theme.of(context).textTheme.labelSmall),
                       Text(
                         '$progress / $goal',
@@ -1329,10 +1332,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text("DEADLINE",
+                    Text(AppLocalizations.of(context)!.profile_deadline,
                         style: Theme.of(context).textTheme.labelSmall),
                     Text(
-                      isComplete ? "Achieved!" : '$daysRemaining days left',
+                      isComplete
+                          ? AppLocalizations.of(context)!.profile_achieved
+                          : '$daysRemaining days left',
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),

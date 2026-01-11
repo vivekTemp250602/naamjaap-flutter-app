@@ -9,12 +9,6 @@ class AppLocalizationsOr extends AppLocalizations {
   AppLocalizationsOr([String locale = 'or']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'ନାମ ଜପକୁ ସ୍ୱାଗତ';
-
-  @override
   String get login_subtitle => 'ଆପଣଙ୍କର ବ୍ୟକ୍ତିଗତ ଡିଜିଟାଲ୍ ଜପ ସାଥୀ।';
 
   @override
@@ -138,13 +132,7 @@ class AppLocalizationsOr extends AppLocalizations {
   String get profile_mantrasEmpty => 'ଆପଣଙ୍କର ମୋଟ ଦେଖିବା ପାଇଁ ଜପ ଆରମ୍ଭ କରନ୍ତୁ!';
 
   @override
-  String get profile_shareApp => 'ନାମ ଜପ ସେୟାର କରନ୍ତୁ';
-
-  @override
   String get profile_rateApp => 'ଆମ ଆପକୁ ରେଟ୍ କରନ୍ତୁ';
-
-  @override
-  String get profile_supportTitle => 'ନାମ ଜପକୁ ସମର୍ଥନ କରନ୍ତୁ';
 
   @override
   String get profile_supportSubtitle => 'ଆପକୁ ଚାଲୁ ରଖିବାରେ ସାହାଯ୍ୟ କରନ୍ତୁ';
@@ -229,10 +217,6 @@ class AppLocalizationsOr extends AppLocalizations {
 
   @override
   String get dialog_update => 'ଅଦ୍ୟତନ ଆବଶ୍ୟକ';
-
-  @override
-  String get dialog_updateDesc =>
-      'ମହତ୍ତ୍ୱପୂର୍ଣ୍ଣ ଅଦ୍ୟତନ ସହିତ ନାମ ଜପର ଏକ ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ଆପ୍ ଅଦ୍ୟତନ କରନ୍ତୁ।';
 
   @override
   String get dialog_updateNow => 'ଏବେ ଅଦ୍ୟତନ କରନ୍ତୁ';
@@ -407,13 +391,6 @@ class AppLocalizationsOr extends AppLocalizations {
       'ତ୍ରୁଟି: ଖୋଲିବା ପାଇଁ କୌଣସି UPI ଆପ୍ ମିଳିଲା ନାହିଁ।';
 
   @override
-  String get support_title => 'ଆପଣଙ୍କ ସେବା ଆମ ସମ୍ପ୍ରଦାୟକୁ ବଢିବାରେ ସାହାଯ୍ୟ କରେ';
-
-  @override
-  String get support_desc =>
-      'ନାମ ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
-
-  @override
   String get support_chooseOffering => 'ଏକ ପ୍ରସାଦ ବାଛନ୍ତୁ';
 
   @override
@@ -425,4 +402,109 @@ class AppLocalizationsOr extends AppLocalizations {
 
   @override
   String get support_now => 'ଏବେ ସମର୍ଥନ କରନ୍ତୁ';
+
+  @override
+  String get home_chooseMala => 'ଆପଣଙ୍କ ମାଳା ବାଛନ୍ତୁ';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'ଏକ ଶୈଳୀ ବାଛନ୍ତୁ ଯାହା ଆପଣଙ୍କ ଆତ୍ମା ସହିତ ପ୍ରତିଧ୍ୱନିତ ହୁଏ ।';
+
+  @override
+  String get tour_title1 => 'ଡିଜିଟାଲ୍ ଜପ ମାଳା';
+
+  @override
+  String get tour_body1 =>
+      'ଜପ କରିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ। ଆମେ ଆପଣଙ୍କ ମାଳି ଗଣନା କରୁ, ମାଳା ଟ୍ରାକ୍ କରୁ ଏବଂ ଆପଣଙ୍କ ଧାରାକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ବଜାୟ ରଖୁ।';
+
+  @override
+  String get tour_title2 => 'ଗ୍ଲୋବାଲ୍ ଲିଡରବୋର୍ଡ';
+
+  @override
+  String get tour_body2 =>
+      'ହଜାର ହଜାର ସହିତ ଜପ କରନ୍ତୁ। ଆଧ୍ୟାତ୍ମିକ ପ୍ରଗତି ଏବଂ ନିରନ୍ତରତା ମାଧ୍ୟମରେ ଉପରକୁ ଉଠନ୍ତୁ।';
+
+  @override
+  String get tour_title3 => 'ଦୈନିକ ଜ୍ଞାନ';
+
+  @override
+  String get tour_body3 =>
+      'ପ୍ରାଚୀନ ଗ୍ରନ୍ଥରୁ ବଛା ଯାଇଥିବା ଶ୍ଲୋକ ପ୍ରାପ୍ତ କରନ୍ତୁ — ଏକାଧିକ ଭାଷାରେ ଉପଲବ୍ଧ।';
+
+  @override
+  String get tour_title4 => 'ଆପଣଙ୍କ ଆଧ୍ୟାତ୍ମିକ ଯାତ୍ରା';
+
+  @override
+  String get tour_body4 =>
+      'ମାଇଲଖୁଣ୍ଟ ଟ୍ରାକ୍ କରନ୍ତୁ, ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କ ଅଭିବୃଦ୍ଧି ଏବଂ ଉପଲବ୍ଧି ଉପରେ ଚିନ୍ତନ କରନ୍ତୁ।';
+
+  @override
+  String get dialog_getStarted => 'ଆରମ୍ଭ କରନ୍ତୁ';
+
+  @override
+  String get dialog_next => 'ପରବର୍ତ୍ତୀ';
+
+  @override
+  String get dialog_skip => 'ଏଡାଇ ଦିଅନ୍ତୁ';
+
+  @override
+  String get malatype_regular => 'ସାଧାରଣ';
+
+  @override
+  String get malatype_crystal => 'ସ୍ଫଟିକ';
+
+  @override
+  String get malatype_royal => 'ରୟାଲ୍ ଗୋଲ୍ଡ';
+
+  @override
+  String get profile_abandon => 'ସଂକଳ୍ପ ତ୍ୟାଗ କରନ୍ତୁ';
+
+  @override
+  String get profile_progress => 'ପ୍ରଗତି';
+
+  @override
+  String get profile_deadline => 'ଶେଷ ତାରିଖ';
+
+  @override
+  String get profile_achieved => 'ହାସଲ ହେଲା!';
+
+  @override
+  String get support_donate => 'ଦାନ କରନ୍ତୁ';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay ଦ୍ୱାରା ସୁରକ୍ଷିତ ଭାବରେ ପେମେଣ୍ଟ ପ୍ରକ୍ରିୟାକରଣ କରାଯାଏ';
+
+  @override
+  String get support_thank => '🙏 ଧନ୍ୟବାଦ';
+
+  @override
+  String get home_customizeMala => 'ମାଳା କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'ମୋକ୍ଷ ମାଳା ଜପକୁ ସ୍ୱାଗତ';
+
+  @override
+  String get profile_shareApp => 'ମୋକ୍ଷ ମାଳା ଜପ ସେୟାର କରନ୍ତୁ';
+
+  @override
+  String get profile_supportTitle => 'ମୋକ୍ଷ ମାଳା ଜପକୁ ସମର୍ଥନ କରନ୍ତୁ';
+
+  @override
+  String get dialog_updateDesc =>
+      'ମହତ୍ତ୍ୱପୂର୍ଣ୍ଣ ଅଦ୍ୟତନ ସହିତ ମୋକ୍ଷ ମାଳା ଜପର ଏକ ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ଆପ୍ ଅଦ୍ୟତନ କରନ୍ତୁ।';
+
+  @override
+  String get support_desc =>
+      'ମୋକ୍ଷ ମାଳା ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
+
+  @override
+  String get support_title => 'ମୋକ୍ଷ ମାଳା ଜପ ପ୍ରକଳ୍ପକୁ ସମର୍ଥନ କରନ୍ତୁ';
+
+  @override
+  String get support_afterTitile =>
+      'ମୋକ୍ଷ ମାଳା ଜପକୁ ସମର୍ଥନ କରିଥିବାରୁ ଧନ୍ୟବାଦ — ପ୍ରତ୍ୟେକ ଅବଦାନ ସାହାଯ୍ୟ କରେ।';
 }

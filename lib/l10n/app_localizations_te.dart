@@ -9,12 +9,6 @@ class AppLocalizationsTe extends AppLocalizations {
   AppLocalizationsTe([String locale = 'te']) : super(locale);
 
   @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'నామ్ జాప్‌కు స్వాగతం';
-
-  @override
   String get login_subtitle => 'మీ వ్యక్తిగత డిజిటల్ జప సహచరుడు.';
 
   @override
@@ -141,13 +135,7 @@ class AppLocalizationsTe extends AppLocalizations {
       'మీ మొత్తాలను ఇక్కడ చూడటానికి జపించడం ప్రారంభించండి!';
 
   @override
-  String get profile_shareApp => 'నామ్ జాప్‌ను పంచుకోండి';
-
-  @override
   String get profile_rateApp => 'మా యాప్‌ను రేట్ చేయండి';
-
-  @override
-  String get profile_supportTitle => 'నామ్ జాప్‌కు మద్దతు ఇవ్వండి';
 
   @override
   String get profile_supportSubtitle => 'యాప్‌ను నడుపుతూ ఉంచడంలో సహాయపడండి';
@@ -233,10 +221,6 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get dialog_update => 'నవీకరణ అవసరం';
-
-  @override
-  String get dialog_updateDesc =>
-      'ముఖ్యమైన నవీకరణలతో నామ్ జాప్ యొక్క కొత్త వెర్షన్ అందుబాటులో ఉంది. కొనసాగించడానికి దయచేసి యాప్‌ను నవీకరించండి.';
 
   @override
   String get dialog_updateNow => 'ఇప్పుడే నవీకరించండి';
@@ -411,13 +395,6 @@ class AppLocalizationsTe extends AppLocalizations {
   String get support_upiError => 'లోపం: తెరవడానికి UPI యాప్ కనుగొనబడలేదు.';
 
   @override
-  String get support_title => 'మీ సేవ మా సంఘం వృద్ధి చెందడానికి సహాయపడుతుంది';
-
-  @override
-  String get support_desc =>
-      'నామ్ జాప్ అనేది ప్రేమతో చేసిన శ్రమ, దీనిని ఒక సోలో డెవలపర్ రూపొందించారు. మీ నిస్వార్థ సహకారం (సేవ) సర్వర్‌లను నడుపుతూ ఉంచడానికి, ప్రకటనలను కనిష్టంగా ఉంచడానికి మరియు భక్తులందరికీ యాప్‌ను ఉచితంగా ఉంచడానికి సహాయపడుతుంది.';
-
-  @override
   String get support_chooseOffering => 'ఒక నైవేద్యాన్ని ఎంచుకోండి';
 
   @override
@@ -429,4 +406,108 @@ class AppLocalizationsTe extends AppLocalizations {
 
   @override
   String get support_now => 'ఇప్పుడే మద్దతు ఇవ్వండి';
+
+  @override
+  String get home_chooseMala => 'మీ మాలను ఎంచుకోండి';
+
+  @override
+  String get home_chooseMalaDesc => 'మీ ఆత్మతో ప్రతిధ్వనించే శైలిని ఎంచుకోండి.';
+
+  @override
+  String get tour_title1 => 'డిజిటల్ జప మాల';
+
+  @override
+  String get tour_body1 =>
+      'జపించడానికి నొక్కండి. మేము మీ పూసలను లెక్కిస్తాము, మాలలను ట్రాక్ చేస్తాము మరియు మీ పరంపరను స్వయంచాలకంగా నిర్వహిస్తాము.';
+
+  @override
+  String get tour_title2 => 'గ్లోబల్ లీడర్‌బోర్డ్';
+
+  @override
+  String get tour_body2 =>
+      'వేలమందితో జపించండి. ఆధ్యాత్మిక పురోగతి మరియు స్థిరత్వం ద్వారా ఎదగండి.';
+
+  @override
+  String get tour_title3 => 'రోజువారీ జ్ఞానం';
+
+  @override
+  String get tour_body3 =>
+      'పురాతన గ్రంథాల నుండి ఎంపిక చేసిన శ్లోకాలను పొందండి — బహుళ భాషలలో అందుబాటులో ఉంది.';
+
+  @override
+  String get tour_title4 => 'మీ ఆధ్యాత్మిక ప్రయాణం';
+
+  @override
+  String get tour_body4 =>
+      'మైలురాళ్లను ట్రాక్ చేయండి, సంకల్పాలను నిర్దేశించుకోండి మరియు మీ పెరుగుదల మరియు విజయాలను ప్రతిబింబించండి.';
+
+  @override
+  String get dialog_getStarted => 'ప్రారంభించండి';
+
+  @override
+  String get dialog_next => 'తరువాత';
+
+  @override
+  String get dialog_skip => 'టించండి';
+
+  @override
+  String get malatype_regular => 'సాధారణ';
+
+  @override
+  String get malatype_crystal => 'స్ఫటికం';
+
+  @override
+  String get malatype_royal => 'రాయల్ గోల్డ్';
+
+  @override
+  String get profile_abandon => 'సంకల్పాన్ని వదులుకోండి';
+
+  @override
+  String get profile_progress => 'పురోగతి';
+
+  @override
+  String get profile_deadline => 'గడువు';
+
+  @override
+  String get profile_achieved => 'సాధించారు!';
+
+  @override
+  String get support_donate => 'విరాళం ఇవ్వండి';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay ద్వారా చెల్లింపులు సురక్షితంగా ప్రాసెస్ చేయబడతాయి';
+
+  @override
+  String get support_thank => '🙏 ధన్యవాదాలు';
+
+  @override
+  String get home_customizeMala => 'మాలను అనుకూలీకరించండి';
+
+  @override
+  String get appTitle => 'Moksha Mala Jaap';
+
+  @override
+  String get login_welcome => 'మోక్ష మాల జపానికి స్వాగతం';
+
+  @override
+  String get profile_shareApp => 'మోక్ష మాల జపాన్ని పంచుకోండి';
+
+  @override
+  String get profile_supportTitle => 'మోక్ష మాల జపానికి మద్దతు ఇవ్వండి';
+
+  @override
+  String get dialog_updateDesc =>
+      'ముఖ్యమైన నవీకరణలతో మోక్ష మాల జపం యొక్క కొత్త వెర్షన్ అందుబాటులో ఉంది. కొనసాగించడానికి దయచేసి యాప్‌ను నవీకరించండి.';
+
+  @override
+  String get support_desc =>
+      'మోక్ష మాల జపం అనేది ప్రేమతో చేసిన శ్రమ, దీనిని ఒక సోలో డెవలపర్ రూపొందించారు. మీ నిస్వార్థ సహకారం (సేవ) సర్వర్‌లను నడుపుతూ ఉంచడానికి, ప్రకటనలను కనిష్టంగా ఉంచడానికి మరియు భక్తులందరికీ యాప్‌ను ఉచితంగా ఉంచడానికి సహాయపడుతుంది.';
+
+  @override
+  String get support_title => 'మోక్ష మాల జపం ప్రాజెక్ట్‌కు మద్దతు ఇవ్వండి';
+
+  @override
+  String get support_afterTitile =>
+      'మోక్ష మాల జపానికి మద్దతు ఇచ్చినందుకు ధన్యవాదాలు — ప్రతి సహకారం సహాయపడుతుంది.';
 }

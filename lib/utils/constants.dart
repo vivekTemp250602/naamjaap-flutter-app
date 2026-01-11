@@ -33,6 +33,7 @@ class AppConstants {
   static const String hareKrishna = 'Hare Krishna';
   static const String radhaRadha = 'Radha Radha';
   static const String ramRam = 'Ram Ram';
+  static const String prefsKeyHasSeenTour = 'hasSeenTour';
 
   // List of all mantras for easy mapping in the UI
   static const List<String> mantras = [

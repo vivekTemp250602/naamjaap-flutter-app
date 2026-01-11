@@ -1,20 +1,22 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:naamjaap/services/achievements_service.dart';
 
-const String _pendingJappsLedgerKey = 'pendingJappsLedger';
+const String _pendingEventsKey = 'pendingJapaEvents';
 
 class SyncService {
   final ConnectivityService connectivityService;
   final FirestoreService firestoreService;
   final String uid;
   final VoidCallback onSyncComplete;
+
   final AchievementsService _achievementsService = AchievementsService();
+
+  bool _syncInProgress = false;
 
   SyncService({
     required this.connectivityService,
@@ -22,43 +24,47 @@ class SyncService {
     required this.uid,
     required this.onSyncComplete,
   }) {
-    // Listen for when the app comes online.
     connectivityService.addListener(syncPendingData);
-    // Also, try to sync immediately when the app starts.
     syncPendingData();
   }
 
   Future<void> syncPendingData() async {
-    if (!connectivityService.isOnline) return;
+    if (_syncInProgress) return;
+    _syncInProgress = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    final ledgerJson = prefs.getString(_pendingJappsLedgerKey);
-    if (ledgerJson == null || ledgerJson.isEmpty) return;
+    try {
+      final hasInternet = await connectivityService.hasInternetAccess();
+      if (!hasInternet) return;
 
-    final Map<String, int> pendingJappsLedger =
-        Map<String, int>.from(json.decode(ledgerJson));
+      final prefs = await SharedPreferences.getInstance();
+      final jsonStr = prefs.getString(_pendingEventsKey);
+      if (jsonStr == null || jsonStr.isEmpty) return;
 
-    if (pendingJappsLedger.isNotEmpty) {
-      print("Found pending japps to sync: $pendingJappsLedger");
-      try {
-        await firestoreService.batchIncrementJappCount(
-          uid: uid,
-          pendingJapps: pendingJappsLedger,
-        );
+      final Map<String, dynamic> pendingEvents =
+          Map<String, dynamic>.from(json.decode(jsonStr));
 
-        // NEW: After a successful sync, we just tell the committee WHO to check.
-        await _achievementsService.checkAndAwardBadges(uid);
+      if (pendingEvents.isEmpty) return;
 
-        await prefs.remove(_pendingJappsLedgerKey);
-        print("Sync successful!");
-        onSyncComplete();
-      } catch (e) {
-        print("Sync failed, will retry on next connection change. Error: $e");
-      }
+      await firestoreService.syncJapaEvents(
+        uid: uid,
+        events: pendingEvents,
+      );
+
+      await _achievementsService.checkAndAwardBadges(uid);
+
+      await prefs.remove(_pendingEventsKey);
+      onSyncComplete();
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.recordError(
+        e,
+        s,
+        reason: 'Idempotent japa sync failed',
+      );
+    } finally {
+      _syncInProgress = false;
     }
   }
 
-  // This method cleans up the listener to prevent memory leaks.
   void dispose() {
     connectivityService.removeListener(syncPendingData);
   }

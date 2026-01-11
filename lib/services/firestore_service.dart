@@ -341,4 +341,54 @@ class FirestoreService {
       'sankalpa': FieldValue.delete(),
     });
   }
+
+  Future<void> syncJapaEvents({
+    required String uid,
+    required Map<String, dynamic> events,
+  }) async {
+    final userRef = _db.collection('users').doc(uid);
+
+    await _db.runTransaction((tx) async {
+      final userSnap = await tx.get(userRef);
+      if (!userSnap.exists) {
+        throw Exception('User document does not exist');
+      }
+
+      int newEventCount = 0;
+      final Map<String, Object> updates = {};
+
+      for (final entry in events.entries) {
+        final String eventId = entry.key;
+        final Map<String, dynamic> eventData =
+            Map<String, dynamic>.from(entry.value);
+
+        final String mantraId = eventData['mantraId'];
+
+        final eventRef = userRef.collection('japa_events').doc(eventId);
+
+        final eventSnap = await tx.get(eventRef);
+
+        // 🔒 IDEMPOTENCY GUARANTEE
+        if (!eventSnap.exists) {
+          tx.set(eventRef, {
+            'mantraId': mantraId,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+          newEventCount++;
+
+          updates['japps.$mantraId'] = FieldValue.increment(1);
+        }
+      }
+
+      // 🚫 NOTHING NEW → NOTHING TO UPDATE
+      if (newEventCount == 0) return;
+
+      updates['total_japps'] = FieldValue.increment(newEventCount);
+      updates['weekly_total_japps'] = FieldValue.increment(newEventCount);
+      updates['lastActive'] = FieldValue.serverTimestamp();
+
+      tx.update(userRef, updates);
+    });
+  }
 }

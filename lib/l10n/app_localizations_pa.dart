@@ -308,9 +308,6 @@ class AppLocalizationsPa extends AppLocalizations {
   String get dialog_exceptionCard => 'ਸਾਂਝਾ ਕਰਨ ਯੋਗ ਕਾਰਡ ਸੰਦਰਭ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।';
 
   @override
-  String get dialog_checkoutMyProgress => 'ਨਾਮਜਾਪ ਐਪ \'ਤੇ ਮੇਰੀ ਤਰੱਕੀ ਦੇਖੋ!';
-
-  @override
   String get dialog_couldNotOpenPS => 'ਪਲੇ ਸਟੋਰ ਨਹੀਂ ਖੋਲ੍ਹ ਸਕਿਆ।';
 
   @override
@@ -478,29 +475,32 @@ class AppLocalizationsPa extends AppLocalizations {
   String get home_customizeMala => 'ਮਾਲਾ ਕਸਟਮਾਈਜ਼ ਕਰੋ';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'ਨਾਮ ਜਾਪ ਐਪ \'ਤੇ ਮੇਰੀ ਤਰੱਕੀ ਦੇਖੋ!';
 
   @override
-  String get login_welcome => 'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ';
+  String get appTitle => 'ਨਾਮ ਜਾਪ';
 
   @override
-  String get profile_shareApp => 'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਸਾਂਝਾ ਕਰੋ';
+  String get login_welcome => 'ਨਾਮ ਜਾਪ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ';
 
   @override
-  String get profile_supportTitle => 'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰੋ';
+  String get profile_shareApp => 'ਨਾਮ ਜਾਪ ਸਾਂਝਾ ਕਰੋ';
+
+  @override
+  String get profile_supportTitle => 'ਨਾਮ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰੋ';
 
   @override
   String get dialog_updateDesc =>
-      'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਦਾ ਇੱਕ ਨਵਾਂ ਸੰਸਕਰਣ ਮਹੱਤਵਪੂਰਨ ਅੱਪਡੇਟਾਂ ਨਾਲ ਉਪਲਬਧ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਐਪ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ।';
+      'ਨਾਮ ਜਾਪ ਦਾ ਇੱਕ ਨਵਾਂ ਸੰਸਕਰਣ ਮਹੱਤਵਪੂਰਨ ਅੱਪਡੇਟਾਂ ਨਾਲ ਉਪਲਬਧ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਐਪ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ।';
 
   @override
   String get support_desc =>
-      'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਪਿਆਰ ਦੀ ਮਿਹਨਤ ਹੈ, ਜੋ ਇੱਕ ਇਕੱਲੇ ਡਿਵੈਲਪਰ ਦੁਆਰਾ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਤੁਹਾਡਾ ਨਿਰਸਵਾਰਥ ਯੋਗਦਾਨ (ਸੇਵਾ) ਸਰਵਰਾਂ ਨੂੰ ਚਾਲੂ ਰੱਖਣ, ਇਸ਼ਤਿਹਾਰਾਂ ਨੂੰ ਘੱਟ ਤੋਂ ਘੱਟ ਰੱਖਣ, ਅਤੇ ਸਾਰੇ ਸ਼ਰਧਾਲੂਆਂ ਲਈ ਐਪ ਨੂੰ ਮੁਫਤ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।';
+      'ਨਾਮ ਜਾਪ ਪਿਆਰ ਦੀ ਮਿਹਨਤ ਹੈ, ਜੋ ਇੱਕ ਇਕੱਲੇ ਡਿਵੈਲਪਰ ਦੁਆਰਾ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਤੁਹਾਡਾ ਨਿਰਸਵਾਰਥ ਯੋਗਦਾਨ (ਸੇਵਾ) ਸਰਵਰਾਂ ਨੂੰ ਚਾਲੂ ਰੱਖਣ, ਇਸ਼ਤਿਹਾਰਾਂ ਨੂੰ ਘੱਟ ਤੋਂ ਘੱਟ ਰੱਖਣ, ਅਤੇ ਸਾਰੇ ਸ਼ਰਧਾਲੂਆਂ ਲਈ ਐਪ ਨੂੰ ਮੁਫਤ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।';
 
   @override
-  String get support_title => 'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ ਕਰੋ';
+  String get support_title => 'ਨਾਮ ਜਾਪ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ ਕਰੋ';
 
   @override
   String get support_afterTitile =>
-      'ਮੋਕਸ਼ ਮਾਲਾ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਧੰਨਵਾਦ — ਹਰ ਯੋਗਦਾਨ ਮਦਦ ਕਰਦਾ ਹੈ।';
+      'ਨਾਮ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਧੰਨਵਾਦ — ਹਰ ਯੋਗਦਾਨ ਮਦਦ ਕਰਦਾ ਹੈ।';
 }

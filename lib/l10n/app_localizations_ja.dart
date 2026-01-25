@@ -301,9 +301,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dialog_exceptionCard => '共有可能なカードコンテキストは利用できません。';
 
   @override
-  String get dialog_checkoutMyProgress => 'NaamJaap アプリでの私の進捗を見てください！';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play ストアを開けませんでした。';
 
   @override
@@ -464,29 +461,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get home_customizeMala => 'マーラーをカスタマイズ';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'Naam Jaap アプリでの私の進捗を見てください！';
 
   @override
-  String get login_welcome => 'Moksha Mala Jaap へようこそ';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => 'Moksha Mala Jaap を共有';
+  String get login_welcome => 'Naam Jaap へようこそ';
 
   @override
-  String get profile_supportTitle => 'Moksha Mala Jaap をサポート';
+  String get profile_shareApp => 'Naam Jaap を共有';
+
+  @override
+  String get profile_supportTitle => 'Naam Jaap をサポート';
 
   @override
   String get dialog_updateDesc =>
-      '重要なアップデートを含む Moksha Mala Jaap の新しいバージョンが利用可能です。続行するにはアプリをアップデートしてください。';
+      '重要なアップデートを含む Naam Jaap の新しいバージョンが利用可能です。続行するにはアプリをアップデートしてください。';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap は、一人の開発者によって愛情を込めて作られました。あなたの無私の貢献 (セヴァ) は、サーバーの稼働、広告の最小化、そしてすべての信者のためのアプリの無料提供に役立ちます。';
+      'Naam Jaap は、一人の開発者によって愛情を込めて作られました。あなたの無私の貢献 (セヴァ) は、サーバーの稼働、広告の最小化、そしてすべての信者のためのアプリの無料提供に役立ちます。';
 
   @override
-  String get support_title => 'Moksha Mala Jaap プロジェクトを支援';
+  String get support_title => 'Naam Jaap プロジェクトを支援';
 
   @override
   String get support_afterTitile =>
-      'Moksha Mala Jaap をご支援いただきありがとうございます — すべての貢献が役立ちます。';
+      'Naam Jaap をご支援いただきありがとうございます — すべての貢献が役立ちます。';
 }

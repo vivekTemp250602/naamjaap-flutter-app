@@ -312,10 +312,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get dialog_exceptionCard => 'பகிரக்கூடிய அட்டை சூழல் கிடைக்கவில்லை.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'நாம்ஜாப் பயன்பாட்டில் எனது முன்னேற்றத்தைப் பாருங்கள்!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play Store ஐத் திறக்க முடியவில்லை.';
 
   @override
@@ -485,29 +481,33 @@ class AppLocalizationsTa extends AppLocalizations {
   String get home_customizeMala => 'மாலையைத் தனிப்பயனாக்கு';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'நாம் ஜாப் பயன்பாட்டில் எனது முன்னேற்றத்தைப் பாருங்கள்!';
 
   @override
-  String get login_welcome => 'மோக்ஷ மாலா ஜாப்பிற்கு வரவேற்கிறோம்';
+  String get appTitle => 'நாம் ஜாப்';
 
   @override
-  String get profile_shareApp => 'மோக்ஷ மாலா ஜாப்பைப் பகிரவும்';
+  String get login_welcome => 'நாம் ஜாப்பிற்கு வரவேற்கிறோம்';
 
   @override
-  String get profile_supportTitle => 'மோக்ஷ மாலா ஜாப்பிற்கு ஆதரவளிக்கவும்';
+  String get profile_shareApp => 'நாம் ஜாப்பைப் பகிரவும்';
+
+  @override
+  String get profile_supportTitle => 'நாம் ஜாப்பிற்கு ஆதரவளிக்கவும்';
 
   @override
   String get dialog_updateDesc =>
-      'முக்கியமான புதுப்பிப்புகளுடன் மோக்ஷ மாலா ஜாப்பின் புதிய பதிப்பு கிடைக்கிறது. தொடர, பயன்பாட்டைப் புதுப்பிக்கவும்.';
+      'முக்கியமான புதுப்பிப்புகளுடன் நாம் ஜாப்பின் புதிய பதிப்பு கிடைக்கிறது. தொடர, பயன்பாட்டைப் புதுப்பிக்கவும்.';
 
   @override
   String get support_desc =>
-      'மோக்ஷ மாலா ஜாப் என்பது அன்பின் உழைப்பு, ஒரு தனி டெவலப்பரால் உருவாக்கப்பட்டது. உங்கள் தன்னலமற்ற பங்களிப்பு (சேவை) சேவையகங்களை இயங்க வைக்கவும், விளம்பரங்களைக் குறைக்கவும், அனைத்து பக்தர்களுக்கும் பயன்பாட்டை இலவசமாக வைத்திருக்கவும் உதவுகிறது.';
+      'நாம் ஜாப் என்பது அன்பின் உழைப்பு, ஒரு தனி டெவலப்பரால் உருவாக்கப்பட்டது. உங்கள் தன்னலமற்ற பங்களிப்பு (சேவை) சேவையகங்களை இயங்க வைக்கவும், விளம்பரங்களைக் குறைக்கவும், அனைத்து பக்தர்களுக்கும் பயன்பாட்டை இலவசமாக வைத்திருக்கவும் உதவுகிறது.';
 
   @override
-  String get support_title => 'மோக்ஷ மாலா ஜாப் திட்டத்தை ஆதரிக்கவும்';
+  String get support_title => 'நாம் ஜாப் திட்டத்தை ஆதரிக்கவும்';
 
   @override
   String get support_afterTitile =>
-      'மோக்ஷ மாலா ஜாப்பை ஆதரித்ததற்கு நன்றி — ஒவ்வொரு பங்களிப்பும் உதவுகிறது.';
+      'நாம் ஜாப்பை ஆதரித்ததற்கு நன்றி — ஒவ்வொரு பங்களிப்பும் உதவுகிறது.';
 }

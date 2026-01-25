@@ -316,10 +316,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le contexte de la carte partageable n\'est pas disponible.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'Découvrez ma progression sur l\'application NaamJaap !';
-
-  @override
   String get dialog_couldNotOpenPS => 'Impossible d\'ouvrir le Play Store.';
 
   @override
@@ -493,29 +489,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get home_customizeMala => 'Personnaliser le Mala';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'Découvrez ma progression sur l\'application Naam Jaap !';
 
   @override
-  String get login_welcome => 'Bienvenue sur Moksha Mala Jaap';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => 'Partager Moksha Mala Jaap';
+  String get login_welcome => 'Bienvenue sur Naam Jaap';
 
   @override
-  String get profile_supportTitle => 'Soutenir Moksha Mala Jaap';
+  String get profile_shareApp => 'Partager Naam Jaap';
+
+  @override
+  String get profile_supportTitle => 'Soutenir Naam Jaap';
 
   @override
   String get dialog_updateDesc =>
-      'Une nouvelle version de Moksha Mala Jaap est disponible avec des mises à jour importantes. Veuillez mettre à jour l\'application pour continuer.';
+      'Une nouvelle version de Naam Jaap est disponible avec des mises à jour importantes. Veuillez mettre à jour l\'application pour continuer.';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap est un travail d\'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l\'application gratuite pour tous les dévots.';
+      'Naam Jaap est un travail d\'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l\'application gratuite pour tous les dévots.';
 
   @override
-  String get support_title => 'Soutenez le projet Moksha Mala Jaap';
+  String get support_title => 'Soutenez le projet Naam Jaap';
 
   @override
   String get support_afterTitile =>
-      'Merci de soutenir Moksha Mala Jaap — chaque contribution aide.';
+      'Merci de soutenir Naam Jaap — chaque contribution aide.';
 }

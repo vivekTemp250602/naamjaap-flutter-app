@@ -313,10 +313,6 @@ class AppLocalizationsMl extends AppLocalizations {
   String get dialog_exceptionCard => 'പങ്കിടാവുന്ന കാർഡ് സന്ദർഭം ലഭ്യമല്ല.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'നാംജാപ് ആപ്പിലെ എൻ്റെ പുരോഗതി പരിശോധിക്കുക!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play Store തുറക്കാൻ കഴിഞ്ഞില്ല.';
 
   @override
@@ -488,29 +484,33 @@ class AppLocalizationsMl extends AppLocalizations {
   String get home_customizeMala => 'മാല ഇഷ്‌ടാനുസൃതമാക്കുക';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'നാം ജാപ് ആപ്പിലെ എൻ്റെ പുരോഗതി പരിശോധിക്കുക!';
 
   @override
-  String get login_welcome => 'മോക്ഷ മാല ജപത്തിലേക്ക് സ്വാഗതം';
+  String get appTitle => 'നാം ജാപ്';
 
   @override
-  String get profile_shareApp => 'മോക്ഷ മാല ജപം പങ്കിടുക';
+  String get login_welcome => 'നാം ജാപിലേക്ക് സ്വാഗതം';
 
   @override
-  String get profile_supportTitle => 'മോക്ഷ മാല ജപത്തെ പിന്തുണയ്ക്കുക';
+  String get profile_shareApp => 'നാം ജാപ് പങ്കിടുക';
+
+  @override
+  String get profile_supportTitle => 'നാം ജാപിനെ പിന്തുണയ്ക്കുക';
 
   @override
   String get dialog_updateDesc =>
-      'പ്രധാനപ്പെട്ട അപ്‌ഡേറ്റുകളോടെ മോക്ഷ മാല ജപത്തിൻ്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്. തുടരാൻ ദയവായി അപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുക.';
+      'പ്രധാനപ്പെട്ട അപ്‌ഡേറ്റുകളോടെ നാം ജാപിന്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്. തുടരാൻ ദയവായി അപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുക.';
 
   @override
   String get support_desc =>
-      'മോക്ഷ മാല ജപം സ്നേഹത്തിൻ്റെ പ്രയത്നമാണ്, ഒരു സോളോ ഡെവലപ്പർ നിർമ്മിച്ചത്. നിങ്ങളുടെ നിസ്വാർത്ഥ സംഭാവന (സേവനം) സെർവറുകൾ പ്രവർത്തിപ്പിക്കാനും പരസ്യങ്ങൾ കുറയ്ക്കാനും എല്ലാ ഭക്തർക്കും ആപ്പ് സൗജന്യമായി നിലനിർത്താനും സഹായിക്കുന്നു.';
+      'നാം ജാപ് സ്നേഹത്തിൻ്റെ പ്രയത്നമാണ്, ഒരു സോളോ ഡെവലപ്പർ നിർമ്മിച്ചത്. നിങ്ങളുടെ നിസ്വാർത്ഥ സംഭാവന (സേവനം) സെർവറുകൾ പ്രവർത്തിപ്പിക്കാനും പരസ്യങ്ങൾ കുറയ്ക്കാനും എല്ലാ ഭക്തർക്കും ആപ്പ് സൗജന്യമായി നിലനിർത്താനും സഹായിക്കുന്നു.';
 
   @override
-  String get support_title => 'മോക്ഷ മാല ജപം പദ്ധതിയെ പിന്തുണയ്ക്കുക';
+  String get support_title => 'നാം ജാപ് പദ്ധതിയെ പിന്തുണയ്ക്കുക';
 
   @override
   String get support_afterTitile =>
-      'മോക്ഷ മാല ജപത്തെ പിന്തുണച്ചതിന് നന്ദി — ഓരോ സംഭാവനയും സഹായിക്കുന്നു.';
+      'നാം ജാപിനെ പിന്തുണച്ചതിന് നന്ദി — ഓരോ സംഭാവനയും സഹായിക്കുന്നു.';
 }

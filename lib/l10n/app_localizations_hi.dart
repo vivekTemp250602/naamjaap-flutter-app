@@ -311,9 +311,6 @@ class AppLocalizationsHi extends AppLocalizations {
       'साझा करने योग्य कार्ड संदर्भ उपलब्ध नहीं है।';
 
   @override
-  String get dialog_checkoutMyProgress => 'नामजाप ऐप पर मेरी प्रगति देखें!';
-
-  @override
   String get dialog_couldNotOpenPS => 'प्ले स्टोर नहीं खुल सका।';
 
   @override
@@ -481,29 +478,32 @@ class AppLocalizationsHi extends AppLocalizations {
   String get home_customizeMala => 'माला कस्टमाइज़ करें';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'नाम जाप ऐप पर मेरी प्रगति देखें!';
 
   @override
-  String get login_welcome => 'मोक्ष माला जाप में आपका स्वागत है';
+  String get appTitle => 'नाम जाप';
 
   @override
-  String get profile_shareApp => 'मोक्ष माला जाप साझा करें';
+  String get login_welcome => 'नाम जाप में आपका स्वागत है';
 
   @override
-  String get profile_supportTitle => 'मोक्ष माला जाप का समर्थन करें';
+  String get profile_shareApp => 'नाम जाप साझा करें';
+
+  @override
+  String get profile_supportTitle => 'नाम जाप का समर्थन करें';
 
   @override
   String get dialog_updateDesc =>
-      'मोक्ष माला जाप का एक नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध है। जारी रखने के लिए कृपया ऐप को अपडेट करें।';
+      'नाम जाप का एक नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध है। जारी रखने के लिए कृपया ऐप को अपडेट करें।';
 
   @override
   String get support_desc =>
-      'मोक्ष माला जाप प्रेम का श्रम है, जिसे एक अकेले डेवलपर ने बनाया है। आपका निःस्वार्थ योगदान (सेवा) सर्वर को चालू रखने, विज्ञापनों को न्यूनतम रखने और सभी भक्तों के लिए ऐप को मुफ्त रखने में मदद करता है।';
+      'नाम जाप प्रेम का श्रम है, जिसे एक अकेले डेवलपर ने बनाया है। आपका निःस्वार्थ योगदान (सेवा) सर्वर को चालू रखने, विज्ञापनों को न्यूनतम रखने और सभी भक्तों के लिए ऐप को मुफ्त रखने में मदद करता है।';
 
   @override
-  String get support_title => 'मोक्ष माला जाप प्रोजेक्ट का समर्थन करें';
+  String get support_title => 'नाम जाप प्रोजेक्ट का समर्थन करें';
 
   @override
   String get support_afterTitile =>
-      'मोक्ष माला जाप का समर्थन करने के लिए धन्यवाद — हर योगदान मदद करता है।';
+      'नाम जाप का समर्थन करने के लिए धन्यवाद — हर योगदान मदद करता है।';
 }

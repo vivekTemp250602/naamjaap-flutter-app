@@ -309,9 +309,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get dialog_exceptionCard => 'শেয়ারযোগ্য কার্ড কনটেক্সট উপলব্ধ নয়।';
 
   @override
-  String get dialog_checkoutMyProgress => 'নামজাপ অ্যাপে আমার অগ্রগতি দেখুন!';
-
-  @override
   String get dialog_couldNotOpenPS => 'প্লে স্টোর খোলা যায়নি।';
 
   @override
@@ -483,29 +480,32 @@ class AppLocalizationsBn extends AppLocalizations {
   String get home_customizeMala => 'মালা কাস্টমাইজ করুন';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'নাম জপ অ্যাপে আমার অগ্রগতি দেখুন!';
 
   @override
-  String get login_welcome => 'মোক্ষ মালা জপ-এ স্বাগতম';
+  String get appTitle => 'নাম জপ';
 
   @override
-  String get profile_shareApp => 'মোক্ষ মালা জপ শেয়ার করুন';
+  String get login_welcome => 'নাম জপ-এ স্বাগতম';
 
   @override
-  String get profile_supportTitle => 'মোক্ষ মালা জপ সমর্থন করুন';
+  String get profile_shareApp => 'নাম জপ শেয়ার করুন';
+
+  @override
+  String get profile_supportTitle => 'নাম জপ সমর্থন করুন';
 
   @override
   String get dialog_updateDesc =>
-      'গুরুত্বপূর্ণ আপডেট সহ মোক্ষ মালা জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
+      'গুরুত্বপূর্ণ আপডেট সহ নাম জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
 
   @override
   String get support_desc =>
-      'মোক্ষ মালা জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
+      'নাম জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
 
   @override
-  String get support_title => 'মোক্ষ মালা জপ প্রকল্প সমর্থন করুন';
+  String get support_title => 'নাম জপ প্রকল্প সমর্থন করুন';
 
   @override
   String get support_afterTitile =>
-      'মোক্ষ মালা জপ সমর্থন করার জন্য ধন্যবাদ — প্রতিটি অবদান সাহায্য করে।';
+      'নাম জপ সমর্থন করার জন্য ধন্যবাদ — প্রতিটি অবদান সাহায্য করে।';
 }

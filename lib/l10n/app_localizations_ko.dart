@@ -301,9 +301,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dialog_exceptionCard => '공유 가능한 카드 컨텍스트를 사용할 수 없습니다.';
 
   @override
-  String get dialog_checkoutMyProgress => 'NaamJaap 앱에서 제 진행 상황을 확인하세요!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play 스토어를 열 수 없습니다.';
 
   @override
@@ -464,29 +461,32 @@ class AppLocalizationsKo extends AppLocalizations {
   String get home_customizeMala => '말라 사용자 지정';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'Naam Jaap 앱에서 제 진행 상황을 확인하세요!';
 
   @override
-  String get login_welcome => 'Moksha Mala Jaap에 오신 것을 환영합니다';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => 'Moksha Mala Jaap 공유하기';
+  String get login_welcome => 'Naam Jaap에 오신 것을 환영합니다';
 
   @override
-  String get profile_supportTitle => 'Moksha Mala Jaap 지원하기';
+  String get profile_shareApp => 'Naam Jaap 공유하기';
+
+  @override
+  String get profile_supportTitle => 'Naam Jaap 지원하기';
 
   @override
   String get dialog_updateDesc =>
-      '중요한 업데이트가 포함된 Moksha Mala Jaap의 새 버전을 사용할 수 있습니다. 계속하려면 앱을 업데이트하세요.';
+      '중요한 업데이트가 포함된 Naam Jaap의 새 버전을 사용할 수 있습니다. 계속하려면 앱을 업데이트하세요.';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap은 한 명의 개발자가 사랑으로 만든 앱입니다. 당신의 이타적인 기여(봉사)는 서버를 운영하고, 광고를 최소화하며, 모든 신자들이 앱을 무료로 사용할 수 있도록 돕습니다.';
+      'Naam Jaap은 한 명의 개발자가 사랑으로 만든 앱입니다. 당신의 이타적인 기여(봉사)는 서버를 운영하고, 광고를 최소화하며, 모든 신자들이 앱을 무료로 사용할 수 있도록 돕습니다.';
 
   @override
-  String get support_title => 'Moksha Mala Jaap 프로젝트 후원';
+  String get support_title => 'Naam Jaap 프로젝트 후원';
 
   @override
   String get support_afterTitile =>
-      'Moksha Mala Jaap을 후원해 주셔서 감사합니다 — 모든 기여가 큰 힘이 됩니다.';
+      'Naam Jaap을 후원해 주셔서 감사합니다 — 모든 기여가 큰 힘이 됩니다.';
 }

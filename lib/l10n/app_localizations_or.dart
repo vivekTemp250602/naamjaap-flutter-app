@@ -307,10 +307,6 @@ class AppLocalizationsOr extends AppLocalizations {
   String get dialog_exceptionCard => 'ସେୟାରଯୋଗ୍ୟ କାର୍ଡ ପ୍ରସଙ୍ଗ ଉପଲବ୍ଧ ନାହିଁ।';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'ନାମଜପ୍ ଆପ୍‌ରେ ମୋର ଅଗ୍ରଗତି ଯାଞ୍ଚ କରନ୍ତୁ!';
-
-  @override
   String get dialog_couldNotOpenPS => 'ପ୍ଲେ ଷ୍ଟୋର୍ ଖୋଲିପାରିଲା ନାହିଁ।';
 
   @override
@@ -482,29 +478,33 @@ class AppLocalizationsOr extends AppLocalizations {
   String get home_customizeMala => 'ମାଳା କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'ନାମ ଜପ ଆପ୍‌ରେ ମୋର ଅଗ୍ରଗତି ଯାଞ୍ଚ କରନ୍ତୁ!';
 
   @override
-  String get login_welcome => 'ମୋକ୍ଷ ମାଳା ଜପକୁ ସ୍ୱାଗତ';
+  String get appTitle => 'ନାମ ଜପ';
 
   @override
-  String get profile_shareApp => 'ମୋକ୍ଷ ମାଳା ଜପ ସେୟାର କରନ୍ତୁ';
+  String get login_welcome => 'ନାମ ଜପକୁ ସ୍ୱାଗତ';
 
   @override
-  String get profile_supportTitle => 'ମୋକ୍ଷ ମାଳା ଜପକୁ ସମର୍ଥନ କରନ୍ତୁ';
+  String get profile_shareApp => 'ନାମ ଜପ ସେୟାର କରନ୍ତୁ';
+
+  @override
+  String get profile_supportTitle => 'ନାମ ଜପକୁ ସମର୍ଥନ କରନ୍ତୁ';
 
   @override
   String get dialog_updateDesc =>
-      'ମହତ୍ତ୍ୱପୂର୍ଣ୍ଣ ଅଦ୍ୟତନ ସହିତ ମୋକ୍ଷ ମାଳା ଜପର ଏକ ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ଆପ୍ ଅଦ୍ୟତନ କରନ୍ତୁ।';
+      'ମହତ୍ତ୍ୱପୂର୍ଣ୍ଣ ଅଦ୍ୟତନ ସହିତ ନାମ ଜପର ଏକ ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ଆପ୍ ଅଦ୍ୟତନ କରନ୍ତୁ।';
 
   @override
   String get support_desc =>
-      'ମୋକ୍ଷ ମାଳା ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
+      'ନାମ ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
 
   @override
-  String get support_title => 'ମୋକ୍ଷ ମାଳା ଜପ ପ୍ରକଳ୍ପକୁ ସମର୍ଥନ କରନ୍ତୁ';
+  String get support_title => 'ନାମ ଜପ ପ୍ରକଳ୍ପକୁ ସମର୍ଥନ କରନ୍ତୁ';
 
   @override
   String get support_afterTitile =>
-      'ମୋକ୍ଷ ମାଳା ଜପକୁ ସମର୍ଥନ କରିଥିବାରୁ ଧନ୍ୟବାଦ — ପ୍ରତ୍ୟେକ ଅବଦାନ ସାହାଯ୍ୟ କରେ।';
+      'ନାମ ଜପକୁ ସମର୍ଥନ କରିଥିବାରୁ ଧନ୍ୟବାଦ — ପ୍ରତ୍ୟେକ ଅବଦାନ ସାହାଯ୍ୟ କରେ।';
 }

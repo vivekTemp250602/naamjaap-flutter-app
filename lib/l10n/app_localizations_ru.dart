@@ -312,10 +312,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dialog_exceptionCard => 'Контекст карточки для обмена недоступен.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'Посмотрите мой прогресс в приложении NaamJaap!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Не удалось открыть Play Store.';
 
   @override
@@ -481,29 +477,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get home_customizeMala => 'Настроить Малу';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'Посмотрите мой прогресс в приложении Naam Jaap!';
 
   @override
-  String get login_welcome => 'Добро пожаловать в Moksha Mala Jaap';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => 'Поделиться Moksha Mala Jaap';
+  String get login_welcome => 'Добро пожаловать в Naam Jaap';
 
   @override
-  String get profile_supportTitle => 'Поддержать Moksha Mala Jaap';
+  String get profile_shareApp => 'Поделиться Naam Jaap';
+
+  @override
+  String get profile_supportTitle => 'Поддержать Naam Jaap';
 
   @override
   String get dialog_updateDesc =>
-      'Доступна новая версия Moksha Mala Jaap с важными обновлениями. Пожалуйста, обновите приложение для продолжения.';
+      'Доступна новая версия Naam Jaap с важными обновлениями. Пожалуйста, обновите приложение для продолжения.';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap — это труд любви, созданный одним разработчиком. Ваш бескорыстный вклад (Сева) помогает поддерживать работу серверов, минимизировать рекламу и делать приложение бесплатным для всех преданных.';
+      'Naam Jaap — это труд любви, созданный одним разработчиком. Ваш бескорыстный вклад (Сева) помогает поддерживать работу серверов, минимизировать рекламу и делать приложение бесплатным для всех преданных.';
 
   @override
-  String get support_title => 'Поддержите проект Moksha Mala Jaap';
+  String get support_title => 'Поддержите проект Naam Jaap';
 
   @override
   String get support_afterTitile =>
-      'Спасибо за поддержку Moksha Mala Jaap — каждый вклад помогает.';
+      'Спасибо за поддержку Naam Jaap — каждый вклад помогает.';
 }

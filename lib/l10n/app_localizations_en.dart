@@ -305,10 +305,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog_exceptionCard => 'Shareable card context is not available.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'Check out my progress on the NaamJaap app!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Could not open Play Store.';
 
   @override
@@ -475,29 +471,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_customizeMala => 'Customize Mala';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'Check out my progress on the Naam Jaap app!';
 
   @override
-  String get login_welcome => 'Welcome to Moksha Mala Jaap';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => 'Share Moksha Mala Jaap';
+  String get login_welcome => 'Welcome to Naam Jaap';
 
   @override
-  String get profile_supportTitle => 'Support Moksha Mala Jaap';
+  String get profile_shareApp => 'Share Naam Jaap';
+
+  @override
+  String get profile_supportTitle => 'Support Naam Jaap';
 
   @override
   String get dialog_updateDesc =>
-      'A new version of Moksha Mala Jaap is available with important updates. Please update the app to continue.';
+      'A new version of Naam Jaap is available with important updates. Please update the app to continue.';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.';
+      'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.';
 
   @override
-  String get support_title => 'Support the Moksha Mala Jaap project';
+  String get support_title => 'Support the Naam Jaap project';
 
   @override
   String get support_afterTitile =>
-      'Thank you for supporting Moksha Mala Jaap — every contribution helps.';
+      'Thank you for supporting Naam Jaap — every contribution helps.';
 }

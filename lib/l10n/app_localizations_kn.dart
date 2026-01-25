@@ -309,10 +309,6 @@ class AppLocalizationsKn extends AppLocalizations {
   String get dialog_exceptionCard => 'ಹಂಚಿಕೊಳ್ಳಬಹುದಾದ ಕಾರ್ಡ್ ಸಂದರ್ಭ ಲಭ್ಯವಿಲ್ಲ.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'ನಾಮ್‌ಜಾಪ್ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ನನ್ನ ಪ್ರಗತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play Store ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.';
 
   @override
@@ -484,29 +480,33 @@ class AppLocalizationsKn extends AppLocalizations {
   String get home_customizeMala => 'ಮಾಲೆಯನ್ನು ಕಸ್ಟಮೈಸ್ ಮಾಡಿ';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'ನಾಮ್ ಜಾಪ್ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ನನ್ನ ಪ್ರಗತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ!';
 
   @override
-  String get login_welcome => 'ಮೋಕ್ಷ ಮಾಲಾ ಜಪಕ್ಕೆ ಸುಸ್ವಾಗತ';
+  String get appTitle => 'ನಾಮ್ ಜಾಪ್';
 
   @override
-  String get profile_shareApp => 'ಮೋಕ್ಷ ಮಾಲಾ ಜಪ ಹಂಚಿಕೊಳ್ಳಿ';
+  String get login_welcome => 'ನಾಮ್ ಜಾಪ್‌ಗೆ ಸುಸ್ವಾಗತ';
 
   @override
-  String get profile_supportTitle => 'ಮೋಕ್ಷ ಮಾಲಾ ಜಪ ಬೆಂಬಲಿಸಿ';
+  String get profile_shareApp => 'ನಾಮ್ ಜಾಪ್ ಹಂಚಿಕೊಳ್ಳಿ';
+
+  @override
+  String get profile_supportTitle => 'ನಾಮ್ ಜಾಪ್ ಬೆಂಬಲಿಸಿ';
 
   @override
   String get dialog_updateDesc =>
-      'ಪ್ರಮುಖ ನವೀಕರಣಗಳೊಂದಿಗೆ ಮೋಕ್ಷ ಮಾಲಾ ಜಪದ ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಅಪ್ಲಿಕೇಶನ್ ನವೀಕರಿಸಿ.';
+      'ಪ್ರಮುಖ ನವೀಕರಣಗಳೊಂದಿಗೆ ನಾಮ್ ಜಾಪ್‌ನ ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ. ಮುಂದುವರಿಸಲು ದಯವಿಟ್ಟು ಅಪ್ಲಿಕೇಶನ್ ನವೀಕರಿಸಿ.';
 
   @override
   String get support_desc =>
-      'ಮೋಕ್ಷ ಮಾಲಾ ಜಪ ಪ್ರೀತಿಯ ಶ್ರಮವಾಗಿದೆ, ಇದನ್ನು ಒಬ್ಬರೇ ಡೆವಲಪರ್ ನಿರ್ಮಿಸಿದ್ದಾರೆ. ನಿಮ್ಮ ನಿಸ್ವಾರ್ಥ ಕೊಡುಗೆ (ಸೇವೆ) ಸರ್ವರ್‌ಗಳನ್ನು ಚಾಲನೆಯಲ್ಲಿಡಲು, ಜಾಹೀರಾತುಗಳನ್ನು ಕನಿಷ್ಠವಾಗಿಡಲು ಮತ್ತು ಎಲ್ಲಾ ಭಕ್ತರಿಗೆ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಉಚಿತವಾಗಿಡಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.';
+      'ನಾಮ್ ಜಾಪ್ ಪ್ರೀತಿಯ ಶ್ರಮವಾಗಿದೆ, ಇದನ್ನು ಒಬ್ಬರೇ ಡೆವಲಪರ್ ನಿರ್ಮಿಸಿದ್ದಾರೆ. ನಿಮ್ಮ ನಿಸ್ವಾರ್ಥ ಕೊಡುಗೆ (ಸೇವೆ) ಸರ್ವರ್‌ಗಳನ್ನು ಚಾಲನೆಯಲ್ಲಿಡಲು, ಜಾಹೀರಾತುಗಳನ್ನು ಕನಿಷ್ಠವಾಗಿಡಲು ಮತ್ತು ಎಲ್ಲಾ ಭಕ್ತರಿಗೆ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಉಚಿತವಾಗಿಡಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.';
 
   @override
-  String get support_title => 'ಮೋಕ್ಷ ಮಾಲಾ ಜಪ ಯೋಜನೆಗೆ ಬೆಂಬಲ ನೀಡಿ';
+  String get support_title => 'ನಾಮ್ ಜಾಪ್ ಯೋಜನೆಗೆ ಬೆಂಬಲ ನೀಡಿ';
 
   @override
   String get support_afterTitile =>
-      'ಮೋಕ್ಷ ಮಾಲಾ ಜಪಕ್ಕೆ ಬೆಂಬಲ ನೀಡಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು — ಪ್ರತಿಯೊಂದು ಕೊಡುಗೆಯೂ ಸಹಾಯ ಮಾಡುತ್ತದೆ.';
+      'ನಾಮ್ ಜಾಪ್‌ಗೆ ಬೆಂಬಲ ನೀಡಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು — ಪ್ರತಿಯೊಂದು ಕೊಡುಗೆಯೂ ಸಹಾಯ ಮಾಡುತ್ತದೆ.';
 }

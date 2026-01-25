@@ -301,9 +301,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dialog_exceptionCard => '可共享卡片上下文不可用。';
 
   @override
-  String get dialog_checkoutMyProgress => '在 NaamJaap 应用上查看我的进度！';
-
-  @override
   String get dialog_couldNotOpenPS => '无法打开 Play 商店。';
 
   @override
@@ -465,27 +462,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home_customizeMala => '自定义念珠';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => '在 Naam Jaap 应用上查看我的进度！';
 
   @override
-  String get login_welcome => '欢迎来到 Moksha Mala Jaap';
+  String get appTitle => 'Naam Jaap';
 
   @override
-  String get profile_shareApp => '分享 Moksha Mala Jaap';
+  String get login_welcome => '欢迎来到 Naam Jaap';
 
   @override
-  String get profile_supportTitle => '支持 Moksha Mala Jaap';
+  String get profile_shareApp => '分享 Naam Jaap';
 
   @override
-  String get dialog_updateDesc => 'Moksha Mala Jaap 有包含重要更新的新版本。请更新应用以继续。';
+  String get profile_supportTitle => '支持 Naam Jaap';
+
+  @override
+  String get dialog_updateDesc => 'Naam Jaap 有包含重要更新的新版本。请更新应用以继续。';
 
   @override
   String get support_desc =>
-      'Moksha Mala Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。';
+      'Naam Jaap 是由一位独立开发者倾心打造的应用。您的无私奉献 (Seva) 有助于维持服务器运行、减少广告，并让所有信徒免费使用此应用。';
 
   @override
-  String get support_title => '支持 Moksha Mala Jaap 项目';
+  String get support_title => '支持 Naam Jaap 项目';
 
   @override
-  String get support_afterTitile => '感谢您支持 Moksha Mala Jaap — 每一份贡献都有帮助。';
+  String get support_afterTitile => '感谢您支持 Naam Jaap — 每一份贡献都有帮助。';
 }

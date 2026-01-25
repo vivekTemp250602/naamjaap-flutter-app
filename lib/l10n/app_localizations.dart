@@ -702,12 +702,6 @@ abstract class AppLocalizations {
   /// **'Shareable card context is not available.'**
   String get dialog_exceptionCard;
 
-  /// No description provided for @dialog_checkoutMyProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Check out my progress on the NaamJaap app!'**
-  String get dialog_checkoutMyProgress;
-
   /// No description provided for @dialog_couldNotOpenPS.
   ///
   /// In en, this message translates to:
@@ -1014,52 +1008,58 @@ abstract class AppLocalizations {
   /// **'Customize Mala'**
   String get home_customizeMala;
 
+  /// No description provided for @dialog_checkoutMyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out my progress on the Naam Jaap app!'**
+  String get dialog_checkoutMyProgress;
+
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Moksha Mala Jaap'**
+  /// **'Naam Jaap'**
   String get appTitle;
 
   /// No description provided for @login_welcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Moksha Mala Jaap'**
+  /// **'Welcome to Naam Jaap'**
   String get login_welcome;
 
   /// No description provided for @profile_shareApp.
   ///
   /// In en, this message translates to:
-  /// **'Share Moksha Mala Jaap'**
+  /// **'Share Naam Jaap'**
   String get profile_shareApp;
 
   /// No description provided for @profile_supportTitle.
   ///
   /// In en, this message translates to:
-  /// **'Support Moksha Mala Jaap'**
+  /// **'Support Naam Jaap'**
   String get profile_supportTitle;
 
   /// No description provided for @dialog_updateDesc.
   ///
   /// In en, this message translates to:
-  /// **'A new version of Moksha Mala Jaap is available with important updates. Please update the app to continue.'**
+  /// **'A new version of Naam Jaap is available with important updates. Please update the app to continue.'**
   String get dialog_updateDesc;
 
   /// No description provided for @support_desc.
   ///
   /// In en, this message translates to:
-  /// **'Moksha Mala Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
+  /// **'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
   String get support_desc;
 
   /// No description provided for @support_title.
   ///
   /// In en, this message translates to:
-  /// **'Support the Moksha Mala Jaap project'**
+  /// **'Support the Naam Jaap project'**
   String get support_title;
 
   /// No description provided for @support_afterTitile.
   ///
   /// In en, this message translates to:
-  /// **'Thank you for supporting Moksha Mala Jaap — every contribution helps.'**
+  /// **'Thank you for supporting Naam Jaap — every contribution helps.'**
   String get support_afterTitile;
 }
 

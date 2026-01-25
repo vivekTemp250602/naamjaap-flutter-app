@@ -307,10 +307,6 @@ class AppLocalizationsGu extends AppLocalizations {
       'શેર કરી શકાય તેવું કાર્ડ સંદર્ભ ઉપલબ્ધ નથી.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'નામજાપ એપ્લિકેશન પર મારી પ્રગતિ તપાસો!';
-
-  @override
   String get dialog_couldNotOpenPS => 'પ્લે સ્ટોર ખોલી શકાયું નથી.';
 
   @override
@@ -478,29 +474,33 @@ class AppLocalizationsGu extends AppLocalizations {
   String get home_customizeMala => 'માળા કસ્ટમાઇઝ કરો';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'નામ જાપ એપ્લિકેશન પર મારી પ્રગતિ તપાસો!';
 
   @override
-  String get login_welcome => 'મોક્ષ માળા જાપમાં આપનું સ્વાગત છે';
+  String get appTitle => 'નામ જાપ';
 
   @override
-  String get profile_shareApp => 'મોક્ષ માળા જાપ શેર કરો';
+  String get login_welcome => 'નામ જાપમાં આપનું સ્વાગત છે';
 
   @override
-  String get profile_supportTitle => 'મોક્ષ માળા જાપને સપોર્ટ કરો';
+  String get profile_shareApp => 'નામ જાપ શેર કરો';
+
+  @override
+  String get profile_supportTitle => 'નામ જાપને સપોર્ટ કરો';
 
   @override
   String get dialog_updateDesc =>
-      'મોક્ષ માળા જાપનું નવું સંસ્કરણ મહત્વપૂર્ણ અપડેટ્સ સાથે ઉપલબ્ધ છે. ચાલુ રાખવા માટે કૃપા કરીને એપ્લિકેશન અપડેટ કરો.';
+      'નામ જાપનું નવું સંસ્કરણ મહત્વપૂર્ણ અપડેટ્સ સાથે ઉપલબ્ધ છે. ચાલુ રાખવા માટે કૃપા કરીને એપ્લિકેશન અપડેટ કરો.';
 
   @override
   String get support_desc =>
-      'મોક્ષ માળા જાપ એ પ્રેમનો શ્રમ છે, જે એક સોલો ડેવલપર દ્વારા બનાવવામાં આવ્યો છે. તમારું નિઃસ્વાર્થ યોગદાન (સેવા) સર્વરને ચાલુ રાખવામાં, જાહેરાતોને ન્યૂનતમ રાખવામાં અને બધા ભક્તો માટે એપ્લિકેશનને મફત રાખવામાં મદદ કરે છે.';
+      'નામ જાપ એ પ્રેમનો શ્રમ છે, જે એક સોલો ડેવલપર દ્વારા બનાવવામાં આવ્યો છે. તમારું નિઃસ્વાર્થ યોગદાન (સેવા) સર્વરને ચાલુ રાખવામાં, જાહેરાતોને ન્યૂનતમ રાખવામાં અને બધા ભક્તો માટે એપ્લિકેશનને મફત રાખવામાં મદદ કરે છે.';
 
   @override
-  String get support_title => 'મોક્ષ માળા જાપ પ્રોજેક્ટને સપોર્ટ કરો';
+  String get support_title => 'નામ જાપ પ્રોજેક્ટને સપોર્ટ કરો';
 
   @override
   String get support_afterTitile =>
-      'મોક્ષ માળા જાપને સપોર્ટ કરવા બદલ આભાર — દરેક યોગદાન મદદ કરે છે.';
+      'નામ જાપને સપોર્ટ કરવા બદલ આભાર — દરેક યોગદાન મદદ કરે છે.';
 }

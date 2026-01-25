@@ -311,10 +311,6 @@ class AppLocalizationsTe extends AppLocalizations {
       'భాగస్వామ్యం చేయదగిన కార్డ్ సందర్భం అందుబాటులో లేదు.';
 
   @override
-  String get dialog_checkoutMyProgress =>
-      'నామ్‌జాప్ యాప్‌లో నా పురోగతిని చూడండి!';
-
-  @override
   String get dialog_couldNotOpenPS => 'Play Store తెరవలేకపోయింది.';
 
   @override
@@ -485,29 +481,33 @@ class AppLocalizationsTe extends AppLocalizations {
   String get home_customizeMala => 'మాలను అనుకూలీకరించండి';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress =>
+      'నామ్ జాప్ యాప్‌లో నా పురోగతిని చూడండి!';
 
   @override
-  String get login_welcome => 'మోక్ష మాల జపానికి స్వాగతం';
+  String get appTitle => 'నామ్ జాప్';
 
   @override
-  String get profile_shareApp => 'మోక్ష మాల జపాన్ని పంచుకోండి';
+  String get login_welcome => 'నామ్ జాప్‌కు స్వాగతం';
 
   @override
-  String get profile_supportTitle => 'మోక్ష మాల జపానికి మద్దతు ఇవ్వండి';
+  String get profile_shareApp => 'నామ్ జాప్‌ను పంచుకోండి';
+
+  @override
+  String get profile_supportTitle => 'నామ్ జాప్‌కు మద్దతు ఇవ్వండి';
 
   @override
   String get dialog_updateDesc =>
-      'ముఖ్యమైన నవీకరణలతో మోక్ష మాల జపం యొక్క కొత్త వెర్షన్ అందుబాటులో ఉంది. కొనసాగించడానికి దయచేసి యాప్‌ను నవీకరించండి.';
+      'ముఖ్యమైన నవీకరణలతో నామ్ జాప్ యొక్క కొత్త వెర్షన్ అందుబాటులో ఉంది. కొనసాగించడానికి దయచేసి యాప్‌ను నవీకరించండి.';
 
   @override
   String get support_desc =>
-      'మోక్ష మాల జపం అనేది ప్రేమతో చేసిన శ్రమ, దీనిని ఒక సోలో డెవలపర్ రూపొందించారు. మీ నిస్వార్థ సహకారం (సేవ) సర్వర్‌లను నడుపుతూ ఉంచడానికి, ప్రకటనలను కనిష్టంగా ఉంచడానికి మరియు భక్తులందరికీ యాప్‌ను ఉచితంగా ఉంచడానికి సహాయపడుతుంది.';
+      'నామ్ జాప్ అనేది ప్రేమతో చేసిన శ్రమ, దీనిని ఒక సోలో డెవలపర్ రూపొందించారు. మీ నిస్వార్థ సహకారం (సేవ) సర్వర్‌లను నడుపుతూ ఉంచడానికి, ప్రకటనలను కనిష్టంగా ఉంచడానికి మరియు భక్తులందరికీ యాప్‌ను ఉచితంగా ఉంచడానికి సహాయపడుతుంది.';
 
   @override
-  String get support_title => 'మోక్ష మాల జపం ప్రాజెక్ట్‌కు మద్దతు ఇవ్వండి';
+  String get support_title => 'నామ్ జాప్ ప్రాజెక్ట్‌కు మద్దతు ఇవ్వండి';
 
   @override
   String get support_afterTitile =>
-      'మోక్ష మాల జపానికి మద్దతు ఇచ్చినందుకు ధన్యవాదాలు — ప్రతి సహకారం సహాయపడుతుంది.';
+      'నామ్ జాప్‌కు మద్దతు ఇచ్చినందుకు ధన్యవాదాలు — ప్రతి సహకారం సహాయపడుతుంది.';
 }

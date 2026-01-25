@@ -308,9 +308,6 @@ class AppLocalizationsMr extends AppLocalizations {
       'शेअर करण्यायोग्य कार्ड संदर्भ उपलब्ध नाही.';
 
   @override
-  String get dialog_checkoutMyProgress => 'नामजाप अॅपवर माझी प्रगती पहा!';
-
-  @override
   String get dialog_couldNotOpenPS => 'प्ले स्टोअर उघडू शकले नाही.';
 
   @override
@@ -478,29 +475,32 @@ class AppLocalizationsMr extends AppLocalizations {
   String get home_customizeMala => 'माळ कस्टमाइझ करा';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'नाम जाप अॅपवर माझी प्रगती पहा!';
 
   @override
-  String get login_welcome => 'मोक्ष माला जापमध्ये आपले स्वागत आहे';
+  String get appTitle => 'नाम जाप';
 
   @override
-  String get profile_shareApp => 'मोक्ष माला जाप शेअर करा';
+  String get login_welcome => 'नाम जापमध्ये आपले स्वागत आहे';
 
   @override
-  String get profile_supportTitle => 'मोक्ष माला जापला सपोर्ट करा';
+  String get profile_shareApp => 'नाम जाप शेअर करा';
+
+  @override
+  String get profile_supportTitle => 'नाम जापला सपोर्ट करा';
 
   @override
   String get dialog_updateDesc =>
-      'मोक्ष माला जापची नवीन आवृत्ती महत्त्वपूर्ण अपडेट्ससह उपलब्ध आहे. कृपया सुरू ठेवण्यासाठी अॅप अपडेट करा.';
+      'नाम जापची नवीन आवृत्ती महत्त्वपूर्ण अपडेट्ससह उपलब्ध आहे. कृपया सुरू ठेवण्यासाठी अॅप अपडेट करा.';
 
   @override
   String get support_desc =>
-      'मोक्ष माला जाप हे प्रेमाचे श्रम आहे, जे एका सोलो डेव्हलपरने तयार केले आहे. तुमचे निःस्वार्थ योगदान (सेवा) सर्व्हर चालू ठेवण्यास, जाहिराती कमी ठेवण्यास आणि सर्व भक्तांसाठी अॅप विनामूल्य ठेवण्यास मदत करते.';
+      'नाम जाप हे प्रेमाचे श्रम आहे, जे एका सोलो डेव्हलपरने तयार केले आहे. तुमचे निःस्वार्थ योगदान (सेवा) सर्व्हर चालू ठेवण्यास, जाहिराती कमी ठेवण्यास आणि सर्व भक्तांसाठी अॅप विनामूल्य ठेवण्यास मदत करते.';
 
   @override
-  String get support_title => 'मोक्ष माला जाप प्रकल्पाला सपोर्ट करा';
+  String get support_title => 'नाम जाप प्रकल्पाला सपोर्ट करा';
 
   @override
   String get support_afterTitile =>
-      'मोक्ष माला जापला सपोर्ट केल्याबद्दल धन्यवाद — प्रत्येक योगदान मदत करते.';
+      'नाम जापला सपोर्ट केल्याबद्दल धन्यवाद — प्रत्येक योगदान मदत करते.';
 }

@@ -306,9 +306,6 @@ class AppLocalizationsBh extends AppLocalizations {
   String get dialog_exceptionCard => 'साझा करे लायक कार्ड संदर्भ उपलब्ध नइखे।';
 
   @override
-  String get dialog_checkoutMyProgress => 'नामजाप ऐप पर हमार प्रगति देखीं!';
-
-  @override
   String get dialog_couldNotOpenPS => 'प्ले स्टोर ना खुल सकल।';
 
   @override
@@ -477,29 +474,32 @@ class AppLocalizationsBh extends AppLocalizations {
   String get home_customizeMala => 'माला कस्टमाइज़ करीं';
 
   @override
-  String get appTitle => 'Moksha Mala Jaap';
+  String get dialog_checkoutMyProgress => 'नाम जाप ऐप पर हमार प्रगति देखीं!';
 
   @override
-  String get login_welcome => 'मोक्ष माला जाप में राउर स्वागत बा';
+  String get appTitle => 'नाम जाप';
 
   @override
-  String get profile_shareApp => 'मोक्ष माला जाप साझा करीं';
+  String get login_welcome => 'नाम जाप में राउर स्वागत बा';
 
   @override
-  String get profile_supportTitle => 'मोक्ष माला जाप के समर्थन करीं';
+  String get profile_shareApp => 'नाम जाप साझा करीं';
+
+  @override
+  String get profile_supportTitle => 'नाम जाप के समर्थन करीं';
 
   @override
   String get dialog_updateDesc =>
-      'मोक्ष माला जाप के एगो नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध बा। जारी रखे खातिर कृपया ऐप के अपडेट करीं।';
+      'नाम जाप के एगो नया संस्करण महत्वपूर्ण अपडेट के साथ उपलब्ध बा। जारी रखे खातिर कृपया ऐप के अपडेट करीं।';
 
   @override
   String get support_desc =>
-      'मोक्ष माला जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।';
+      'नाम जाप प्रेम के मेहनत ह, जेकरा एगो अकेला डेवलपर बनवले बा। रउआ निस्वार्थ योगदान (सेवा) सर्वर के चलावत रखे, बिज्ञापन के न्यूनतम रखे, आ सगरी भक्तन खातिर ऐप के मुफ्त रखे में मदद करेला।';
 
   @override
-  String get support_title => 'मोक्ष माला जाप प्रोजेक्ट के समर्थन करीं';
+  String get support_title => 'नाम जाप प्रोजेक्ट के समर्थन करीं';
 
   @override
   String get support_afterTitile =>
-      'मोक्ष माला जाप के समर्थन करे खातिर धन्यवाद — हर योगदान मदद करेला।';
+      'नाम जाप के समर्थन करे खातिर धन्यवाद — हर योगदान मदद करेला।';
 }

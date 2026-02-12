@@ -6,7 +6,7 @@ import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/achievements_service.dart';
 
-const String _pendingEventsKey = 'pendingJapaEvents';
+const String _pendingEventsKey = 'pendingJapaEvents'; // Key matches HomeScreen
 
 class SyncService {
   final ConnectivityService connectivityService;
@@ -15,7 +15,6 @@ class SyncService {
   final VoidCallback onSyncComplete;
 
   final AchievementsService _achievementsService = AchievementsService();
-
   bool _syncInProgress = false;
 
   SyncService({
@@ -38,6 +37,7 @@ class SyncService {
 
       final prefs = await SharedPreferences.getInstance();
       final jsonStr = prefs.getString(_pendingEventsKey);
+
       if (jsonStr == null || jsonStr.isEmpty) return;
 
       final Map<String, dynamic> pendingEvents =
@@ -45,16 +45,23 @@ class SyncService {
 
       if (pendingEvents.isEmpty) return;
 
+      // 1. Upload to Firestore (Transaction)
       await firestoreService.syncJapaEvents(
         uid: uid,
         events: pendingEvents,
       );
 
+      // 2. Check Badges
       await _achievementsService.checkAndAwardBadges(uid);
 
+      // 3. Clear Local Storage ONLY after successful upload
       await prefs.remove(_pendingEventsKey);
+
+      // 4. Notify Home Screen to clear its memory state
       onSyncComplete();
     } catch (e, s) {
+      // Logic: If error occurs, we DO NOT clear local storage.
+      // The events stay there and will retry next time.
       FirebaseCrashlytics.instance.recordError(
         e,
         s,

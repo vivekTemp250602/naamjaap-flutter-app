@@ -9,10 +9,16 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
+  String get appTitle => 'নাম জপ';
+
+  @override
+  String get login_welcome => 'নাম জপ-এ স্বাগতম';
+
+  @override
   String get login_subtitle => 'আপনার ব্যক্তিগত ডিজিটাল জপ সঙ্গী।';
 
   @override
-  String get login_termsAgreement => 'আমি ';
+  String get login_termsAgreement => 'আমি পড়েছি এবং একমত ';
 
   @override
   String get login_termsAndConditions => 'শর্তাবলী';
@@ -21,10 +27,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get login_and => ' এবং ';
 
   @override
-  String get login_privacyPolicy => 'গোপনীয়তা নীতিতে সম্মত।';
+  String get login_privacyPolicy => 'গোপনীয়তা নীতি';
 
   @override
-  String get login_signInWithGoogle => 'Google দিয়ে সাইন ইন করুন';
+  String get login_signInWithGoogle => 'গুগল দিয়ে সাইন ইন করুন';
 
   @override
   String get nav_home => 'হোম';
@@ -36,7 +42,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get nav_wisdom => 'জ্ঞান';
 
   @override
-  String get nav_profile => 'আমার প্রোফাইল';
+  String get nav_profile => 'প্রোফাইল';
 
   @override
   String get home_tapToChant => 'জপ করতে ট্যাপ করুন';
@@ -48,29 +54,119 @@ class AppLocalizationsBn extends AppLocalizations {
   String get home_total => 'মোট:';
 
   @override
-  String get home_mantraInfo => 'মন্ত্রের তথ্য';
+  String get home_mantraInfo => 'মন্ত্র তথ্য';
 
   @override
-  String get dialog_close => 'বন্ধ করুন';
+  String get home_chooseMala => 'আপনার মালা চয়ন করুন';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'এমন একটি শৈলী নির্বাচন করুন যা আপনার আত্মার সাথে অনুরণিত হয়।';
+
+  @override
+  String get home_customizeMala => 'মালা কাস্টমাইজ করুন';
+
+  @override
+  String get tour_home_carousel_title => 'আপনার মন্ত্র চয়ন করুন';
+
+  @override
+  String get tour_home_carousel_desc =>
+      'শক্তিশালী বৈদিক মন্ত্রগুলির মধ্যে পরিবর্তন করতে বামে বা ডানে সোয়াইপ করুন।';
+
+  @override
+  String get tour_home_mala_title => 'জপ করতে ট্যাপ করুন';
+
+  @override
+  String get tour_home_mala_desc =>
+      'পুতিগুলি সরাতে বৃত্তের যেকোনো জায়গায় ট্যাপ করুন। একটি মালার জন্য ১০৮ টি সম্পূর্ণ করুন।';
+
+  @override
+  String get tour_home_toolkit_title => 'আপনার টুলকিট';
+
+  @override
+  String get tour_home_toolkit_desc =>
+      'পুতির শৈলী কাস্টমাইজ করুন, অডিও টগল করুন, বা মন্ত্রের অর্থ দেখুন।';
+
+  @override
+  String get tour_leader_toggle_title => 'সাপ্তাহিক বনাম সর্বকালের';
+
+  @override
+  String get tour_leader_toggle_desc =>
+      'এই সপ্তাহের সেরা এবং সর্বকালের সেরাদের মধ্যে পরিবর্তন করতে এখানে ট্যাপ করুন।';
+
+  @override
+  String get tour_leader_podium_title => 'সেরা ৩';
+
+  @override
+  String get tour_leader_podium_desc =>
+      'সবচেয়ে নিবেদিত জপকারীরা এখানে উপস্থিত হন। তাদের সাথে যোগ দিতে জপ করতে থাকুন!';
+
+  @override
+  String get tour_wisdom_card_title => 'দৈনিক জ্ঞান এবং শেয়ারিং';
+
+  @override
+  String get tour_wisdom_card_desc =>
+      'একটি নতুন শ্লোক দিয়ে আপনার দিন শুরু করুন। আপনার স্ট্যাটাসের জন্য একটি সুন্দর ছবি তৈরি করতে শেয়ার আইকনে ট্যাপ করুন!';
+
+  @override
+  String get tour_profile_stats_title => 'আপনার আধ্যাত্মিক পরিসংখ্যান';
+
+  @override
+  String get tour_profile_stats_desc =>
+      'আপনার স্ট্রিক, মোট জপ সংখ্যা এবং বিশ্বব্যাপী র‍্যাঙ্ক এখানে ট্র্যাক করুন।';
+
+  @override
+  String get tour_profile_offline_title => 'শারীরিক জপ?';
+
+  @override
+  String get tour_profile_offline_desc =>
+      'আপনি যদি আসল মালা ব্যবহার করেন, তবে অ্যাপে আপনার গণনা ম্যানুয়ালি যোগ করতে এখানে ট্যাপ করুন।';
+
+  @override
+  String get tour_profile_bodhi_desc =>
+      'প্রতিটি মালা যা আপনি জপ করেন, আপনার আধ্যাত্মিক বাগান বৃদ্ধিতে সহায়তা করে। অগ্রগতির সাথে সাথে নতুন গাছ আনলক করুন!';
+
+  @override
+  String get tour_profile_sankalpa_desc =>
+      'একটি আধ্যাত্মিক লক্ষ্যে প্রতিশ্রুতিবদ্ধ হতে একটি লক্ষ্য তারিখ এবং গণনা সেট করুন। আমরা এটি ট্র্যাক করতে আপনাকে সাহায্য করব।';
+
+  @override
+  String get guest_mode_title => 'গেস্ট মোড';
+
+  @override
+  String get guest_mode_desc =>
+      'আপনার আধ্যাত্মিক প্রোফাইল আনলক করতে সাইন ইন করুন।';
+
+  @override
+  String get guest_signin_btn => 'সাইন ইন করুন';
 
   @override
   String get wisdom_title => 'আজকের জ্ঞান';
 
   @override
   String get wisdom_dismissed =>
-      'আজকের জ্ঞানের উপর ভাবনা করা হয়েছে।\nএকটি নতুন অন্তর্দৃষ্টি কাল আসবে।';
+      'আজকের জ্ঞান নিয়ে চিন্তা করা হয়েছে।\nআগামীকাল একটি নতুন অন্তর্দৃষ্টি আসবে।';
 
   @override
   String get wisdom_loading => 'জ্ঞান লোড হচ্ছে...';
 
   @override
+  String get wisdom_signin_to_share => 'জ্ঞান কার্ড শেয়ার করতে সাইন ইন করুন!';
+
+  @override
+  String get wisdom_creating_card => 'আপনার ঐশ্বরিক কার্ড তৈরি করা হচ্ছে...';
+
+  @override
   String get leaderboard_allTime => 'সর্বকালের';
 
   @override
-  String get leaderboard_thisWeek => 'এই সপ্তাহ';
+  String get leaderboard_thisWeek => 'এই সপ্তাহে';
 
   @override
   String get leaderboard_yourProgress => 'আপনার অগ্রগতি';
+
+  @override
+  String get leaderboard_yourRank => 'আপনার র‍্যাঙ্ক';
 
   @override
   String leaderboard_jappsToPass(Object count, Object playerName) {
@@ -78,11 +174,16 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get leaderboard_empty => 'যাত্রা শুরু হলো!';
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$playerName-কে পার করতে $count মালা';
+  }
+
+  @override
+  String get leaderboard_empty => 'যাত্রা শুরু!';
 
   @override
   String get leaderboard_emptySubtitle =>
-      'লিডারবোর্ডে প্রথম স্থান অর্জনকারী হোন!';
+      'লিডারবোর্ডে স্থান পাওয়া প্রথম ব্যক্তি হন!';
 
   @override
   String get leaderboard_isEmpty => 'লিডারবোর্ড খালি।';
@@ -100,7 +201,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get leaderboard_noChants => 'এখনও কোনো জপ নেই';
 
   @override
-  String leaderboard_topMantra(Object mantra) {
+  String leaderboard_topMantra(String mantra) {
     return 'শীর্ষ মন্ত্র: $mantra';
   }
 
@@ -117,10 +218,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get profile_globalRank => 'গ্লোবাল র‍্যাঙ্ক';
 
   @override
-  String get profile_mantraTotals => 'মন্ত্রের মোট সংখ্যা';
+  String get profile_mantraTotals => 'মন্ত্রের মোট';
 
   @override
-  String get profile_achievements => 'কৃতিত্ব';
+  String get profile_achievements => 'অর্জনসমূহ';
 
   @override
   String get profile_shareProgress => 'আপনার অগ্রগতি শেয়ার করুন';
@@ -130,11 +231,13 @@ class AppLocalizationsBn extends AppLocalizations {
       'আপনার প্রথম ব্যাজ অর্জন করতে জপ শুরু করুন!';
 
   @override
-  String get profile_mantrasEmpty =>
-      'আপনার মোট সংখ্যা এখানে দেখতে জপ শুরু করুন!';
+  String get profile_mantrasEmpty => 'এখানে আপনার মোট দেখতে জপ শুরু করুন!';
 
   @override
   String get profile_rateApp => 'আমাদের অ্যাপ রেট করুন';
+
+  @override
+  String get profile_supportTitle => 'নাম জপ সমর্থন করুন';
 
   @override
   String get profile_supportSubtitle => 'অ্যাপটি চালু রাখতে সাহায্য করুন';
@@ -161,33 +264,116 @@ class AppLocalizationsBn extends AppLocalizations {
   String get profile_enterName => 'নতুন নাম লিখুন';
 
   @override
+  String get profile_shareApp => 'নাম জপ শেয়ার করুন';
+
+  @override
+  String get profile_yourCustomMantra => 'আমার কাস্টম মন্ত্র';
+
+  @override
+  String get profile_noCustoms => 'আপনি এখনও কোনো কাস্টম মন্ত্র যোগ করেননি।';
+
+  @override
+  String get profile_addNewMantra => 'নতুন মন্ত্র যোগ করুন';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return '\"$mantraName\" মুছবেন?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'আপনি কি নিশ্চিত? এই মন্ত্রের সাথে যুক্ত সমস্ত জপ গণনাও স্থায়ীভাবে মুছে ফেলা হবে।';
+
+  @override
+  String get profile_yesDelete => 'হ্যাঁ, মুছুন';
+
+  @override
+  String get profile_couldNotUserData => 'ব্যবহারকারীর ডেটা লোড করা যায়নি।';
+
+  @override
+  String get profile_offline_card_title => 'অফলাইন জপ লগ করুন';
+
+  @override
+  String get profile_offline_card_subtitle =>
+      'আপনার শারীরিক মালা থেকে গণনা যোগ করুন';
+
+  @override
+  String get profile_gamification_header => 'গ্যামিফিকেশন';
+
+  @override
+  String get profile_commitments_header => 'প্রতিশ্রুতি';
+
+  @override
+  String get profile_insights_header => 'মন্ত্র অন্তর্দৃষ্টি';
+
+  @override
+  String get profile_my_mantras_header => 'আমার মন্ত্র';
+
+  @override
+  String get profile_quick_actions_header => 'দ্রুত অ্যাকশন';
+
+  @override
+  String get profile_sankalpaSet => 'একটি পবিত্র সংকল্প করুন';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'একটি ব্যক্তিগত জপ লক্ষ্য নির্ধারণ করুন।';
+
+  @override
+  String get profile_sankalpaTitle => 'আপনার জপ সংকল্প';
+
+  @override
+  String get profile_sankalpaChanting => 'জপ করছেন';
+
+  @override
+  String get profile_abandon => 'সংকল্প ত্যাগ করুন';
+
+  @override
+  String get profile_progress => 'অগ্রগতি';
+
+  @override
+  String get profile_deadline => 'শেষ সময়সীমা';
+
+  @override
+  String get profile_achieved => 'অর্জিত!';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' $targetCount বার পৌঁছানোর জন্য।';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return '$date এর মধ্যে';
+  }
+
+  @override
   String get settings_title => 'সেটিংস';
 
   @override
   String get settings_ambiance => 'মন্দিরের পরিবেশ';
 
   @override
-  String get settings_ambianceDesc => 'হালকা পটভূমিতে মন্দিরের শব্দ বাজান।';
+  String get settings_ambianceDesc => 'সূক্ষ্ম পটভূমি মন্দিরের শব্দ চালান।';
 
   @override
   String get settings_reminders => 'দৈনিক অনুস্মারক';
 
   @override
-  String get settings_remindersDesc =>
-      'আপনি যদি আজ জপ না করে থাকেন তবে একটি বিজ্ঞপ্তি পান।';
+  String get settings_remindersDesc => 'আজ জপ না করে থাকলে বিজ্ঞপ্তি পান।';
 
   @override
   String get settings_language => 'অ্যাপের ভাষা';
 
   @override
-  String get settings_feedback => 'মতামত ও সমর্থন';
+  String get settings_feedback => 'প্রতিক্রিয়া এবং সমর্থন';
 
   @override
   String get settings_feedbackDesc =>
       'একটি বাগ রিপোর্ট করুন বা একটি বৈশিষ্ট্যের পরামর্শ দিন।';
 
   @override
-  String get settings_deletingAccount => 'Deleting your account...';
+  String get settings_deletingAccount => 'আপনার অ্যাকাউন্ট মুছে ফেলা হচ্ছে...';
 
   @override
   String get settings_privacy => 'গোপনীয়তা নীতি';
@@ -202,65 +388,85 @@ class AppLocalizationsBn extends AppLocalizations {
   String get settings_signOut => 'সাইন আউট';
 
   @override
-  String get dialog_deleteTitle => 'অ্যাকাউন্ট মুছবেন?';
+  String get settings_exit_guest => 'গেস্ট মোড থেকে প্রস্থান করুন';
 
   @override
-  String get dialog_deleteBody =>
-      'এই পদক্ষেপটি স্থায়ী এবং এটি পূর্বাবস্থায় ফেরানো যাবে না। আপনার সমস্ত জপের ডেটা, কৃতিত্ব এবং ব্যক্তিগত তথ্য স্থায়ীভাবে মুছে ফেলা হবে।\n\nআপনি কি সত্যিই এগিয়ে যেতে চান?';
+  String get settings_support_header => 'সমর্থন এবং আইনি';
 
   @override
-  String get dialog_deleteConfirm => 'হ্যাঁ, আমার অ্যাকাউন্ট মুছুন';
+  String get settings_account_header => 'অ্যাকাউন্ট';
 
   @override
-  String get dialog_continue => 'চালিয়ে যান';
+  String get support_title => 'নাম জপ প্রকল্প সমর্থন করুন';
 
   @override
-  String get dialog_pressBack => 'বের হতে আবার পিছনে চাপুন';
+  String get support_desc =>
+      'নাম জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
 
   @override
-  String get dialog_update => 'আপডেট প্রয়োজন';
+  String get support_afterTitile =>
+      'নাম জপ সমর্থন করার জন্য ধন্যবাদ — প্রতিটি অবদান সাহায্য করে।';
 
   @override
-  String get dialog_updateNow => 'এখন আপডেট করুন';
+  String get support_openUPI => 'আপনার UPI অ্যাপ খোলা হচ্ছে...';
 
   @override
-  String get dialog_save => 'সংরক্ষণ করুন';
+  String get support_cannotOpenUPI => 'UPI অ্যাপ চালু করা যায়নি।';
 
   @override
-  String get dialog_something => 'কিছু ভুল হয়েছে।';
+  String get support_upiError =>
+      'ত্রুটি: খোলার জন্য কোনো UPI অ্যাপ পাওয়া যায়নি।';
 
   @override
-  String get dialog_cancel => 'বাতিল করুন';
+  String get support_chooseOffering => 'একটি অর্ঘ্য চয়ন করুন';
 
   @override
-  String get misc_japps => 'জপ';
+  String get support_enterAmt => 'অথবা একটি কাস্টম পরিমাণ লিখুন (INR)';
 
   @override
-  String get misc_days => 'দিন';
+  String get support_validAmt =>
+      'অনুগ্রহ করে একটি বৈধ পরিমাণ নির্বাচন করুন বা লিখুন।';
 
   @override
-  String get misc_badge => 'ব্যাজ';
+  String get support_now => 'এখন সমর্থন করুন';
 
   @override
-  String get lang_chooseLang => 'চালিয়ে যেতে আপনার পছন্দের ভাষা নির্বাচন করুন';
+  String get support_donate => 'দান করুন';
 
   @override
-  String get lang_searchLang => 'ভাষা অনুসন্ধান করুন';
+  String get support_paymentSucc =>
+      'Razorpay দ্বারা নিরাপদে পেমেন্ট প্রসেস করা হয়';
 
   @override
-  String get garden_totalMala => 'মালা সম্পন্ন হয়েছে';
+  String get support_thank => '🙏 ধন্যবাদ';
 
   @override
-  String get misc_malas => 'মালা';
+  String get support_offer_seva => 'সেবা প্রদান করুন';
 
   @override
-  String leaderboard_malasToPass(Object count, Object playerName) {
-    return '$playerName-কে পার করতে $count মালা';
-  }
+  String get support_signin_required => 'অবদান রাখতে দয়া করে সাইন ইন করুন।';
 
   @override
-  String get dialog_mic =>
-      'অডিও রেকর্ড করার জন্য মাইক্রোফোনের অনুমতি প্রয়োজন।';
+  String get support_payment_error =>
+      'পেমেন্ট শুরু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।';
+
+  @override
+  String get support_blessed => 'আপনার মঙ্গল হোক।';
+
+  @override
+  String get support_tier_flower => 'পুষ্প অর্পণ';
+
+  @override
+  String get support_tier_lamp => 'প্রদীপ প্রজ্বলন';
+
+  @override
+  String get support_tier_garland => 'মালা সেবা';
+
+  @override
+  String get support_tier_temple => 'মন্দির সহায়তা';
+
+  @override
+  String get support_tier_grand => 'মহা অর্পণ';
 
   @override
   String get custom_create => 'আপনার মন্ত্র তৈরি করুন';
@@ -291,13 +497,69 @@ class AppLocalizationsBn extends AppLocalizations {
       'অডিও রেকর্ড করার জন্য মাইক্রোফোনের অনুমতি প্রয়োজন।';
 
   @override
-  String get profile_yourCustomMantra => 'আমার কাস্টম মন্ত্র';
+  String get custom_preview => 'পূর্বরূপ';
 
   @override
-  String get profile_noCustoms => 'আপনি এখনও কোনো কাস্টম মন্ত্র যোগ করেননি।';
+  String get custom_voice_saved => 'ভয়েস নোট সংরক্ষিত';
 
   @override
-  String get profile_addNewMantra => 'নতুন মন্ত্র যোগ করুন';
+  String get custom_tap_record => 'রেকর্ড করতে ট্যাপ করুন';
+
+  @override
+  String get custom_ready_use => 'ব্যবহারের জন্য প্রস্তুত';
+
+  @override
+  String get custom_error_empty_name => 'দয়া করে একটি মন্ত্রের নাম লিখুন';
+
+  @override
+  String get garden_title => 'বোধি বাগান';
+
+  @override
+  String get garden_subtitle => 'আপনার আধ্যাত্মিক বন বৃদ্ধি করুন';
+
+  @override
+  String get garden_growth => 'আধ্যাত্মিক বৃদ্ধি';
+
+  @override
+  String get garden_totalMala => 'মালা সম্পন্ন হয়েছে';
+
+  @override
+  String get dialog_deleteTitle => 'অ্যাকাউন্ট মুছবেন?';
+
+  @override
+  String get dialog_deleteBody =>
+      'এই ক্রিয়াটি স্থায়ী এবং পূর্বাবস্থায় ফেরানো যাবে না। আপনার সমস্ত জপ ডেটা, অর্জন এবং ব্যক্তিগত তথ্য স্থায়ীভাবে মুছে ফেলা হবে।\n\nআপনি কি নিশ্চিত যে আপনি এগিয়ে যেতে চান?';
+
+  @override
+  String get dialog_deleteConfirm => 'হ্যাঁ, আমার অ্যাকাউন্ট মুছুন';
+
+  @override
+  String get dialog_continue => 'চালিয়ে যান';
+
+  @override
+  String get dialog_pressBack => 'বের হতে আবার পিছনে চাপুন';
+
+  @override
+  String get dialog_update => 'আপডেট প্রয়োজন';
+
+  @override
+  String get dialog_updateDesc =>
+      'গুরুত্বপূর্ণ আপডেট সহ নাম জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
+
+  @override
+  String get dialog_updateNow => 'এখন আপডেট করুন';
+
+  @override
+  String get dialog_save => 'সংরক্ষণ করুন';
+
+  @override
+  String get dialog_close => 'বন্ধ করুন';
+
+  @override
+  String get dialog_something => 'কিছু ভুল হয়েছে।';
+
+  @override
+  String get dialog_cancel => 'বাতিল';
 
   @override
   String get dialog_profilePictureUpdate => 'প্রোফাইল ছবি আপডেট করা হয়েছে!';
@@ -312,45 +574,20 @@ class AppLocalizationsBn extends AppLocalizations {
   String get dialog_couldNotOpenPS => 'প্লে স্টোর খোলা যায়নি।';
 
   @override
-  String profile_deleteMantra(Object mantraName) {
-    return '\"$mantraName\" মুছবেন?';
-  }
+  String get dialog_mic =>
+      'অডিও রেকর্ড করার জন্য মাইক্রোফোনের অনুমতি প্রয়োজন।';
 
   @override
-  String get profile_deleteMantraSure =>
-      'আপনি কি নিশ্চিত? এই মন্ত্রের সাথে যুক্ত সমস্ত জপ গণনাও স্থায়ীভাবে মুছে ফেলা হবে।';
+  String get dialog_getStarted => 'শুরু করুন';
 
   @override
-  String get profile_yesDelete => 'হ্যাঁ, মুছুন';
+  String get dialog_next => 'পরবর্তী';
 
   @override
-  String get profile_couldNotUserData => 'ব্যবহারকারীর ডেটা লোড করা যায়নি।';
+  String get dialog_skip => 'এড়িয়ে যান';
 
   @override
-  String get misc_anonymous => 'বেনামী';
-
-  @override
-  String get profile_sankalpaSet => 'একটি পবিত্র সংকল্প করুন';
-
-  @override
-  String get profile_sankalpaSubtitle =>
-      'একটি ব্যক্তিগত জপ লক্ষ্য নির্ধারণ করুন।';
-
-  @override
-  String get profile_sankalpaTitle => 'আপনার জপ সংকল্প';
-
-  @override
-  String get profile_sankalpaChanting => 'জপ করছেন';
-
-  @override
-  String profile_sankalpaToReach(int targetCount) {
-    return ' $targetCount বার পৌঁছানোর জন্য।';
-  }
-
-  @override
-  String profile_sankalpaByDate(String date) {
-    return '$date এর মধ্যে';
-  }
+  String get dialog_checkoutMyProgress => 'নাম জপ অ্যাপে আমার অগ্রগতি দেখুন!';
 
   @override
   String get dialog_sankalpaTitle => 'আপনার জপ সংকল্প নির্ধারণ করুন';
@@ -379,71 +616,25 @@ class AppLocalizationsBn extends AppLocalizations {
       'লক্ষ্য গণনা আপনার বর্তমান গণনার চেয়ে বেশি হতে হবে।';
 
   @override
-  String get support_openUPI => 'আপনার UPI অ্যাপ খোলা হচ্ছে...';
+  String get misc_japps => 'জপ';
 
   @override
-  String get support_cannotOpenUPI => 'UPI অ্যাপ চালু করা যায়নি।';
+  String get misc_days => 'দিন';
 
   @override
-  String get support_upiError =>
-      'ত্রুটি: খোলার জন্য কোনো UPI অ্যাপ পাওয়া যায়নি।';
+  String get misc_badge => 'ব্যাজ';
 
   @override
-  String get support_chooseOffering => 'একটি অর্ঘ্য চয়ন করুন';
+  String get misc_malas => 'মালা';
 
   @override
-  String get support_enterAmt => 'অথবা একটি কাস্টম পরিমাণ লিখুন (INR)';
+  String get misc_anonymous => 'বেনামী';
 
   @override
-  String get support_validAmt =>
-      'অনুগ্রহ করে একটি বৈধ পরিমাণ নির্বাচন করুন বা লিখুন।';
+  String get lang_chooseLang => 'চালিয়ে যেতে আপনার পছন্দের ভাষা নির্বাচন করুন';
 
   @override
-  String get support_now => 'এখন সমর্থন করুন';
-
-  @override
-  String get home_chooseMala => 'আপনার মালা চয়ন করুন';
-
-  @override
-  String get home_chooseMalaDesc =>
-      'এমন একটি শৈলী নির্বাচন করুন যা আপনার আত্মার সাথে অনুরণিত হয়।';
-
-  @override
-  String get tour_title1 => 'ডিজিটাল জপ মালা';
-
-  @override
-  String get tour_body1 =>
-      'জপ করতে ট্যাপ করুন। আমরা আপনার পুতি গণনা করি, মালা ট্র্যাক করি এবং আপনার স্ট্রিক স্বয়ংক্রিয়ভাবে বজায় রাখি।';
-
-  @override
-  String get tour_title2 => 'গ্লোবাল লিডারবোর্ড';
-
-  @override
-  String get tour_body2 =>
-      'হাজার হাজারের সাথে জপ করুন। আধ্যাত্মিক উন্নতি এবং ধারাবাহিকতার মাধ্যমে উপরে উঠুন।';
-
-  @override
-  String get tour_title3 => 'দৈনিক জ্ঞান';
-
-  @override
-  String get tour_body3 =>
-      'প্রাচীন গ্রন্থ থেকে কিউরেটেড শ্লোকগুলি পান — একাধিক ভাষায় উপলব্ধ।';
-
-  @override
-  String get tour_title4 => 'আপনার আধ্যাত্মিক যাত্রা';
-
-  @override
-  String get tour_body4 =>
-      'মাইলফলক ট্র্যাক করুন, সংকল্প নির্ধারণ করুন এবং আপনার বৃদ্ধি এবং কৃতিত্বের উপর প্রতিফলন করুন।';
-
-  @override
-  String get dialog_getStarted => 'শুরু করুন';
-
-  @override
-  String get dialog_next => 'পরবর্তী';
-
-  @override
-  String get dialog_skip => 'এড়িয়ে যান';
+  String get lang_searchLang => 'ভাষা অনুসন্ধান করুন';
 
   @override
   String get malatype_regular => 'নিয়মিত';
@@ -453,59 +644,4 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get malatype_royal => 'রাজকীয় সোনা';
-
-  @override
-  String get profile_abandon => 'সংকল্প ত্যাগ করুন';
-
-  @override
-  String get profile_progress => 'অগ্রগতি';
-
-  @override
-  String get profile_deadline => 'শেষ সময়সীমা';
-
-  @override
-  String get profile_achieved => 'অর্জিত!';
-
-  @override
-  String get support_donate => 'দান করুন';
-
-  @override
-  String get support_paymentSucc =>
-      'Razorpay দ্বারা নিরাপদে পেমেন্ট প্রসেস করা হয়';
-
-  @override
-  String get support_thank => '🙏 ধন্যবাদ';
-
-  @override
-  String get home_customizeMala => 'মালা কাস্টমাইজ করুন';
-
-  @override
-  String get dialog_checkoutMyProgress => 'নাম জপ অ্যাপে আমার অগ্রগতি দেখুন!';
-
-  @override
-  String get appTitle => 'নাম জপ';
-
-  @override
-  String get login_welcome => 'নাম জপ-এ স্বাগতম';
-
-  @override
-  String get profile_shareApp => 'নাম জপ শেয়ার করুন';
-
-  @override
-  String get profile_supportTitle => 'নাম জপ সমর্থন করুন';
-
-  @override
-  String get dialog_updateDesc =>
-      'গুরুত্বপূর্ণ আপডেট সহ নাম জপের একটি নতুন সংস্করণ উপলব্ধ। চালিয়ে যেতে দয়া করে অ্যাপটি আপডেট করুন।';
-
-  @override
-  String get support_desc =>
-      'নাম জপ ভালোবাসার শ্রম, একজন একক ডেভেলপার দ্বারা নির্মিত। আপনার নিঃস্বার্থ অবদান (সেবা) সার্ভারগুলি চালু রাখতে, বিজ্ঞাপনগুলি ন্যূনতম রাখতে এবং সমস্ত ভক্তদের জন্য অ্যাপটি বিনামূল্যে রাখতে সাহায্য করে।';
-
-  @override
-  String get support_title => 'নাম জপ প্রকল্প সমর্থন করুন';
-
-  @override
-  String get support_afterTitile =>
-      'নাম জপ সমর্থন করার জন্য ধন্যবাদ — প্রতিটি অবদান সাহায্য করে।';
 }

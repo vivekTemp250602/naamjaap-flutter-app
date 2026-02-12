@@ -9,13 +9,19 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get login_subtitle => 'Votre compagnon personnel de chant numérique.';
+  String get appTitle => 'Naam Jaap';
+
+  @override
+  String get login_welcome => 'Bienvenue sur Naam Jaap';
+
+  @override
+  String get login_subtitle => 'Votre compagnon de chant numérique personnel.';
 
   @override
   String get login_termsAgreement => 'J\'ai lu et j\'accepte les ';
 
   @override
-  String get login_termsAndConditions => 'Termes & Conditions';
+  String get login_termsAndConditions => 'Termes et Conditions';
 
   @override
   String get login_and => ' et la ';
@@ -39,7 +45,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_profile => 'Mon Profil';
 
   @override
-  String get home_tapToChant => 'Touchez pour Chanter';
+  String get home_tapToChant => 'Appuyez pour Chanter';
 
   @override
   String get home_dayStreak => 'Série de Jours';
@@ -51,38 +57,133 @@ class AppLocalizationsFr extends AppLocalizations {
   String get home_mantraInfo => 'Info Mantra';
 
   @override
-  String get dialog_close => 'Fermer';
+  String get home_chooseMala => 'Choisissez votre Mala';
 
   @override
-  String get wisdom_title => 'Sagesse du Jour';
+  String get home_chooseMalaDesc =>
+      'Sélectionnez un style qui résonne avec votre esprit.';
+
+  @override
+  String get home_customizeMala => 'Personnaliser le Mala';
+
+  @override
+  String get tour_home_carousel_title => 'Choisissez votre Mantra';
+
+  @override
+  String get tour_home_carousel_desc =>
+      'Balayez pour changer entre les puissants mantras védiques.';
+
+  @override
+  String get tour_home_mala_title => 'Appuyez pour Chanter';
+
+  @override
+  String get tour_home_mala_desc =>
+      'Appuyez n\'importe où sur le cercle pour déplacer les perles. Complétez 108 pour un Mala.';
+
+  @override
+  String get tour_home_toolkit_title => 'Votre Boîte à Outils';
+
+  @override
+  String get tour_home_toolkit_desc =>
+      'Personnalisez les perles, activez l\'audio ou voyez les significations.';
+
+  @override
+  String get tour_leader_toggle_title => 'Hebdo vs Tous les temps';
+
+  @override
+  String get tour_leader_toggle_desc =>
+      'Appuyez ici pour basculer entre les leaders de la semaine et les légendes.';
+
+  @override
+  String get tour_leader_podium_title => 'Le Top 3';
+
+  @override
+  String get tour_leader_podium_desc =>
+      'Les chanteurs les plus dévoués apparaissent ici. Continuez à chanter pour les rejoindre !';
+
+  @override
+  String get tour_wisdom_card_title => 'Sagesse Quotidienne & Partage';
+
+  @override
+  String get tour_wisdom_card_desc =>
+      'Commencez votre journée avec un nouveau Shloka. Appuyez sur l\'icône de partage pour créer une image !';
+
+  @override
+  String get tour_profile_stats_title => 'Vos Stats Spirituelles';
+
+  @override
+  String get tour_profile_stats_desc =>
+      'Suivez votre série, le compte total de Japa et votre rang mondial ici.';
+
+  @override
+  String get tour_profile_offline_title => 'Chant Physique ?';
+
+  @override
+  String get tour_profile_offline_desc =>
+      'Si vous utilisez un vrai Mala, appuyez ici pour ajouter manuellement vos comptes.';
+
+  @override
+  String get tour_profile_bodhi_desc =>
+      'Chaque Mala chanté aide votre jardin spirituel à grandir. Débloquez de nouveaux arbres !';
+
+  @override
+  String get tour_profile_sankalpa_desc =>
+      'Fixez une date et un compte cible pour vous engager. Nous vous aiderons à le suivre.';
+
+  @override
+  String get guest_mode_title => 'Mode Invité';
+
+  @override
+  String get guest_mode_desc =>
+      'Connectez-vous pour débloquer votre profil spirituel.';
+
+  @override
+  String get guest_signin_btn => 'Se Connecter';
+
+  @override
+  String get wisdom_title => 'Sagesse d\'Aujourd\'hui';
 
   @override
   String get wisdom_dismissed =>
-      'La sagesse d\'aujourd\'hui a été contemplée.\nUne nouvelle perspective arrivera demain.';
+      'La sagesse d\'aujourd\'hui a été contemplée.\nUne nouvelle perspicacité arrivera demain.';
 
   @override
   String get wisdom_loading => 'Chargement de la sagesse...';
 
   @override
-  String get leaderboard_allTime => 'Général';
+  String get wisdom_signin_to_share => 'Connectez-vous pour partager !';
+
+  @override
+  String get wisdom_creating_card => 'Création de votre carte divine...';
+
+  @override
+  String get leaderboard_allTime => 'Tous les temps';
 
   @override
   String get leaderboard_thisWeek => 'Cette Semaine';
 
   @override
-  String get leaderboard_yourProgress => 'Votre Progression';
+  String get leaderboard_yourProgress => 'Votre Progrès';
+
+  @override
+  String get leaderboard_yourRank => 'Votre Rang';
 
   @override
   String leaderboard_jappsToPass(Object count, Object playerName) {
-    return '$count chants pour dépasser $playerName';
+    return '$count japps pour dépasser $playerName';
   }
 
   @override
-  String get leaderboard_empty => 'Le voyage commence !';
+  String leaderboard_malasToPass(Object count, Object playerName) {
+    return '$count malas pour dépasser $playerName';
+  }
+
+  @override
+  String get leaderboard_empty => 'Le Voyage commence !';
 
   @override
   String get leaderboard_emptySubtitle =>
-      'Soyez le premier à figurer au classement !';
+      'Soyez le premier à honorer le classement !';
 
   @override
   String get leaderboard_isEmpty => 'Le classement est vide.';
@@ -101,30 +202,30 @@ class AppLocalizationsFr extends AppLocalizations {
   String get leaderboard_noChants => 'Aucun chant pour le moment';
 
   @override
-  String leaderboard_topMantra(Object mantra) {
-    return 'Mantra Principal : $mantra';
+  String leaderboard_topMantra(String mantra) {
+    return 'Top Mantra : $mantra';
   }
 
   @override
-  String get profile_yourProgress => 'Votre Progression';
+  String get profile_yourProgress => 'Votre Progrès';
 
   @override
   String get profile_dailyStreak => 'Série Quotidienne';
 
   @override
-  String get profile_totalJapps => 'Total Chants';
+  String get profile_totalJapps => 'Total Japps';
 
   @override
   String get profile_globalRank => 'Rang Mondial';
 
   @override
-  String get profile_mantraTotals => 'Totaux des Mantras';
+  String get profile_mantraTotals => 'Totaux Mantra';
 
   @override
-  String get profile_achievements => 'Succès';
+  String get profile_achievements => 'Réalisations';
 
   @override
-  String get profile_shareProgress => 'Partagez Votre Progression';
+  String get profile_shareProgress => 'Partager le Progrès';
 
   @override
   String get profile_badgesEmpty =>
@@ -136,6 +237,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get profile_rateApp => 'Évaluez notre application';
+
+  @override
+  String get profile_supportTitle => 'Soutenir Naam Jaap';
 
   @override
   String get profile_supportSubtitle =>
@@ -164,21 +268,106 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profile_enterName => 'Entrez un nouveau Nom';
 
   @override
-  String get settings_title => 'Réglages';
+  String get profile_shareApp => 'Partager Naam Jaap';
 
   @override
-  String get settings_ambiance => 'Ambiance de Temple';
+  String get profile_yourCustomMantra => 'Mes Mantras Personnalisés';
 
   @override
-  String get settings_ambianceDesc =>
-      'Jouer des sons subtils de temple en fond.';
+  String get profile_noCustoms =>
+      'Vous n\'avez pas encore ajouté de mantras personnalisés.';
+
+  @override
+  String get profile_addNewMantra => 'Ajouter un Nouveau Mantra';
+
+  @override
+  String profile_deleteMantra(Object mantraName) {
+    return 'Supprimer \"$mantraName\" ?';
+  }
+
+  @override
+  String get profile_deleteMantraSure =>
+      'Êtes-vous sûr ? Tous les comptes de japa associés à ce mantra seront également supprimés de façon permanente.';
+
+  @override
+  String get profile_yesDelete => 'Oui, Supprimer';
+
+  @override
+  String get profile_couldNotUserData =>
+      'Impossible de charger les données utilisateur.';
+
+  @override
+  String get profile_offline_card_title => 'Journal Japa Hors-ligne';
+
+  @override
+  String get profile_offline_card_subtitle =>
+      'Ajouter des comptes de votre mala physique';
+
+  @override
+  String get profile_gamification_header => 'Ludification';
+
+  @override
+  String get profile_commitments_header => 'Engagements';
+
+  @override
+  String get profile_insights_header => 'Aperçus Mantra';
+
+  @override
+  String get profile_my_mantras_header => 'Mes Mantras';
+
+  @override
+  String get profile_quick_actions_header => 'Actions Rapides';
+
+  @override
+  String get profile_sankalpaSet => 'Faites un Vœu Sacré';
+
+  @override
+  String get profile_sankalpaSubtitle =>
+      'Fixez un objectif personnel de chant.';
+
+  @override
+  String get profile_sankalpaTitle => 'Votre Sankalpa Japa';
+
+  @override
+  String get profile_sankalpaChanting => 'Chantant';
+
+  @override
+  String get profile_abandon => 'Abandonner le Vœu';
+
+  @override
+  String get profile_progress => 'PROGRÈS';
+
+  @override
+  String get profile_deadline => 'DATE LIMITE';
+
+  @override
+  String get profile_achieved => 'Atteint !';
+
+  @override
+  String profile_sankalpaToReach(int targetCount) {
+    return ' pour atteindre $targetCount fois.';
+  }
+
+  @override
+  String profile_sankalpaByDate(String date) {
+    return 'D\'ici le $date';
+  }
+
+  @override
+  String get settings_title => 'Paramètres';
+
+  @override
+  String get settings_ambiance => 'Ambiance Temple';
+
+  @override
+  String get settings_ambianceDesc => 'Jouer des sons subtils de temple.';
 
   @override
   String get settings_reminders => 'Rappels Quotidiens';
 
   @override
   String get settings_remindersDesc =>
-      'Recevez une notification si vous n\'avez pas chanté aujourd\'hui.';
+      'Recevez une notification si vous n\'avez pas chanté.';
 
   @override
   String get settings_language => 'Langue de l\'App';
@@ -191,13 +380,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Signaler un bug ou suggérer une fonctionnalité.';
 
   @override
-  String get settings_deletingAccount => 'Deleting your account...';
+  String get settings_deletingAccount => 'Suppression de votre compte...';
 
   @override
   String get settings_privacy => 'Politique de Confidentialité';
 
   @override
-  String get settings_terms => 'Termes & Conditions';
+  String get settings_terms => 'Termes et Conditions';
 
   @override
   String get settings_deleteAccount => 'Supprimer Mon Compte';
@@ -206,66 +395,87 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings_signOut => 'Se Déconnecter';
 
   @override
-  String get dialog_deleteTitle => 'Supprimer le Compte ?';
+  String get settings_exit_guest => 'Quitter le Mode Invité';
 
   @override
-  String get dialog_deleteBody =>
-      'Cette action est permanente et ne peut être annulée. Toutes vos données de chant, succès et informations personnelles seront effacés de façon permanente.\n\nÊtes-vous absolument sûr de vouloir continuer ?';
+  String get settings_support_header => 'Support & Légal';
 
   @override
-  String get dialog_deleteConfirm => 'Oui, Supprimer Mon Compte';
+  String get settings_account_header => 'Compte';
 
   @override
-  String get dialog_continue => 'Continuer';
+  String get support_title => 'Soutenez le projet Naam Jaap';
 
   @override
-  String get dialog_pressBack => 'Appuyez à nouveau sur retour pour quitter';
+  String get support_desc =>
+      'Naam Jaap est un travail d\'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l\'application gratuite pour tous les dévots.';
 
   @override
-  String get dialog_update => 'Mise à jour requise';
+  String get support_afterTitile =>
+      'Merci de soutenir Naam Jaap — chaque contribution aide.';
 
   @override
-  String get dialog_updateNow => 'Mettre à jour maintenant';
+  String get support_openUPI => 'Ouverture de votre application UPI...';
 
   @override
-  String get dialog_save => 'Enregistrer';
+  String get support_cannotOpenUPI =>
+      'Impossible de lancer l\'application UPI.';
 
   @override
-  String get dialog_something => 'Quelque chose s\'est mal passé.';
+  String get support_upiError =>
+      'Erreur : Impossible de trouver une application UPI à ouvrir.';
 
   @override
-  String get dialog_cancel => 'Annuler';
+  String get support_chooseOffering => 'CHOISISSEZ UNE OFFRANDE';
 
   @override
-  String get misc_japps => 'chants';
+  String get support_enterAmt => 'Ou entrez un montant personnalisé (INR)';
 
   @override
-  String get misc_days => 'Jours';
+  String get support_validAmt =>
+      'Veuillez sélectionner ou entrer un montant valide.';
 
   @override
-  String get misc_badge => 'Badges';
+  String get support_now => 'Soutenir maintenant';
 
   @override
-  String get lang_chooseLang =>
-      'Choisissez votre langue préférée pour continuer';
+  String get support_donate => 'Faire un don';
 
   @override
-  String get lang_searchLang => 'Rechercher des langues';
+  String get support_paymentSucc =>
+      'Paiements traités en toute sécurité par Razorpay';
 
   @override
-  String get garden_totalMala => 'Malas Terminés';
+  String get support_thank => '🙏 Merci';
 
   @override
-  String get misc_malas => 'Malas';
+  String get support_offer_seva => 'Offrir Seva';
 
   @override
-  String leaderboard_malasToPass(Object count, Object playerName) {
-    return '$count malas pour dépasser $playerName';
-  }
+  String get support_signin_required =>
+      'Veuillez vous connecter pour contribuer.';
 
   @override
-  String get dialog_mic =>
-      'L\'autorisation du microphone est requise pour enregistrer l\'audio.';
+  String get support_payment_error =>
+      'Impossible de démarrer le paiement. Veuillez réessayer.';
+
+  @override
+  String get support_blessed => 'Soyez béni.';
+
+  @override
+  String get support_tier_flower => 'Offrande de Fleurs';
+
+  @override
+  String get support_tier_lamp => 'Allumage de Lampe';
+
+  @override
+  String get support_tier_garland => 'Seva de Guirlande';
+
+  @override
+  String get support_tier_temple => 'Soutien du Temple';
+
+  @override
+  String get support_tier_grand => 'Grande Offrande';
 
   @override
   String get custom_create => 'Créez votre Mantra';
@@ -296,14 +506,69 @@ class AppLocalizationsFr extends AppLocalizations {
       'L\'autorisation du microphone est requise pour enregistrer l\'audio.';
 
   @override
-  String get profile_yourCustomMantra => 'Mes Mantras Personnalisés';
+  String get custom_preview => 'APERÇU';
 
   @override
-  String get profile_noCustoms =>
-      'Vous n\'avez pas encore ajouté de mantras personnalisés.';
+  String get custom_voice_saved => 'Note vocale enregistrée';
 
   @override
-  String get profile_addNewMantra => 'Ajouter un Nouveau Mantra';
+  String get custom_tap_record => 'Appuyer pour Enregistrer';
+
+  @override
+  String get custom_ready_use => 'Prêt à l\'emploi';
+
+  @override
+  String get custom_error_empty_name => 'Veuillez entrer un nom de mantra';
+
+  @override
+  String get garden_title => 'Jardin Bodhi';
+
+  @override
+  String get garden_subtitle => 'Faites grandir votre forêt spirituelle';
+
+  @override
+  String get garden_growth => 'Croissance Spirituelle';
+
+  @override
+  String get garden_totalMala => 'Malas Terminés';
+
+  @override
+  String get dialog_deleteTitle => 'Supprimer le Compte ?';
+
+  @override
+  String get dialog_deleteBody =>
+      'Cette action est permanente et ne peut être annulée. Tous vos données de chant, réalisations et informations personnelles seront définitivement effacées.\n\nÊtes-vous absolument sûr de vouloir continuer ?';
+
+  @override
+  String get dialog_deleteConfirm => 'Oui, Supprimer Mon Compte';
+
+  @override
+  String get dialog_continue => 'Continuer';
+
+  @override
+  String get dialog_pressBack => 'Appuyez à nouveau sur retour pour quitter';
+
+  @override
+  String get dialog_update => 'Mise à jour requise';
+
+  @override
+  String get dialog_updateDesc =>
+      'Une nouvelle version de Naam Jaap est disponible avec des mises à jour importantes. Veuillez mettre à jour l\'application pour continuer.';
+
+  @override
+  String get dialog_updateNow => 'Mettre à jour maintenant';
+
+  @override
+  String get dialog_save => 'Enregistrer';
+
+  @override
+  String get dialog_close => 'Fermer';
+
+  @override
+  String get dialog_something => 'Quelque chose s\'est mal passé.';
+
+  @override
+  String get dialog_cancel => 'Annuler';
 
   @override
   String get dialog_profilePictureUpdate => 'Photo de profil mise à jour !';
@@ -319,46 +584,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dialog_couldNotOpenPS => 'Impossible d\'ouvrir le Play Store.';
 
   @override
-  String profile_deleteMantra(Object mantraName) {
-    return 'Supprimer \"$mantraName\" ?';
-  }
+  String get dialog_mic =>
+      'L\'autorisation du microphone est requise pour enregistrer l\'audio.';
 
   @override
-  String get profile_deleteMantraSure =>
-      'Êtes-vous sûr ? Tous les comptes de japa associés à ce mantra seront également supprimés de façon permanente.';
+  String get dialog_getStarted => 'Commencer';
 
   @override
-  String get profile_yesDelete => 'Oui, Supprimer';
+  String get dialog_next => 'Suivant';
 
   @override
-  String get profile_couldNotUserData =>
-      'Impossible de charger les données utilisateur.';
+  String get dialog_skip => 'Passer';
 
   @override
-  String get misc_anonymous => 'Anonyme';
-
-  @override
-  String get profile_sankalpaSet => 'Faites un Vœu Sacré';
-
-  @override
-  String get profile_sankalpaSubtitle =>
-      'Fixez un objectif personnel de chant.';
-
-  @override
-  String get profile_sankalpaTitle => 'Votre Sankalpa Japa';
-
-  @override
-  String get profile_sankalpaChanting => 'Chantant';
-
-  @override
-  String profile_sankalpaToReach(int targetCount) {
-    return ' pour atteindre $targetCount fois.';
-  }
-
-  @override
-  String profile_sankalpaByDate(String date) {
-    return 'D\'ici le $date';
-  }
+  String get dialog_checkoutMyProgress =>
+      'Découvrez ma progression sur l\'application Naam Jaap !';
 
   @override
   String get dialog_sankalpaTitle => 'Définissez votre Sankalpa Japa';
@@ -387,72 +627,26 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le nombre cible doit être supérieur à votre nombre actuel.';
 
   @override
-  String get support_openUPI => 'Ouverture de votre application UPI...';
+  String get misc_japps => 'japps';
 
   @override
-  String get support_cannotOpenUPI =>
-      'Impossible de lancer l\'application UPI.';
+  String get misc_days => 'Jours';
 
   @override
-  String get support_upiError =>
-      'Erreur : Impossible de trouver une application UPI à ouvrir.';
+  String get misc_badge => 'Badges';
 
   @override
-  String get support_chooseOffering => 'CHOISISSEZ UNE OFFRANDE';
+  String get misc_malas => 'Malas';
 
   @override
-  String get support_enterAmt => 'Ou entrez un montant personnalisé (INR)';
+  String get misc_anonymous => 'Anonyme';
 
   @override
-  String get support_validAmt =>
-      'Veuillez sélectionner ou entrer un montant valide.';
+  String get lang_chooseLang =>
+      'Choisissez votre langue préférée pour continuer';
 
   @override
-  String get support_now => 'Soutenir maintenant';
-
-  @override
-  String get home_chooseMala => 'Choisissez votre Mala';
-
-  @override
-  String get home_chooseMalaDesc =>
-      'Sélectionnez un style qui résonne avec votre esprit.';
-
-  @override
-  String get tour_title1 => 'Japa Mala Numérique';
-
-  @override
-  String get tour_body1 =>
-      'Touchez pour chanter. Nous comptons vos perles, suivons les malas et maintenons votre série automatiquement.';
-
-  @override
-  String get tour_title2 => 'Classement Mondial';
-
-  @override
-  String get tour_body2 =>
-      'Chantez avec des milliers. Élevez-vous grâce au progrès spirituel et à la constance.';
-
-  @override
-  String get tour_title3 => 'Sagesse Quotidienne';
-
-  @override
-  String get tour_body3 =>
-      'Recevez des versets choisis de textes anciens — disponibles en plusieurs langues.';
-
-  @override
-  String get tour_title4 => 'Votre Voyage Spirituel';
-
-  @override
-  String get tour_body4 =>
-      'Suivez les étapes, fixez des Sankalpas et réfléchissez à votre croissance et vos réalisations.';
-
-  @override
-  String get dialog_getStarted => 'Commencer';
-
-  @override
-  String get dialog_next => 'Suivant';
-
-  @override
-  String get dialog_skip => 'Passer';
+  String get lang_searchLang => 'Rechercher des langues';
 
   @override
   String get malatype_regular => 'Régulier';
@@ -462,60 +656,4 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get malatype_royal => 'Or Royal';
-
-  @override
-  String get profile_abandon => 'Abandonner le Vœu';
-
-  @override
-  String get profile_progress => 'PROGRÈS';
-
-  @override
-  String get profile_deadline => 'DATE LIMITE';
-
-  @override
-  String get profile_achieved => 'Atteint !';
-
-  @override
-  String get support_donate => 'Faire un don';
-
-  @override
-  String get support_paymentSucc =>
-      'Paiements traités en toute sécurité par Razorpay';
-
-  @override
-  String get support_thank => '🙏 Merci';
-
-  @override
-  String get home_customizeMala => 'Personnaliser le Mala';
-
-  @override
-  String get dialog_checkoutMyProgress =>
-      'Découvrez ma progression sur l\'application Naam Jaap !';
-
-  @override
-  String get appTitle => 'Naam Jaap';
-
-  @override
-  String get login_welcome => 'Bienvenue sur Naam Jaap';
-
-  @override
-  String get profile_shareApp => 'Partager Naam Jaap';
-
-  @override
-  String get profile_supportTitle => 'Soutenir Naam Jaap';
-
-  @override
-  String get dialog_updateDesc =>
-      'Une nouvelle version de Naam Jaap est disponible avec des mises à jour importantes. Veuillez mettre à jour l\'application pour continuer.';
-
-  @override
-  String get support_desc =>
-      'Naam Jaap est un travail d\'amour, créé par un développeur solo. Votre contribution désintéressée (Seva) aide à maintenir les serveurs en fonctionnement, les publicités minimales et l\'application gratuite pour tous les dévots.';
-
-  @override
-  String get support_title => 'Soutenez le projet Naam Jaap';
-
-  @override
-  String get support_afterTitile =>
-      'Merci de soutenir Naam Jaap — chaque contribution aide.';
 }

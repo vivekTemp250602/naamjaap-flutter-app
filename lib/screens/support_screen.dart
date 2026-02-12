@@ -2,8 +2,9 @@ import 'dart:ui';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/l10n/app_localizations.dart'; // Ensure imported
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 // Global Firebase Functions instance
 final FirebaseFunctions functions =
@@ -22,141 +23,108 @@ class _SupportScreenState extends State<SupportScreen>
   bool _isLoading = false;
   bool _showThankYou = false;
 
-  // ---- Animation controllers ----
-  late AnimationController _headerController;
-  late Animation<Offset> _headerOffset =
-      const AlwaysStoppedAnimation(Offset.zero);
-  late Animation<double> _headerOpacity = const AlwaysStoppedAnimation(1.0);
-
-  late AnimationController _heartController;
-  late Animation<double> _heartScale = const AlwaysStoppedAnimation(1.0);
-
-  late AnimationController _buttonGlowController;
-
   final String _contactNumber = "7558357834";
   final String _contactEmail = "vivek250602@gmail.com";
 
-  final List<int> _amounts = [21, 51, 101, 251, 501];
+  // Donation Tiers
+  // Note: We initialize this in build() or initState() if we want to localize labels
+  List<Map<String, dynamic>> _offerings = [];
+
   int _selectedAmount = 51;
 
   @override
   void initState() {
     super.initState();
-
-    // Razorpay
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
 
-    // Header animation
-    _headerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 700),
-    );
-
-    _headerOffset = Tween<Offset>(
-      begin: const Offset(0, 0.25),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _headerController, curve: Curves.easeOutQuad),
-    );
-
-    _headerOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _headerController, curve: Curves.easeOut),
-    );
-
-    // Heart animation
-    _heartController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-
-    _heartScale = Tween<double>(begin: 0.95, end: 1.08).animate(
-      CurvedAnimation(parent: _heartController, curve: Curves.easeInOut),
-    );
-
-    _heartController.repeat(reverse: true);
-
-    // Glow animation
-    _buttonGlowController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
-
-    // Start header animation slightly delayed
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) _headerController.forward();
-    });
+  // Helper to initialize localized offerings
+  void _initOfferings(BuildContext context) {
+    _offerings = [
+      {
+        'amount': 21,
+        'icon': Icons.local_florist_rounded,
+        'label': AppLocalizations.of(context)!.support_tier_flower
+      },
+      {
+        'amount': 51,
+        'icon': Icons.light_mode_rounded,
+        'label': AppLocalizations.of(context)!.support_tier_lamp
+      },
+      {
+        'amount': 101,
+        'icon': Icons.spa_rounded,
+        'label': AppLocalizations.of(context)!.support_tier_garland
+      },
+      {
+        'amount': 251,
+        'icon': Icons.temple_buddhist_rounded,
+        'label': AppLocalizations.of(context)!.support_tier_temple
+      },
+      {
+        'amount': 501,
+        'icon': Icons.volunteer_activism_rounded,
+        'label': AppLocalizations.of(context)!.support_tier_grand
+      },
+    ];
   }
 
   @override
   void dispose() {
     _razorpay.clear();
-    _headerController.dispose();
-    _heartController.dispose();
-    _buttonGlowController.dispose();
     super.dispose();
   }
 
-  // ------ Razorpay Handlers ------
+  // ... [Keep Razorpay Handlers as is] ...
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     setState(() => _isLoading = false);
-
     try {
       await functions.httpsCallable('grantPremiumAccessOnPayment').call();
     } catch (_) {}
 
     setState(() => _showThankYou = true);
-    await Future.delayed(const Duration(milliseconds: 1600));
-    if (mounted) setState(() => _showThankYou = false);
-
+    await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Payment successful — ${response.paymentId}"),
-          backgroundColor: Colors.green,
-        ),
-      );
+      setState(() => _showThankYou = false);
+      Navigator.pop(context);
     }
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     setState(() => _isLoading = false);
     if (!mounted) return;
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Payment failed: ${response.message}"),
-        backgroundColor: Colors.red,
-      ),
+          content: Text("Payment failed: ${response.message}"),
+          backgroundColor: Colors.red),
     );
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     if (!mounted) return;
-
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("External wallet: ${response.walletName}"),
-      ),
+      SnackBar(content: Text("External wallet: ${response.walletName}")),
     );
   }
 
   // ------ Start Payment ------
   Future<void> _startPaymentForAmount(int rupees) async {
     final User? freshUser = FirebaseAuth.instance.currentUser;
-
     if (freshUser == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("You must be logged in to donate.")),
+        // LOC: Sign in to contribute
+        SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.support_signin_required)),
       );
       return;
     }
 
     setState(() => _isLoading = true);
-
     await freshUser.getIdToken(true);
     final int amountInPaisa = rupees * 100;
 
@@ -169,26 +137,23 @@ class _SupportScreenState extends State<SupportScreen>
         'key': 'rzp_live_RfxajMZ27bOS5l',
         'amount': amountInPaisa,
         'name': 'Naam Jaap',
-        'description': 'Support the app',
+        'description': 'Seva Offering',
         'order_id': orderId,
         'prefill': {
           'contact': _contactNumber,
           'email': freshUser.email ?? _contactEmail,
         },
+        'theme': {'color': '#FF5722'}
       };
 
       _razorpay.open(options);
-    } on FirebaseFunctionsException catch (e) {
-      setState(() => _isLoading = false);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.message}")),
-      );
     } catch (e) {
       setState(() => _isLoading = false);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Unknown error: $e")),
+        // LOC: Payment Failed
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.support_payment_error)),
       );
     }
   }
@@ -197,257 +162,263 @@ class _SupportScreenState extends State<SupportScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    _initOfferings(context); // Initialize localized strings
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(l10n.profile_supportTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon:
+              const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: Stack(
         children: [
-          _buildContent(context, l10n),
-          if (_isLoading) _buildLoadingOverlay(),
-          if (_showThankYou) _buildThankYouOverlay(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContent(BuildContext context, AppLocalizations l10n) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        SlideTransition(
-          position: _headerOffset,
-          child: FadeTransition(
-            opacity: _headerOpacity,
-            child: _buildHeader(l10n),
-          ),
-        ),
-        const SizedBox(height: 30),
-        _buildOfferCards(context),
-        const SizedBox(height: 28),
-        _buildFooter(context, l10n),
-      ],
-    );
-  }
-
-  Widget _buildHeader(AppLocalizations l10n) {
-    return Column(
-      children: [
-        ScaleTransition(
-          scale: _heartScale,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
+          // 1. Divine Background
+          Container(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.red.shade300, Colors.deepOrange.shade200],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.deepOrange.withAlpha(92),
-                  blurRadius: 18,
-                  spreadRadius: 1,
-                )
-              ],
-            ),
-            child: const Icon(Icons.favorite_rounded,
-                size: 68, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          l10n.support_title,
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          l10n.support_desc,
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium
-              ?.copyWith(color: Colors.black54),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOfferCards(BuildContext context) {
-    return Column(
-      children: _amounts.map((amt) {
-        final bool selected = _selectedAmount == amt;
-
-        return GestureDetector(
-          onTap: _isLoading
-              ? null
-              : () {
-                  setState(() => _selectedAmount = amt);
-                  _startPaymentForAmount(amt);
-                },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 350),
-              curve: Curves.easeOutCubic,
-              height: 96,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: selected
-                      ? [Colors.amber.shade200, Colors.deepOrange.shade300]
-                      : [Colors.amber.shade100, Colors.orange.shade100],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(selected ? 70 : 20),
-                    blurRadius: selected ? 24 : 10,
-                    offset: const Offset(0, 8),
-                  )
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFFF8C00),
+                  Color(0xFFFF5E62),
+                  Color(0xFF6A0572)
                 ],
               ),
-              child: Stack(
+            ),
+          ),
+
+          // 2. Content ScrollView
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                      child: Container(color: Colors.transparent),
+                  // --- HEADER ---
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.2),
+                        border: Border.all(
+                            color: Colors.white.withOpacity(0.4), width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              spreadRadius: 5)
+                        ]),
+                    child: const Icon(Icons.volunteer_activism_rounded,
+                        size: 60, color: Colors.white),
+                  ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+                      begin: const Offset(1, 1),
+                      end: const Offset(1.1, 1.1),
+                      duration: 2.seconds),
+
+                  const SizedBox(height: 24),
+
+                  Text(
+                    l10n.support_title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.support_desc,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.9),
+                        height: 1.5),
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // --- OFFERING CARDS ---
+                  ..._offerings
+                      .map((offer) {
+                        final int amt = offer['amount'];
+                        final bool isSelected = _selectedAmount == amt;
+
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() => _selectedAmount = amt);
+                          },
+                          child: AnimatedContainer(
+                            duration: 300.ms,
+                            curve: Curves.easeOutCubic,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 16),
+                            decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.transparent,
+                                    width: 2),
+                                boxShadow: isSelected
+                                    ? [
+                                        BoxShadow(
+                                            color: Colors.orange.shade900
+                                                .withOpacity(0.3),
+                                            blurRadius: 15,
+                                            offset: const Offset(0, 5))
+                                      ]
+                                    : []),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Colors.orange.shade50
+                                        : Colors.white.withOpacity(0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(offer['icon'],
+                                      color: isSelected
+                                          ? Colors.deepOrange
+                                          : Colors.white,
+                                      size: 24),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "₹ $amt",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: isSelected
+                                                ? Colors.black87
+                                                : Colors.white),
+                                      ),
+                                      Text(
+                                        offer['label'],
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            color: isSelected
+                                                ? Colors.grey.shade600
+                                                : Colors.white70),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isSelected)
+                                  const Icon(Icons.check_circle_rounded,
+                                          color: Colors.deepOrange, size: 28)
+                                      .animate()
+                                      .scale(
+                                          duration: 200.ms,
+                                          curve: Curves.elasticOut),
+                              ],
+                            ),
+                          ),
+                        );
+                      })
+                      .toList()
+                      .animate(interval: 100.ms)
+                      .slideX(begin: 0.2, end: 0)
+                      .fadeIn(),
+
+                  const SizedBox(height: 20),
+
+                  // --- ACTION BUTTON ---
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () => _startPaymentForAmount(_selectedAmount),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.deepOrange,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        elevation: 5,
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.deepOrange))
+                          : Text(
+                              // LOC: Offer Seva
+                              "${AppLocalizations.of(context)!.support_offer_seva} ₹ $_selectedAmount",
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 18),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('₹ $amt',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.brown.shade900,
-                              )),
-                          const SizedBox(height: 6),
-                          Text(AppLocalizations.of(context)!.support_title,
-                              style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 14),
-                        child: AnimatedBuilder(
-                          animation: _buttonGlowController,
-                          builder: (context, child) {
-                            final glow =
-                                0.5 + (_buttonGlowController.value * 0.5);
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 18, vertical: 10),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.white.withAlpha(220),
-                                    Colors.white.withAlpha(200)
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(26),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.orange
-                                        .withAlpha((50 * glow).toInt()),
-                                    blurRadius: 18 * glow,
-                                    spreadRadius: 1.2 * glow,
-                                  )
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.volunteer_activism,
-                                      color: Colors.deepOrange),
-                                  const SizedBox(width: 8),
-                                  Text(AppLocalizations.of(context)!
-                                      .support_donate),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+
+                  const SizedBox(height: 30),
+
+                  Text(
+                    // LOC: Support Footer
+                    AppLocalizations.of(context)!.support_afterTitile,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.6), fontSize: 12),
                   ),
+
+                  const SizedBox(height: 80), // Bottom padding
                 ],
               ),
             ),
           ),
-        );
-      }).toList(),
-    );
-  }
 
-  Widget _buildFooter(BuildContext context, AppLocalizations l10n) {
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        Text(
-          AppLocalizations.of(context)!.support_afterTitile,
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: Colors.black54),
-        ),
-        const SizedBox(height: 22),
-        Text(
-          AppLocalizations.of(context)!.support_paymentSucc,
-          style: Theme.of(context).textTheme.labelSmall,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLoadingOverlay() {
-    return Container(
-      color: Colors.black.withAlpha(100),
-      child: const Center(child: CircularProgressIndicator()),
-    );
-  }
-
-  Widget _buildThankYouOverlay() {
-    return Center(
-      child: AnimatedScale(
-        scale: _showThankYou ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 450),
-        curve: Curves.elasticOut,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 22),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.orange.shade50, Colors.amber.shade200],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 18)],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.emoji_people,
-                  size: 48, color: Colors.deepOrange),
-              const SizedBox(height: 12),
-              Text(
-                AppLocalizations.of(context)!.support_thank,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          // 3. Thank You Overlay
+          if (_showThankYou)
+            Container(
+              color: Colors.black.withOpacity(0.8),
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.favorite_rounded,
+                            color: Colors.pinkAccent, size: 80)
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scale(
+                            begin: const Offset(1, 1),
+                            end: const Offset(1.2, 1.2)),
+                    const SizedBox(height: 20),
+                    Text(
+                      l10n.support_thank,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    // LOC: Blessings
+                    Text(
+                      AppLocalizations.of(context)!.support_blessed,
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.8), fontSize: 16),
+                    ),
+                  ],
+                ).animate().fadeIn().moveY(begin: 50, end: 0),
               ),
-            ],
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }

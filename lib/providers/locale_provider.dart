@@ -9,6 +9,7 @@ class LocaleProvider with ChangeNotifier {
 
   Locale? _locale;
   Locale? get locale => _locale;
+  bool get isLocaleSet => _locale != null;
 
   // This is the list of languages your NOTIFICATIONS support.
   final List<String> _supportedNotificationLangs = ['en', 'hi', 'sa'];
@@ -22,36 +23,34 @@ class LocaleProvider with ChangeNotifier {
     }
   }
 
-  Future<void> setLocale(Locale newLocale, String uid) async {
+  Future<void> setLocale(Locale newLocale, [String? uid]) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', newLocale.languageCode);
     _locale = newLocale;
 
-    // --- THIS IS THE "GRAND UNIFICATION" LOGIC ---
-    // 1. Determine the language for notifications.
-    String notificationLang = 'en'; // Default to English
-    if (_supportedNotificationLangs.contains(newLocale.languageCode)) {
-      notificationLang = newLocale.languageCode;
+    // Only update Firestore if a UID is provided (logged-in users)
+    if (uid != null && uid.isNotEmpty) {
+      String notificationLang = 'en';
+      if (_supportedNotificationLangs.contains(newLocale.languageCode)) {
+        notificationLang = newLocale.languageCode;
+      }
+
+      final userDoc = await _firestoreService.getUserDocument(uid);
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        final settings = userData['settings'] as Map<String, dynamic>? ?? {};
+        final bool remindersEnabled = settings['enableReminders'] ?? false;
+
+        await _firestoreService.updateUserSettings(uid, {
+          'notificationLanguage': notificationLang,
+        });
+
+        await _notificationService.updateNotificationPreferences(
+          language: notificationLang,
+          isEnabled: remindersEnabled,
+        );
+      }
     }
-
-    // 2. Get the current "enableReminders" status from Firestore.
-    final userDoc = await _firestoreService.getUserDocument(uid);
-    if (!userDoc.exists) return; // Safety check
-
-    final userData = userDoc.data() as Map<String, dynamic>;
-    final settings = userData['settings'] as Map<String, dynamic>? ?? {};
-    final bool remindersEnabled = settings['enableReminders'] ?? false;
-
-    // 3. Update both Firestore and FCM subscriptions at the same time.
-    await _firestoreService.updateUserSettings(uid, {
-      'notificationLanguage': notificationLang,
-    });
-
-    await _notificationService.updateNotificationPreferences(
-      language: notificationLang,
-      isEnabled: remindersEnabled,
-    );
-    // --- END OF NEW LOGIC ---
 
     notifyListeners();
   }

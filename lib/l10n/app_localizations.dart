@@ -132,6 +132,18 @@ abstract class AppLocalizations {
     Locale('zh')
   ];
 
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Naam Jaap'**
+  String get appTitle;
+
+  /// No description provided for @login_welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Naam Jaap'**
+  String get login_welcome;
+
   /// No description provided for @login_subtitle.
   ///
   /// In en, this message translates to:
@@ -216,11 +228,149 @@ abstract class AppLocalizations {
   /// **'Mantra Info'**
   String get home_mantraInfo;
 
-  /// No description provided for @dialog_close.
+  /// No description provided for @home_chooseMala.
   ///
   /// In en, this message translates to:
-  /// **'Close'**
-  String get dialog_close;
+  /// **'Choose Your Mala'**
+  String get home_chooseMala;
+
+  /// No description provided for @home_chooseMalaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a style that resonates with your spirit.'**
+  String get home_chooseMalaDesc;
+
+  /// No description provided for @home_customizeMala.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize Mala'**
+  String get home_customizeMala;
+
+  /// No description provided for @tour_home_carousel_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Mantra'**
+  String get tour_home_carousel_title;
+
+  /// No description provided for @tour_home_carousel_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe left or right to switch between powerful Vedic mantras.'**
+  String get tour_home_carousel_desc;
+
+  /// No description provided for @tour_home_mala_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to Chant'**
+  String get tour_home_mala_title;
+
+  /// No description provided for @tour_home_mala_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap anywhere on the circle to move the beads. Complete 108 for one Mala.'**
+  String get tour_home_mala_desc;
+
+  /// No description provided for @tour_home_toolkit_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Toolkit'**
+  String get tour_home_toolkit_title;
+
+  /// No description provided for @tour_home_toolkit_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize bead styles, toggle audio, or view mantra meanings.'**
+  String get tour_home_toolkit_desc;
+
+  /// No description provided for @tour_leader_toggle_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly vs All-Time'**
+  String get tour_leader_toggle_title;
+
+  /// No description provided for @tour_leader_toggle_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to switch between this week\'s leaders and the legends of all time.'**
+  String get tour_leader_toggle_desc;
+
+  /// No description provided for @tour_leader_podium_title.
+  ///
+  /// In en, this message translates to:
+  /// **'The Top 3'**
+  String get tour_leader_podium_title;
+
+  /// No description provided for @tour_leader_podium_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'The most dedicated chanters appear here. Keep chanting to join them!'**
+  String get tour_leader_podium_desc;
+
+  /// No description provided for @tour_wisdom_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Wisdom & Sharing'**
+  String get tour_wisdom_card_title;
+
+  /// No description provided for @tour_wisdom_card_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your day with a new Shloka. Tap the Share Icon to create a beautiful image for your Status!'**
+  String get tour_wisdom_card_desc;
+
+  /// No description provided for @tour_profile_stats_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Spiritual Stats'**
+  String get tour_profile_stats_title;
+
+  /// No description provided for @tour_profile_stats_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your Streak, Total Japa count, and Global Rank here.'**
+  String get tour_profile_stats_desc;
+
+  /// No description provided for @tour_profile_offline_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Physical Chanting?'**
+  String get tour_profile_offline_title;
+
+  /// No description provided for @tour_profile_offline_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'If you use a real Mala beads, tap here to manually add your counts to the app.'**
+  String get tour_profile_offline_desc;
+
+  /// No description provided for @tour_profile_bodhi_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Mala you chant helps your spiritual garden grow. Unlock new trees as you progress!'**
+  String get tour_profile_bodhi_desc;
+
+  /// No description provided for @tour_profile_sankalpa_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target date and count to commit to a spiritual goal. We will help you track it.'**
+  String get tour_profile_sankalpa_desc;
+
+  /// No description provided for @guest_mode_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest Mode'**
+  String get guest_mode_title;
+
+  /// No description provided for @guest_mode_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to unlock your spiritual profile.'**
+  String get guest_mode_desc;
+
+  /// No description provided for @guest_signin_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get guest_signin_btn;
 
   /// No description provided for @wisdom_title.
   ///
@@ -240,6 +390,18 @@ abstract class AppLocalizations {
   /// **'Loading wisdom...'**
   String get wisdom_loading;
 
+  /// No description provided for @wisdom_signin_to_share.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to share wisdom cards!'**
+  String get wisdom_signin_to_share;
+
+  /// No description provided for @wisdom_creating_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your divine card...'**
+  String get wisdom_creating_card;
+
   /// No description provided for @leaderboard_allTime.
   ///
   /// In en, this message translates to:
@@ -258,11 +420,23 @@ abstract class AppLocalizations {
   /// **'Your Progress'**
   String get leaderboard_yourProgress;
 
+  /// No description provided for @leaderboard_yourRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rank'**
+  String get leaderboard_yourRank;
+
   /// No description provided for @leaderboard_jappsToPass.
   ///
   /// In en, this message translates to:
   /// **'{count} japps to pass {playerName}'**
   String leaderboard_jappsToPass(Object count, Object playerName);
+
+  /// No description provided for @leaderboard_malasToPass.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} malas to pass {playerName}'**
+  String leaderboard_malasToPass(Object count, Object playerName);
 
   /// No description provided for @leaderboard_empty.
   ///
@@ -310,7 +484,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Top Mantra: {mantra}'**
-  String leaderboard_topMantra(Object mantra);
+  String leaderboard_topMantra(String mantra);
 
   /// No description provided for @profile_yourProgress.
   ///
@@ -372,6 +546,12 @@ abstract class AppLocalizations {
   /// **'Rate Our App'**
   String get profile_rateApp;
 
+  /// No description provided for @profile_supportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Naam Jaap'**
+  String get profile_supportTitle;
+
   /// No description provided for @profile_supportSubtitle.
   ///
   /// In en, this message translates to:
@@ -419,6 +599,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter new Name'**
   String get profile_enterName;
+
+  /// No description provided for @profile_shareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Naam Jaap'**
+  String get profile_shareApp;
+
+  /// No description provided for @profile_yourCustomMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'My Custom Mantras'**
+  String get profile_yourCustomMantra;
+
+  /// No description provided for @profile_noCustoms.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t added any custom mantras yet.'**
+  String get profile_noCustoms;
+
+  /// No description provided for @profile_addNewMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Mantra'**
+  String get profile_addNewMantra;
+
+  /// No description provided for @profile_deleteMantra.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{mantraName}\"?'**
+  String profile_deleteMantra(Object mantraName);
+
+  /// No description provided for @profile_deleteMantraSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure? All japa counts associated with this mantra will also be permanently deleted.'**
+  String get profile_deleteMantraSure;
+
+  /// No description provided for @profile_yesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete'**
+  String get profile_yesDelete;
+
+  /// No description provided for @profile_couldNotUserData.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load user data.'**
+  String get profile_couldNotUserData;
+
+  /// No description provided for @profile_offline_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Offline Japa'**
+  String get profile_offline_card_title;
+
+  /// No description provided for @profile_offline_card_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add counts from your physical mala'**
+  String get profile_offline_card_subtitle;
+
+  /// No description provided for @profile_gamification_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Gamification'**
+  String get profile_gamification_header;
+
+  /// No description provided for @profile_commitments_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Commitments'**
+  String get profile_commitments_header;
+
+  /// No description provided for @profile_insights_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Mantra Insights'**
+  String get profile_insights_header;
+
+  /// No description provided for @profile_my_mantras_header.
+  ///
+  /// In en, this message translates to:
+  /// **'My Mantras'**
+  String get profile_my_mantras_header;
+
+  /// No description provided for @profile_quick_actions_header.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get profile_quick_actions_header;
+
+  /// No description provided for @profile_sankalpaSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a Sacred Vow'**
+  String get profile_sankalpaSet;
+
+  /// No description provided for @profile_sankalpaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a personal chanting goal.'**
+  String get profile_sankalpaSubtitle;
+
+  /// No description provided for @profile_sankalpaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Japa Sankalpa'**
+  String get profile_sankalpaTitle;
+
+  /// No description provided for @profile_sankalpaChanting.
+  ///
+  /// In en, this message translates to:
+  /// **'Chanting'**
+  String get profile_sankalpaChanting;
+
+  /// No description provided for @profile_abandon.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon Vow'**
+  String get profile_abandon;
+
+  /// No description provided for @profile_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'PROGRESS'**
+  String get profile_progress;
+
+  /// No description provided for @profile_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'DEADLINE'**
+  String get profile_deadline;
+
+  /// No description provided for @profile_achieved.
+  ///
+  /// In en, this message translates to:
+  /// **'Achieved!'**
+  String get profile_achieved;
+
+  /// No description provided for @profile_sankalpaToReach.
+  ///
+  /// In en, this message translates to:
+  /// **' to reach {targetCount} times.'**
+  String profile_sankalpaToReach(int targetCount);
+
+  /// No description provided for @profile_sankalpaByDate.
+  ///
+  /// In en, this message translates to:
+  /// **'By {date}'**
+  String profile_sankalpaByDate(String date);
 
   /// No description provided for @settings_title.
   ///
@@ -498,119 +828,155 @@ abstract class AppLocalizations {
   /// **'Sign Out'**
   String get settings_signOut;
 
-  /// No description provided for @dialog_deleteTitle.
+  /// No description provided for @settings_exit_guest.
   ///
   /// In en, this message translates to:
-  /// **'Delete Account?'**
-  String get dialog_deleteTitle;
+  /// **'Exit Guest Mode'**
+  String get settings_exit_guest;
 
-  /// No description provided for @dialog_deleteBody.
+  /// No description provided for @settings_support_header.
   ///
   /// In en, this message translates to:
-  /// **'This action is permanent and cannot be undone. All your chanting data, achievements, and personal information will be permanently erased.\n\nAre you absolutely sure you want to proceed?'**
-  String get dialog_deleteBody;
+  /// **'Support & Legal'**
+  String get settings_support_header;
 
-  /// No description provided for @dialog_deleteConfirm.
+  /// No description provided for @settings_account_header.
   ///
   /// In en, this message translates to:
-  /// **'Yes, Delete My Account'**
-  String get dialog_deleteConfirm;
+  /// **'Account'**
+  String get settings_account_header;
 
-  /// No description provided for @dialog_continue.
+  /// No description provided for @support_title.
   ///
   /// In en, this message translates to:
-  /// **'Continue'**
-  String get dialog_continue;
+  /// **'Support the Naam Jaap project'**
+  String get support_title;
 
-  /// No description provided for @dialog_pressBack.
+  /// No description provided for @support_desc.
   ///
   /// In en, this message translates to:
-  /// **'Press back again to exit'**
-  String get dialog_pressBack;
+  /// **'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
+  String get support_desc;
 
-  /// No description provided for @dialog_update.
+  /// No description provided for @support_afterTitile.
   ///
   /// In en, this message translates to:
-  /// **'Update Required'**
-  String get dialog_update;
+  /// **'Thank you for supporting Naam Jaap — every contribution helps.'**
+  String get support_afterTitile;
 
-  /// No description provided for @dialog_updateNow.
+  /// No description provided for @support_openUPI.
   ///
   /// In en, this message translates to:
-  /// **'Update Now'**
-  String get dialog_updateNow;
+  /// **'Opening your UPI app...'**
+  String get support_openUPI;
 
-  /// No description provided for @dialog_save.
+  /// No description provided for @support_cannotOpenUPI.
   ///
   /// In en, this message translates to:
-  /// **'Save'**
-  String get dialog_save;
+  /// **'Could not launch UPI app.'**
+  String get support_cannotOpenUPI;
 
-  /// No description provided for @dialog_something.
+  /// No description provided for @support_upiError.
   ///
   /// In en, this message translates to:
-  /// **'Something went wrong.'**
-  String get dialog_something;
+  /// **'Error: Could not find a UPI app to open.'**
+  String get support_upiError;
 
-  /// No description provided for @dialog_cancel.
+  /// No description provided for @support_chooseOffering.
   ///
   /// In en, this message translates to:
-  /// **'Cancel'**
-  String get dialog_cancel;
+  /// **'CHOOSE AN OFFERING'**
+  String get support_chooseOffering;
 
-  /// No description provided for @misc_japps.
+  /// No description provided for @support_enterAmt.
   ///
   /// In en, this message translates to:
-  /// **'japps'**
-  String get misc_japps;
+  /// **'Or enter a custom amount (INR)'**
+  String get support_enterAmt;
 
-  /// No description provided for @misc_days.
+  /// No description provided for @support_validAmt.
   ///
   /// In en, this message translates to:
-  /// **'Days'**
-  String get misc_days;
+  /// **'Please select or enter a valid amount.'**
+  String get support_validAmt;
 
-  /// No description provided for @misc_badge.
+  /// No description provided for @support_now.
   ///
   /// In en, this message translates to:
-  /// **'Badges'**
-  String get misc_badge;
+  /// **'Support Now'**
+  String get support_now;
 
-  /// No description provided for @lang_chooseLang.
+  /// No description provided for @support_donate.
   ///
   /// In en, this message translates to:
-  /// **'Choose your preferred language to continue'**
-  String get lang_chooseLang;
+  /// **'Donate'**
+  String get support_donate;
 
-  /// No description provided for @lang_searchLang.
+  /// No description provided for @support_paymentSucc.
   ///
   /// In en, this message translates to:
-  /// **'Search Languages'**
-  String get lang_searchLang;
+  /// **'Payments processed securely by Razorpay'**
+  String get support_paymentSucc;
 
-  /// No description provided for @garden_totalMala.
+  /// No description provided for @support_thank.
   ///
   /// In en, this message translates to:
-  /// **'Malas Completed'**
-  String get garden_totalMala;
+  /// **'🙏 Thank you'**
+  String get support_thank;
 
-  /// No description provided for @misc_malas.
+  /// No description provided for @support_offer_seva.
   ///
   /// In en, this message translates to:
-  /// **'Malas'**
-  String get misc_malas;
+  /// **'Offer Seva'**
+  String get support_offer_seva;
 
-  /// No description provided for @leaderboard_malasToPass.
+  /// No description provided for @support_signin_required.
   ///
   /// In en, this message translates to:
-  /// **'{count} malas to pass {playerName}'**
-  String leaderboard_malasToPass(Object count, Object playerName);
+  /// **'Please sign in to make a contribution.'**
+  String get support_signin_required;
 
-  /// No description provided for @dialog_mic.
+  /// No description provided for @support_payment_error.
   ///
   /// In en, this message translates to:
-  /// **'Microphone permission is required to record audio.'**
-  String get dialog_mic;
+  /// **'Could not start payment. Please try again.'**
+  String get support_payment_error;
+
+  /// No description provided for @support_blessed.
+  ///
+  /// In en, this message translates to:
+  /// **'May you be blessed.'**
+  String get support_blessed;
+
+  /// No description provided for @support_tier_flower.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower Offering'**
+  String get support_tier_flower;
+
+  /// No description provided for @support_tier_lamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Lamp Lighting'**
+  String get support_tier_lamp;
+
+  /// No description provided for @support_tier_garland.
+  ///
+  /// In en, this message translates to:
+  /// **'Garland Seva'**
+  String get support_tier_garland;
+
+  /// No description provided for @support_tier_temple.
+  ///
+  /// In en, this message translates to:
+  /// **'Temple Support'**
+  String get support_tier_temple;
+
+  /// No description provided for @support_tier_grand.
+  ///
+  /// In en, this message translates to:
+  /// **'Grand Offering'**
+  String get support_tier_grand;
 
   /// No description provided for @custom_create.
   ///
@@ -666,23 +1032,131 @@ abstract class AppLocalizations {
   /// **'Microphone permission is required to record audio.'**
   String get custom_micAccess;
 
-  /// No description provided for @profile_yourCustomMantra.
+  /// No description provided for @custom_preview.
   ///
   /// In en, this message translates to:
-  /// **'My Custom Mantras'**
-  String get profile_yourCustomMantra;
+  /// **'PREVIEW'**
+  String get custom_preview;
 
-  /// No description provided for @profile_noCustoms.
+  /// No description provided for @custom_voice_saved.
   ///
   /// In en, this message translates to:
-  /// **'You haven\'t added any custom mantras yet.'**
-  String get profile_noCustoms;
+  /// **'Voice Note Saved'**
+  String get custom_voice_saved;
 
-  /// No description provided for @profile_addNewMantra.
+  /// No description provided for @custom_tap_record.
   ///
   /// In en, this message translates to:
-  /// **'Add New Mantra'**
-  String get profile_addNewMantra;
+  /// **'Tap to Record'**
+  String get custom_tap_record;
+
+  /// No description provided for @custom_ready_use.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to use'**
+  String get custom_ready_use;
+
+  /// No description provided for @custom_error_empty_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a mantra name'**
+  String get custom_error_empty_name;
+
+  /// No description provided for @garden_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodhi Garden'**
+  String get garden_title;
+
+  /// No description provided for @garden_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grow your spiritual forest'**
+  String get garden_subtitle;
+
+  /// No description provided for @garden_growth.
+  ///
+  /// In en, this message translates to:
+  /// **'Spiritual Growth'**
+  String get garden_growth;
+
+  /// No description provided for @garden_totalMala.
+  ///
+  /// In en, this message translates to:
+  /// **'Malas Completed'**
+  String get garden_totalMala;
+
+  /// No description provided for @dialog_deleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account?'**
+  String get dialog_deleteTitle;
+
+  /// No description provided for @dialog_deleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is permanent and cannot be undone. All your chanting data, achievements, and personal information will be permanently erased.\n\nAre you absolutely sure you want to proceed?'**
+  String get dialog_deleteBody;
+
+  /// No description provided for @dialog_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete My Account'**
+  String get dialog_deleteConfirm;
+
+  /// No description provided for @dialog_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get dialog_continue;
+
+  /// No description provided for @dialog_pressBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back again to exit'**
+  String get dialog_pressBack;
+
+  /// No description provided for @dialog_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Required'**
+  String get dialog_update;
+
+  /// No description provided for @dialog_updateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of Naam Jaap is available with important updates. Please update the app to continue.'**
+  String get dialog_updateDesc;
+
+  /// No description provided for @dialog_updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get dialog_updateNow;
+
+  /// No description provided for @dialog_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get dialog_save;
+
+  /// No description provided for @dialog_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get dialog_close;
+
+  /// No description provided for @dialog_something.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get dialog_something;
+
+  /// No description provided for @dialog_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get dialog_cancel;
 
   /// No description provided for @dialog_profilePictureUpdate.
   ///
@@ -708,71 +1182,35 @@ abstract class AppLocalizations {
   /// **'Could not open Play Store.'**
   String get dialog_couldNotOpenPS;
 
-  /// No description provided for @profile_deleteMantra.
+  /// No description provided for @dialog_mic.
   ///
   /// In en, this message translates to:
-  /// **'Delete \"{mantraName}\"?'**
-  String profile_deleteMantra(Object mantraName);
+  /// **'Microphone permission is required to record audio.'**
+  String get dialog_mic;
 
-  /// No description provided for @profile_deleteMantraSure.
+  /// No description provided for @dialog_getStarted.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure? All japa counts associated with this mantra will also be permanently deleted.'**
-  String get profile_deleteMantraSure;
+  /// **'Get Started'**
+  String get dialog_getStarted;
 
-  /// No description provided for @profile_yesDelete.
+  /// No description provided for @dialog_next.
   ///
   /// In en, this message translates to:
-  /// **'Yes, Delete'**
-  String get profile_yesDelete;
+  /// **'Next'**
+  String get dialog_next;
 
-  /// No description provided for @profile_couldNotUserData.
+  /// No description provided for @dialog_skip.
   ///
   /// In en, this message translates to:
-  /// **'Could not load user data.'**
-  String get profile_couldNotUserData;
+  /// **'Skip'**
+  String get dialog_skip;
 
-  /// No description provided for @misc_anonymous.
+  /// No description provided for @dialog_checkoutMyProgress.
   ///
   /// In en, this message translates to:
-  /// **'Anonymous'**
-  String get misc_anonymous;
-
-  /// No description provided for @profile_sankalpaSet.
-  ///
-  /// In en, this message translates to:
-  /// **'Make a Sacred Vow'**
-  String get profile_sankalpaSet;
-
-  /// No description provided for @profile_sankalpaSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Set a personal chanting goal.'**
-  String get profile_sankalpaSubtitle;
-
-  /// No description provided for @profile_sankalpaTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Japa Sankalpa'**
-  String get profile_sankalpaTitle;
-
-  /// No description provided for @profile_sankalpaChanting.
-  ///
-  /// In en, this message translates to:
-  /// **'Chanting'**
-  String get profile_sankalpaChanting;
-
-  /// No description provided for @profile_sankalpaToReach.
-  ///
-  /// In en, this message translates to:
-  /// **' to reach {targetCount} times.'**
-  String profile_sankalpaToReach(int targetCount);
-
-  /// No description provided for @profile_sankalpaByDate.
-  ///
-  /// In en, this message translates to:
-  /// **'By {date}'**
-  String profile_sankalpaByDate(String date);
+  /// **'Check out my progress on the Naam Jaap app!'**
+  String get dialog_checkoutMyProgress;
 
   /// No description provided for @dialog_sankalpaTitle.
   ///
@@ -822,125 +1260,47 @@ abstract class AppLocalizations {
   /// **'Target count must be greater than your current count.'**
   String get dialog_sankalpaErrorTarget;
 
-  /// No description provided for @support_openUPI.
+  /// No description provided for @misc_japps.
   ///
   /// In en, this message translates to:
-  /// **'Opening your UPI app...'**
-  String get support_openUPI;
+  /// **'japps'**
+  String get misc_japps;
 
-  /// No description provided for @support_cannotOpenUPI.
+  /// No description provided for @misc_days.
   ///
   /// In en, this message translates to:
-  /// **'Could not launch UPI app.'**
-  String get support_cannotOpenUPI;
+  /// **'Days'**
+  String get misc_days;
 
-  /// No description provided for @support_upiError.
+  /// No description provided for @misc_badge.
   ///
   /// In en, this message translates to:
-  /// **'Error: Could not find a UPI app to open.'**
-  String get support_upiError;
+  /// **'Badges'**
+  String get misc_badge;
 
-  /// No description provided for @support_chooseOffering.
+  /// No description provided for @misc_malas.
   ///
   /// In en, this message translates to:
-  /// **'CHOOSE AN OFFERING'**
-  String get support_chooseOffering;
+  /// **'Malas'**
+  String get misc_malas;
 
-  /// No description provided for @support_enterAmt.
+  /// No description provided for @misc_anonymous.
   ///
   /// In en, this message translates to:
-  /// **'Or enter a custom amount (INR)'**
-  String get support_enterAmt;
+  /// **'Anonymous'**
+  String get misc_anonymous;
 
-  /// No description provided for @support_validAmt.
+  /// No description provided for @lang_chooseLang.
   ///
   /// In en, this message translates to:
-  /// **'Please select or enter a valid amount.'**
-  String get support_validAmt;
+  /// **'Choose your preferred language to continue'**
+  String get lang_chooseLang;
 
-  /// No description provided for @support_now.
+  /// No description provided for @lang_searchLang.
   ///
   /// In en, this message translates to:
-  /// **'Support Now'**
-  String get support_now;
-
-  /// No description provided for @home_chooseMala.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Your Mala'**
-  String get home_chooseMala;
-
-  /// No description provided for @home_chooseMalaDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Select a style that resonates with your spirit.'**
-  String get home_chooseMalaDesc;
-
-  /// No description provided for @tour_title1.
-  ///
-  /// In en, this message translates to:
-  /// **'Digital Japa Mala'**
-  String get tour_title1;
-
-  /// No description provided for @tour_body1.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to chant. We count your beads, track malas, and maintain your streak automatically.'**
-  String get tour_body1;
-
-  /// No description provided for @tour_title2.
-  ///
-  /// In en, this message translates to:
-  /// **'Global Leaderboard'**
-  String get tour_title2;
-
-  /// No description provided for @tour_body2.
-  ///
-  /// In en, this message translates to:
-  /// **'Chant with thousands. Rise through spiritual progress and consistency.'**
-  String get tour_body2;
-
-  /// No description provided for @tour_title3.
-  ///
-  /// In en, this message translates to:
-  /// **'Daily Wisdom'**
-  String get tour_title3;
-
-  /// No description provided for @tour_body3.
-  ///
-  /// In en, this message translates to:
-  /// **'Receive curated verses from ancient texts — available in multiple languages.'**
-  String get tour_body3;
-
-  /// No description provided for @tour_title4.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Spiritual Journey'**
-  String get tour_title4;
-
-  /// No description provided for @tour_body4.
-  ///
-  /// In en, this message translates to:
-  /// **'Track milestones, set Sankalpas, and reflect on your growth and achievements.'**
-  String get tour_body4;
-
-  /// No description provided for @dialog_getStarted.
-  ///
-  /// In en, this message translates to:
-  /// **'Get Started'**
-  String get dialog_getStarted;
-
-  /// No description provided for @dialog_next.
-  ///
-  /// In en, this message translates to:
-  /// **'Next'**
-  String get dialog_next;
-
-  /// No description provided for @dialog_skip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip'**
-  String get dialog_skip;
+  /// **'Search Languages'**
+  String get lang_searchLang;
 
   /// No description provided for @malatype_regular.
   ///
@@ -959,108 +1319,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Royal Gold'**
   String get malatype_royal;
-
-  /// No description provided for @profile_abandon.
-  ///
-  /// In en, this message translates to:
-  /// **'Abandon Vow'**
-  String get profile_abandon;
-
-  /// No description provided for @profile_progress.
-  ///
-  /// In en, this message translates to:
-  /// **'PROGRESS'**
-  String get profile_progress;
-
-  /// No description provided for @profile_deadline.
-  ///
-  /// In en, this message translates to:
-  /// **'DEADLINE'**
-  String get profile_deadline;
-
-  /// No description provided for @profile_achieved.
-  ///
-  /// In en, this message translates to:
-  /// **'Achieved!'**
-  String get profile_achieved;
-
-  /// No description provided for @support_donate.
-  ///
-  /// In en, this message translates to:
-  /// **'Donate'**
-  String get support_donate;
-
-  /// No description provided for @support_paymentSucc.
-  ///
-  /// In en, this message translates to:
-  /// **'Payments processed securely by Razorpay'**
-  String get support_paymentSucc;
-
-  /// No description provided for @support_thank.
-  ///
-  /// In en, this message translates to:
-  /// **'🙏 Thank you'**
-  String get support_thank;
-
-  /// No description provided for @home_customizeMala.
-  ///
-  /// In en, this message translates to:
-  /// **'Customize Mala'**
-  String get home_customizeMala;
-
-  /// No description provided for @dialog_checkoutMyProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Check out my progress on the Naam Jaap app!'**
-  String get dialog_checkoutMyProgress;
-
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Naam Jaap'**
-  String get appTitle;
-
-  /// No description provided for @login_welcome.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to Naam Jaap'**
-  String get login_welcome;
-
-  /// No description provided for @profile_shareApp.
-  ///
-  /// In en, this message translates to:
-  /// **'Share Naam Jaap'**
-  String get profile_shareApp;
-
-  /// No description provided for @profile_supportTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Support Naam Jaap'**
-  String get profile_supportTitle;
-
-  /// No description provided for @dialog_updateDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version of Naam Jaap is available with important updates. Please update the app to continue.'**
-  String get dialog_updateDesc;
-
-  /// No description provided for @support_desc.
-  ///
-  /// In en, this message translates to:
-  /// **'Naam Jaap is a labor of love, built by a solo developer. Your selfless contribution (Seva) helps keep the servers running, the ads minimal, and the app free for all devotees.'**
-  String get support_desc;
-
-  /// No description provided for @support_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Support the Naam Jaap project'**
-  String get support_title;
-
-  /// No description provided for @support_afterTitile.
-  ///
-  /// In en, this message translates to:
-  /// **'Thank you for supporting Naam Jaap — every contribution helps.'**
-  String get support_afterTitile;
 }
 
 class _AppLocalizationsDelegate

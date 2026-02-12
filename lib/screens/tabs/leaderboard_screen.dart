@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/l10n/app_localizations.dart'; // Ensure imported
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:naamjaap/utils/constants.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 
 enum LeaderboardType { allTime, weekly }
 
 class LeaderboardScreen extends StatefulWidget {
-  const LeaderboardScreen({super.key});
+  final User? user;
+  const LeaderboardScreen({super.key, this.user});
 
   @override
   State<LeaderboardScreen> createState() => _LeaderboardScreenState();
@@ -21,19 +25,29 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     with AutomaticKeepAliveClientMixin {
   LeaderboardType _selectedLeaderboard = LeaderboardType.allTime;
   final FirestoreService _firestoreService = FirestoreService();
-  final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
-
+  late final String _currentUserId;
   static const String _screenName = 'leader';
   final AdService _adService = AdService();
 
+  // Tour keys
+  final GlobalKey _keyToggle = GlobalKey();
+  final GlobalKey _keyPodium = GlobalKey();
+
   @override
   void initState() {
-    _adService.loadAdForScreen(
-        screenName: _screenName,
-        onAdLoaded: () {
-          if (mounted) setState(() {});
-        });
     super.initState();
+    _currentUserId = widget.user?.uid ?? 'guest';
+
+    if (widget.user != null) {
+      _adService.loadAdForScreen(
+          screenName: _screenName,
+          onAdLoaded: () {
+            if (mounted) setState(() {});
+          });
+    }
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _startLeaderboardTour());
   }
 
   @override
@@ -45,479 +59,723 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   @override
   bool get wantKeepAlive => true;
 
+  void _startLeaderboardTour() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasSeenTour =
+        prefs.getBool('has_seen_leaderboard_tour') ?? false;
+
+    if (!hasSeenTour) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        ShowCaseWidget.of(context).startShowCase([_keyToggle, _keyPodium]);
+        await prefs.setBool('has_seen_leaderboard_tour', true);
+      }
+    }
+  }
+
+  Widget _buildShowcase({
+    required GlobalKey key,
+    required String title,
+    required String description,
+    required Widget child,
+    ShapeBorder? shapeBorder,
+  }) {
+    return Showcase(
+      key: key,
+      title: title,
+      description: description,
+      targetShapeBorder: shapeBorder ?? const CircleBorder(),
+      tooltipBackgroundColor: const Color(0xFF1A1A1A),
+      textColor: Colors.white,
+      titleTextStyle: const TextStyle(
+          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
+      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
+      tooltipPadding: const EdgeInsets.all(20),
+      tooltipBorderRadius: BorderRadius.circular(20),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     final bannerAd = _adService.getAdForScreen(_screenName);
 
     return Scaffold(
-      body: SafeArea(
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: _firestoreService.getUserStatsStream(_currentUserId),
-          builder: (context, userSnapshot) {
-            if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.emoji_events_outlined,
-                      size: 80,
-                      color: Colors.amber.shade300,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      AppLocalizations.of(context)!.leaderboard_empty,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)!.leaderboard_emptySubtitle,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.grey.shade600,
-                          ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            final userData = userSnapshot.data!.data() as Map<String, dynamic>;
-            final bool isPremium = userData['isPremium'] ?? false;
-
-            // The main UI is now in a Column to hold the content and the ad.
-            return Column(
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFFF8C00),
+                  Color(0xFFFF5E62),
+                  Color(0xFF6A0572),
+                ],
+                stops: [0.0, 0.6, 1.0],
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Column(
               children: [
-                // The existing leaderboard UI is now in an Expanded widget.
+                _buildHeader(),
                 Expanded(
-                  child: Column(
-                    children: [
-                      // Toggle All-time and Weekly Leaderboard.
-                      Card(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 24.0),
-                        elevation: 4,
-                        shadowColor: Colors.deepOrange.withAlpha(45),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ToggleButtons(
-                          isSelected: [
-                            _selectedLeaderboard == LeaderboardType.allTime,
-                            _selectedLeaderboard == LeaderboardType.weekly,
-                          ],
-                          onPressed: (index) {
-                            setState(() {
-                              _selectedLeaderboard = index == 0
-                                  ? LeaderboardType.allTime
-                                  : LeaderboardType.weekly;
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(12.0),
-                          selectedBorderColor: Colors.deepOrange,
-                          selectedColor: Colors.white,
-                          fillColor: Colors.deepOrange.shade400,
-                          color: Colors.deepOrange.shade400,
-                          constraints: const BoxConstraints(minHeight: 48.0),
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Text(
-                                  AppLocalizations.of(context)!
-                                      .leaderboard_allTime,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
+                  child: StreamBuilder<DocumentSnapshot>(
+                    stream:
+                        _firestoreService.getUserStatsStream(_currentUserId),
+                    builder: (context, userSnapshot) {
+                      if (widget.user == null ||
+                          !userSnapshot.hasData ||
+                          !userSnapshot.data!.exists) {
+                        return _buildGuestOrEmptyState();
+                      }
+
+                      final userData =
+                          userSnapshot.data!.data() as Map<String, dynamic>;
+
+                      final bool isPremium = userData['isPremium'] ?? false;
+
+                      return Column(
+                        children: [
+                          // Ad banner
+                          if (bannerAd != null &&
+                              !isPremium &&
+                              _adService.isAdLoadedForScreen(_screenName))
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              alignment: Alignment.center,
+                              color: Colors.white.withOpacity(0.1),
+                              width: bannerAd.size.width.toDouble(),
+                              height: bannerAd.size.height.toDouble(),
+                              child: AdWidget(ad: bannerAd),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 24.0),
-                              child: Text(
-                                  AppLocalizations.of(context)!
-                                      .leaderboard_thisWeek,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
+
+                          // Leaderboard Ranks
+                          Expanded(
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: _selectedLeaderboard ==
+                                      LeaderboardType.allTime
+                                  ? _firestoreService.getLeaderboardStream()
+                                  : _firestoreService
+                                      .getWeeklyLeaderboardStream(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white));
+                                }
+                                if (!snapshot.hasData ||
+                                    snapshot.data!.docs.isEmpty) {
+                                  return _buildEmptyState();
+                                }
+
+                                final docs = snapshot.data!.docs;
+
+                                return Stack(
+                                  children: [
+                                    CustomScrollView(
+                                      physics: const BouncingScrollPhysics(
+                                          parent:
+                                              AlwaysScrollableScrollPhysics()),
+                                      slivers: [
+                                        SliverToBoxAdapter(
+                                          child: _buildPodium(docs),
+                                        ),
+                                        if (docs.length > 3)
+                                          SliverPadding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                16, 10, 16, 100),
+                                            sliver: SliverList(
+                                              delegate:
+                                                  SliverChildBuilderDelegate(
+                                                (context, index) {
+                                                  final realIndex = index + 3;
+                                                  final doc = docs[realIndex];
+                                                  return _buildRankTile(
+                                                      doc, realIndex + 1);
+                                                },
+                                                childCount: docs.length - 3,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    Positioned(
+                                      bottom: 55,
+                                      left: 20,
+                                      right: 20,
+                                      child: _buildStickyUserRank(docs),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: _selectedLeaderboard ==
-                                  LeaderboardType.allTime
-                              ? _firestoreService.getLeaderboardStream()
-                              : _firestoreService.getWeeklyLeaderboardStream(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            if (snapshot.hasError) {
-                              return Center(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .dialog_something));
-                            }
-                            if (!snapshot.hasData ||
-                                snapshot.data!.docs.isEmpty) {
-                              return Center(
-                                  child: Text(AppLocalizations.of(context)!
-                                      .leaderboard_isEmpty));
-                            }
-
-                            final leaderboardDocs = snapshot.data!.docs;
-
-                            return Stack(
-                              children: [
-                                ListView.builder(
-                                  padding: const EdgeInsets.only(bottom: 90.0),
-                                  itemCount: leaderboardDocs.length,
-                                  itemBuilder: (context, index) {
-                                    final userDoc = leaderboardDocs[index];
-                                    final userData =
-                                        userDoc.data() as Map<String, dynamic>;
-                                    final rank = index + 1;
-                                    final isCurrentUser =
-                                        userDoc.id == _currentUserId;
-
-                                    final jappsCount = _selectedLeaderboard ==
-                                            LeaderboardType.allTime
-                                        ? (userData['total_japps'] ?? 0)
-                                        : (userData['weekly_total_japps'] ?? 0);
-
-                                    final malasCount =
-                                        (jappsCount / 108).floor();
-
-                                    Widget card;
-                                    if (rank <= 3) {
-                                      card = _buildTopRankCard(context, rank,
-                                          userData, isCurrentUser, malasCount);
-                                    } else {
-                                      card = _buildStandardRankCard(
-                                          context,
-                                          rank,
-                                          userData,
-                                          isCurrentUser,
-                                          malasCount);
-                                    }
-
-                                    return GestureDetector(
-                                      onTap: () => _showUserProfileDialog(
-                                          context, userData),
-                                      child: card
-                                          .animate()
-                                          .fadeIn(
-                                              duration: 500.ms, delay: 100.ms)
-                                          .slideY(
-                                              begin: 0.5,
-                                              curve: Curves.easeOut),
-                                    );
-                                  },
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: _buildCurrentUserCard(
-                                      _firestoreService,
-                                      _currentUserId,
-                                      leaderboardDocs),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-
-                // The Ad Banner (only shown for non-premium users)
-                if (bannerAd != null &&
-                    !isPremium &&
-                    _adService.isAdLoadedForScreen(_screenName))
-                  Container(
-                    alignment: Alignment.center,
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
-                  ),
               ],
-            );
-          },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            // LOC: Leaderboard
+            AppLocalizations.of(context)!.nav_leaderboard,
+            style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1),
+          ),
+        ),
+        // LOC: Showcase Toggle
+        _buildShowcase(
+          key: _keyToggle,
+          title: AppLocalizations.of(context)!.tour_leader_toggle_title,
+          description: AppLocalizations.of(context)!.tour_leader_toggle_desc,
+          shapeBorder: const StadiumBorder(),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: Colors.white.withOpacity(0.1))),
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Stack(
+                children: [
+                  AnimatedAlign(
+                    alignment: _selectedLeaderboard == LeaderboardType.allTime
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOutBack,
+                    child: Container(
+                      width: constraints.maxWidth * 0.5,
+                      height: double.infinity,
+                      margin: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2))
+                          ]),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      // LOC: All Time & This Week
+                      _buildToggleItem(
+                          AppLocalizations.of(context)!.leaderboard_allTime,
+                          LeaderboardType.allTime),
+                      _buildToggleItem(
+                          AppLocalizations.of(context)!.leaderboard_thisWeek,
+                          LeaderboardType.weekly),
+                    ],
+                  )
+                ],
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+  Widget _buildToggleItem(String text, LeaderboardType type) {
+    final isSelected = _selectedLeaderboard == type;
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _selectedLeaderboard = type),
+        child: Center(
+          child: AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: isSelected
+                  ? Colors.deepOrange
+                  : Colors.white.withOpacity(0.9),
+            ),
+            child: Text(text),
+          ),
         ),
       ),
     );
   }
 
-  // --- HELPER WIDGETS AND METHODS ---
-  void _showUserProfileDialog(
-      BuildContext context, Map<String, dynamic> userData) {
-    // Helper function to find the user's top mantra from the 'japps' map
-    String getTopMantra(Map<String, dynamic>? jappsMap) {
-      if (jappsMap == null || jappsMap.isEmpty) {
-        return "No chants yet";
-      }
-      // Find the entry with the highest value
-      final topMantraEntry =
-          jappsMap.entries.reduce((a, b) => a.value > b.value ? a : b);
-      // Convert the key (e.g., 'hare_krishna') back to a displayable name
-      return AppConstants.mantras.firstWhere(
-        (m) => m.toLowerCase().replaceAll(' ', '_') == topMantraEntry.key,
-        orElse: () => "Unknown Mantra",
-      );
-    }
+  Widget _buildPodium(List<QueryDocumentSnapshot> docs) {
+    if (docs.isEmpty) return const SizedBox.shrink();
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.surface,
-                  Colors.white,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 45,
-                  backgroundImage: (userData['photoURL'] != null &&
-                          userData['photoURL']!.isNotEmpty)
-                      ? NetworkImage(userData['photoURL'])
-                      : null,
-                  backgroundColor: Colors.grey.shade300,
-                  child: (userData['photoURL'] == null ||
-                          userData['photoURL']!.isEmpty)
-                      ? const Icon(Icons.person, size: 45, color: Colors.white)
-                      : null,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  userData['name'] ??
-                      AppLocalizations.of(context)!.misc_anonymous,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                // The new, beautiful stat chips
-                Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    Chip(
-                      avatar: Icon(Icons.star, color: Colors.amber.shade700),
-                      label: Text(
-                          '${userData['total_japps'] ?? 0} ${AppLocalizations.of(context)!.profile_totalJapps}'),
-                    ),
-                    Chip(
-                      avatar: Icon(Icons.local_fire_department,
-                          color: Colors.orange.shade800),
-                      label: Text(
-                          '${userData['currentStreak'] ?? 0} ${AppLocalizations.of(context)!.home_dayStreak}'),
-                    ),
-                    Chip(
-                      avatar: const Icon(Icons.favorite, color: Colors.red),
-                      label: Text(AppLocalizations.of(context)!
-                          .leaderboard_topMantra(
-                              getTopMantra(userData['japps']))),
-                    ),
-                  ],
-                ),
-                ListTile(
-                  leading: const Icon(Icons.shield, color: Colors.blue),
-                  title: Text(AppLocalizations.of(context)!.misc_badge),
-                  subtitle: Text((userData['badges'] as List?)?.isEmpty ?? true
-                      ? AppLocalizations.of(context)!.leaderboard_noBade
-                      : (userData['badges'] as List).join(', ')),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    final first = docs[0];
+    final second = docs.length > 1 ? docs[1] : null;
+    final third = docs.length > 2 ? docs[2] : null;
+
+    // LOC: Showcase Podium
+    return _buildShowcase(
+      key: _keyPodium,
+      title: AppLocalizations.of(context)!.tour_leader_podium_title,
+      description: AppLocalizations.of(context)!.tour_leader_podium_desc,
+      shapeBorder:
+          const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 30, 16, 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (second != null) _buildPodiumStep(second, 2, 130),
+            _buildPodiumStep(first, 1, 170),
+            if (third != null) _buildPodiumStep(third, 3, 110),
+          ],
+        ),
+      ),
     );
   }
 
-  // Updated sticky card to show rank and progress
-  Widget _buildCurrentUserCard(FirestoreService service, String uid,
-      List<DocumentSnapshot> leaderboardDocs) {
-    int currentUserRank = -1;
-    DocumentSnapshot? currentUserDoc;
-    for (int i = 0; i < leaderboardDocs.length; i++) {
-      if (leaderboardDocs[i].id == uid) {
-        currentUserRank = i + 1;
-        currentUserDoc = leaderboardDocs[i];
-        break;
-      }
+  Widget _buildPodiumStep(QueryDocumentSnapshot doc, int rank, double height) {
+    final data = doc.data() as Map<String, dynamic>;
+    final name = data['name'] ?? 'Anonymous';
+    final photo = data['photoURL'];
+    final japps = _selectedLeaderboard == LeaderboardType.allTime
+        ? (data['total_japps'] ?? 0)
+        : (data['weekly_total_japps'] ?? 0);
+    final malas = (japps / 108).floor();
+
+    Color color;
+    Color crownColor;
+    if (rank == 1) {
+      color = const Color(0xFFFFD700);
+      crownColor = Colors.amber.shade300;
+    } else if (rank == 2) {
+      color = const Color(0xFFC0C0C0);
+      crownColor = Colors.grey.shade300;
+    } else {
+      color = const Color(0xFFCD7F32);
+      crownColor = Colors.orange.shade200;
     }
 
-    // Build the "Race to the Top" subtitle text
-    String buildSubtitle() {
-      if (currentUserRank == -1)
-        return AppLocalizations.of(context)!.leaderboard_notOnBoard;
-      if (currentUserRank == 1)
-        return AppLocalizations.of(context)!.leaderboard_topOfBoard;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _showUserProfileDialog(context, data),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (rank == 1)
+              Icon(Icons.workspace_premium, color: crownColor, size: 36)
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .moveY(begin: 0, end: -6, duration: 1.5.seconds)
+                  .shimmer(duration: 2.seconds, color: Colors.white),
 
-      final currentUserData = currentUserDoc!.data() as Map<String, dynamic>;
-      final userAboveDoc = leaderboardDocs[
-          currentUserRank - 2]; // Rank is 1-based, index is 0-based
-      final userAboveData = userAboveDoc.data() as Map<String, dynamic>;
+            const SizedBox(height: 5),
 
-      final japsNeeded = (userAboveData['total_japps'] ?? 0) -
-          (currentUserData['total_japps'] ?? 0);
+            Hero(
+              tag: 'rank_avatar_${doc.id}',
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: color, width: 2),
+                    boxShadow: [
+                      BoxShadow(color: color.withOpacity(0.4), blurRadius: 10)
+                    ]),
+                child: CircleAvatar(
+                  radius: rank == 1 ? 38 : 28,
+                  backgroundImage: (photo != null && photo.isNotEmpty)
+                      ? NetworkImage(photo)
+                      : null,
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  child: (photo == null || photo.isEmpty)
+                      ? Icon(Icons.person,
+                          color: Colors.white70, size: rank == 1 ? 30 : 20)
+                      : null,
+                ),
+              ),
+            ),
 
-      final malasNeeded = (japsNeeded / 108).floor();
+            const SizedBox(height: 10),
 
-      // return "$japsNeeded japps to pass ${userAboveData['name'] ?? '...'}!";
-      return "${AppLocalizations.of(context)!.leaderboard_malasToPass(malasNeeded, "${userAboveData['name'] ?? '...'}")}!";
-    }
-
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      elevation: 10,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.orange.shade800, width: 2)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-              colors: [Colors.orange.shade100, Colors.orange.shade50],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight),
-        ),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.orange.shade800,
-            child: Text(
-              currentUserRank != -1 ? '#$currentUserRank' : '100+',
+            Text(
+              name.split(' ')[0],
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16),
+                  fontSize: 13),
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          title: Text(AppLocalizations.of(context)!.leaderboard_yourProgress,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(buildSubtitle()),
+            // LOC: Malas
+            Text(
+              "$malas ${AppLocalizations.of(context)!.misc_malas}",
+              style:
+                  TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 11),
+            ),
+
+            const SizedBox(height: 8),
+
+            Container(
+              height: height,
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [color.withOpacity(0.6), color.withOpacity(0.1)]),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                border: Border(top: BorderSide(color: color, width: 4)),
+              ),
+              child: Center(
+                child: Text(
+                  "$rank",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: "Serif"),
+                ),
+              ),
+            )
+                .animate(onPlay: (c) => rank == 1 ? c.repeat() : null)
+                .shimmer(
+                    duration: 3.seconds,
+                    delay: 1.seconds,
+                    color: Colors.white.withOpacity(0.4))
+                .animate()
+                .slideY(
+                    begin: 1,
+                    end: 0,
+                    duration: 600.ms,
+                    curve: Curves.easeOutBack),
+          ],
         ),
       ),
     );
   }
 
-  // Standard card for ranks 4+
-  Widget _buildStandardRankCard(BuildContext context, int rank,
-      Map<String, dynamic> userData, bool isCurrentUser, int jappsCount) {
-    return Card(
-      color: isCurrentUser ? Colors.orange.withAlpha(40) : null,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+  Widget _buildRankTile(QueryDocumentSnapshot doc, int rank) {
+    final data = doc.data() as Map<String, dynamic>;
+    final isMe = doc.id == _currentUserId;
+    final japps = _selectedLeaderboard == LeaderboardType.allTime
+        ? (data['total_japps'] ?? 0)
+        : (data['weekly_total_japps'] ?? 0);
+    final malas = (japps / 108).floor();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isMe
+            ? Colors.white.withOpacity(0.25)
+            : Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: isMe ? Colors.white70 : Colors.white10),
+      ),
       child: ListTile(
-        leading: Text(
-          '$rank',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: Container(
+          width: 40,
+          height: 40,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black.withOpacity(0.2),
+              border: Border.all(color: Colors.white12)),
+          child: Text("$rank",
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
         ),
-        title: Text(userData['name'] ?? 'Anonymous'),
-        subtitle:
-            Text('$jappsCount ${AppLocalizations.of(context)!.misc_malas}'),
-        trailing: CircleAvatar(
-          backgroundImage:
-              (userData['photoURL'] != null && userData['photoURL']!.isNotEmpty)
-                  ? NetworkImage(userData['photoURL'])
-                  : null,
-          backgroundColor: Colors.grey.shade300,
-          child: (userData['photoURL'] == null || userData['photoURL']!.isEmpty)
-              ? const Icon(Icons.person, size: 45, color: Colors.white)
-              : null,
+        title: Text(
+          data['name'] ?? 'Anonymous',
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
         ),
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white12)),
+          // LOC: Malas
+          child: Text(
+            "$malas ${AppLocalizations.of(context)!.misc_malas}",
+            style: const TextStyle(
+                color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        onTap: () => _showUserProfileDialog(context, data),
       ),
-    );
+    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.1, end: 0);
   }
 
-  // Helper widget to build the fancy Top 3 cards
-  Widget _buildTopRankCard(BuildContext context, int rank,
-      Map<String, dynamic> userData, bool isCurrentUser, int jappsCount) {
-    final List<Color> gradientColors;
-    final IconData iconData;
-    switch (rank) {
-      case 1:
-        gradientColors = [Colors.amber.shade600, Colors.amber.shade400];
-        iconData = Icons.emoji_events;
-        break;
-      case 2:
-        gradientColors = [Colors.grey.shade500, Colors.grey.shade300];
-        iconData = Icons.emoji_events;
-        break;
-      case 3:
-      default:
-        gradientColors = [Colors.brown.shade500, Colors.brown.shade400];
-        iconData = Icons.emoji_events;
+  Widget _buildStickyUserRank(List<QueryDocumentSnapshot> docs) {
+    final index = docs.indexWhere((d) => d.id == _currentUserId);
+    if (index == -1 && widget.user != null) return const SizedBox.shrink();
+
+    final rank = index + 1;
+    String name = "You";
+    int malas = 0;
+    if (index != -1) {
+      final data = docs[index].data() as Map<String, dynamic>;
+      final japps = _selectedLeaderboard == LeaderboardType.allTime
+          ? (data['total_japps'] ?? 0)
+          : (data['weekly_total_japps'] ?? 0);
+      malas = (japps / 108).floor();
+      name = data['name'] ?? "You";
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 8,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              )
+            ],
           ),
-          border:
-              isCurrentUser ? Border.all(color: Colors.white, width: 3) : null,
-        ),
-        child: ListTile(
-          leading: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
-              Icon(iconData, color: Colors.white),
-              Text(
-                '$rank',
-                style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              Text(index != -1 ? "#$rank" : "-",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900)),
+              const SizedBox(width: 16),
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.grey.shade800,
+                backgroundImage: widget.user?.photoURL != null
+                    ? NetworkImage(widget.user!.photoURL!)
+                    : null,
+                child: widget.user?.photoURL == null
+                    ? const Icon(Icons.person, color: Colors.white70, size: 20)
+                    : null,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // LOC: Your Rank
+                  Text(AppLocalizations.of(context)!.leaderboard_yourRank,
+                      style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 10,
+                          letterSpacing: 0.5)),
+                  Text(name,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14)),
+                ],
+              ),
+              const Spacer(),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.amber.withOpacity(0.5))),
+                // LOC: Malas
+                child: Text(
+                    "$malas ${AppLocalizations.of(context)!.misc_malas}",
+                    style: const TextStyle(
+                        color: Colors.amber,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
               ),
             ],
           ),
-          title: Text(
-            userData['name'] ?? 'Anonymous',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
-          ),
-          subtitle: Text(
-            '$jappsCount ${AppLocalizations.of(context)!.misc_malas}',
-            style: TextStyle(color: Colors.white.withAlpha(200)),
-          ),
-          trailing: CircleAvatar(
-            radius: 25,
-            backgroundImage: (userData['photoURL'] != null &&
-                    userData['photoURL']!.isNotEmpty)
-                ? NetworkImage(userData['photoURL'])
-                : null,
-            backgroundColor: Colors.grey.shade300,
-            child:
-                (userData['photoURL'] == null || userData['photoURL']!.isEmpty)
-                    ? const Icon(Icons.person, size: 45, color: Colors.white)
-                    : null,
-          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildGuestOrEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.lock_clock_rounded,
+              size: 80, color: Colors.white.withOpacity(0.5)),
+          const SizedBox(height: 20),
+          // LOC: Guest Mode Strings
+          Text(
+            AppLocalizations.of(context)!.guest_mode_title,
+            style: const TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            AppLocalizations.of(context)!.guest_mode_desc,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white.withOpacity(0.8)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      // LOC: Is Empty
+      child: Text(AppLocalizations.of(context)!.leaderboard_isEmpty,
+          style: TextStyle(color: Colors.white.withOpacity(0.7))),
+    );
+  }
+
+  void _showUserProfileDialog(
+      BuildContext context, Map<String, dynamic> userData) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          String getTopMantra(Map<String, dynamic>? jappsMap) {
+            if (jappsMap == null || jappsMap.isEmpty) return "No chants";
+            final topMantraEntry =
+                jappsMap.entries.reduce((a, b) => a.value > b.value ? a : b);
+            return AppConstants.mantras.firstWhere(
+                (m) =>
+                    m.toLowerCase().replaceAll(' ', '_') == topMantraEntry.key,
+                orElse: () => "Unknown");
+          }
+
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: Colors.white.withOpacity(0.5)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 20)
+                      ]),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 45,
+                        backgroundImage: userData['photoURL'] != null
+                            ? NetworkImage(userData['photoURL'])
+                            : null,
+                        backgroundColor: Colors.grey.shade200,
+                        child: userData['photoURL'] == null
+                            ? const Icon(Icons.person,
+                                size: 50, color: Colors.grey)
+                            : null,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(userData['name'] ?? 'Unknown',
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+
+                      // Stats Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildDialogStat(
+                              Icons.stars_rounded,
+                              "${userData['total_japps'] ?? 0}",
+                              AppLocalizations.of(context)!
+                                  .misc_japps, // LOC: Japps
+                              Colors.purple),
+                          _buildDialogStat(
+                              Icons.local_fire_department,
+                              "${userData['currentStreak'] ?? 0}",
+                              AppLocalizations.of(context)!
+                                  .profile_dailyStreak, // LOC: Streak
+                              Colors.deepOrange),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.favorite,
+                                size: 16, color: Colors.blue),
+                            const SizedBox(width: 8),
+                            Flexible(
+                                child: Text(
+                                    AppLocalizations.of(context)!
+                                        .leaderboard_topMantra(
+                                            getTopMantra(userData['japps'])),
+                                    style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold))),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                      TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.grey),
+                          // LOC: Close
+                          child:
+                              Text(AppLocalizations.of(context)!.dialog_close))
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _buildDialogStat(
+      IconData icon, String val, String label, Color color) {
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 28),
+        Text(val,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      ],
     );
   }
 }

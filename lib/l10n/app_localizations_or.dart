@@ -9,502 +9,638 @@ class AppLocalizationsOr extends AppLocalizations {
   AppLocalizationsOr([String locale = 'or']) : super(locale);
 
   @override
-  String get login_subtitle => 'ଆପଣଙ୍କର ବ୍ୟକ୍ତିଗତ ଡିଜିଟାଲ୍ ଜପ ସାଥୀ।';
+  String get appTitle => 'ਨਾਮ ਜਾਪ';
 
   @override
-  String get login_termsAgreement => 'ମୁଁ ';
+  String get login_welcome => 'ਨਾਮ ਜਾਪ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ';
 
   @override
-  String get login_termsAndConditions => 'ନିୟମ ଏବଂ ସର୍ତ୍ତାବଳୀ';
+  String get login_subtitle => 'ਤੁਹਾਡਾ ਨਿੱਜੀ ਡਿਜੀਟਲ ਜਾਪ ਸਾਥੀ।';
 
   @override
-  String get login_and => ' ଏବଂ ';
+  String get login_termsAgreement => 'ਮੈਂ ਪੜ੍ਹ ਲਿਆ ਹੈ ਅਤੇ ਸਹਿਮਤ ਹਾਂ ';
 
   @override
-  String get login_privacyPolicy => 'ଗୋପନୀୟତା ନୀତି ସହ ରାଜି ଅଛି';
+  String get login_termsAndConditions => 'ਨਿਯਮ ਅਤੇ ਸ਼ਰਤਾਂ';
 
   @override
-  String get login_signInWithGoogle => 'Google ସହିତ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ';
+  String get login_and => ' ਅਤੇ ';
 
   @override
-  String get nav_home => 'ହୋମ୍';
+  String get login_privacyPolicy => 'ਪਰਦੇਦਾਰੀ ਨੀਤੀ';
 
   @override
-  String get nav_leaderboard => 'ଲିଡରବୋର୍ଡ';
+  String get login_signInWithGoogle => 'Google ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ';
 
   @override
-  String get nav_wisdom => 'ଜ୍ଞାନ';
+  String get nav_home => 'ਹੋਮ';
 
   @override
-  String get nav_profile => 'ମୋର ପ୍ରୋଫାଇଲ୍';
+  String get nav_leaderboard => 'ਲੀਡਰਬੋਰਡ';
 
   @override
-  String get home_tapToChant => 'ଜପ କରିବା ପାଇଁ ଟ୍ୟାପ୍ କରନ୍ତୁ';
+  String get nav_wisdom => 'ਗਿਆਨ';
 
   @override
-  String get home_dayStreak => 'ଦିନ ଧାରା';
+  String get nav_profile => 'ਪ੍ਰੋਫਾਈਲ';
 
   @override
-  String get home_total => 'ମୋଟ:';
+  String get home_tapToChant => 'ਜਾਪ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ';
 
   @override
-  String get home_mantraInfo => 'ମନ୍ତ୍ର ସୂଚନା';
+  String get home_dayStreak => 'ਦਿਨ ਦੀ ਸਟ੍ਰੀਕ';
 
   @override
-  String get dialog_close => 'ବନ୍ଦ କରନ୍ତୁ';
+  String get home_total => 'ਕੁੱਲ:';
 
   @override
-  String get wisdom_title => 'ଆଜିର ଜ୍ଞାନ';
+  String get home_mantraInfo => 'ਮੰਤਰ ਜਾਣਕਾਰੀ';
+
+  @override
+  String get home_chooseMala => 'ਆਪਣੀ ਮਾਲਾ ਚੁਣੋ';
+
+  @override
+  String get home_chooseMalaDesc =>
+      'ਅਜਿਹੀ ਸ਼ੈਲੀ ਚੁਣੋ ਜੋ ਤੁਹਾਡੀ ਰੂਹ ਨਾਲ ਗੂੰਜਦੀ ਹੋਵੇ।';
+
+  @override
+  String get home_customizeMala => 'ਮਾਲਾ ਕਸਟਮਾਈਜ਼ ਕਰੋ';
+
+  @override
+  String get tour_home_carousel_title => 'ਆਪਣਾ ਮੰਤਰ ਚੁਣੋ';
+
+  @override
+  String get tour_home_carousel_desc =>
+      'ਸ਼ਕਤੀਸ਼ਾਲੀ ਵੈਦਿਕ ਮੰਤਰਾਂ ਵਿਚਕਾਰ ਬਦਲਣ ਲਈ ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਸਵਾਈਪ ਕਰੋ।';
+
+  @override
+  String get tour_home_mala_title => 'ਜਾਪ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ';
+
+  @override
+  String get tour_home_mala_desc =>
+      'ਮਣਕਿਆਂ ਨੂੰ ਹਿਲਾਉਣ ਲਈ ਚੱਕਰ \'ਤੇ ਕਿਤੇ ਵੀ ਟੈਪ ਕਰੋ। ਇੱਕ ਮਾਲਾ ਲਈ 108 ਪੂਰੇ ਕਰੋ।';
+
+  @override
+  String get tour_home_toolkit_title => 'ਤੁਹਾਡਾ ਟੂਲਕਿੱਟ';
+
+  @override
+  String get tour_home_toolkit_desc =>
+      'ਮਣਕਿਆਂ ਦੀਆਂ ਸ਼ੈਲੀਆਂ ਨੂੰ ਕਸਟਮਾਈਜ਼ ਕਰੋ, ਆਡੀਓ ਟੌਗਲ ਕਰੋ, ਜਾਂ ਮੰਤਰ ਦੇ ਅਰਥ ਦੇਖੋ।';
+
+  @override
+  String get tour_leader_toggle_title => 'ਹਫਤਾਵਾਰੀ ਬਨਾਮ ਆਲ-ਟਾਈਮ';
+
+  @override
+  String get tour_leader_toggle_desc =>
+      'ਇਸ ਹਫ਼ਤੇ ਦੇ ਨੇਤਾਵਾਂ ਅਤੇ ਆਲ-ਟਾਈਮ ਦੰਤਕਥਾਵਾਂ ਵਿਚਕਾਰ ਬਦਲਣ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।';
+
+  @override
+  String get tour_leader_podium_title => 'ਚੋਟੀ ਦੇ 3';
+
+  @override
+  String get tour_leader_podium_desc =>
+      'ਸਭ ਤੋਂ ਸਮਰਪਿਤ ਜਾਪ ਕਰਨ ਵਾਲੇ ਇੱਥੇ ਦਿਖਾਈ ਦਿੰਦੇ ਹਨ। ਉਹਨਾਂ ਨਾਲ ਜੁੜਨ ਲਈ ਜਾਪ ਕਰਦੇ ਰਹੋ!';
+
+  @override
+  String get tour_wisdom_card_title => 'ਰੋਜ਼ਾਨਾ ਗਿਆਨ ਅਤੇ ਸਾਂਝਾ ਕਰਨਾ';
+
+  @override
+  String get tour_wisdom_card_desc =>
+      'ਇੱਕ ਨਵੇਂ ਸ਼ਲੋਕ ਨਾਲ ਆਪਣੇ ਦਿਨ ਦੀ ਸ਼ੁਰੂਆਤ ਕਰੋ। ਆਪਣੀ ਸਥਿਤੀ ਲਈ ਇੱਕ ਸੁੰਦਰ ਚਿੱਤਰ ਬਣਾਉਣ ਲਈ ਸਾਂਝਾ ਕਰੋ ਆਈਕਨ \'ਤੇ ਟੈਪ ਕਰੋ!';
+
+  @override
+  String get tour_profile_stats_title => 'ਤੁਹਾਡੇ ਅਧਿਆਤਮਿਕ ਅੰਕੜੇ';
+
+  @override
+  String get tour_profile_stats_desc =>
+      'ਆਪਣੀ ਸਟ੍ਰੀਕ, ਕੁੱਲ ਜਾਪ ਗਿਣਤੀ ਅਤੇ ਗਲੋਬਲ ਰੈਂਕ ਇੱਥੇ ਟ੍ਰੈਕ ਕਰੋ।';
+
+  @override
+  String get tour_profile_offline_title => 'ਸਰੀਰਕ ਜਾਪ?';
+
+  @override
+  String get tour_profile_offline_desc =>
+      'ਜੇਕਰ ਤੁਸੀਂ ਅਸਲੀ ਮਾਲਾ ਦੇ ਮਣਕਿਆਂ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹੋ, ਤਾਂ ਆਪਣੀ ਗਿਣਤੀ ਨੂੰ ਐਪ ਵਿੱਚ ਹੱਥੀਂ ਜੋੜਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ।';
+
+  @override
+  String get tour_profile_bodhi_desc =>
+      'ਹਰ ਮਾਲਾ ਜੋ ਤੁਸੀਂ ਜਾਪਦੇ ਹੋ, ਤੁਹਾਡੇ ਅਧਿਆਤਮਿਕ ਬਾਗ ਨੂੰ ਵਧਣ ਵਿੱਚ ਮਦਦ ਕਰਦੀ ਹੈ। ਜਿਵੇਂ ਤੁਸੀਂ ਤਰੱਕੀ ਕਰਦੇ ਹੋ ਨਵੇਂ ਰੁੱਖਾਂ ਨੂੰ ਅਨਲੌਕ ਕਰੋ!';
+
+  @override
+  String get tour_profile_sankalpa_desc =>
+      'ਅਧਿਆਤਮਿਕ ਟੀਚੇ ਲਈ ਵਚਨਬੱਧ ਹੋਣ ਲਈ ਇੱਕ ਟੀਚਾ ਮਿਤੀ ਅਤੇ ਗਿਣਤੀ ਨਿਰਧਾਰਤ ਕਰੋ। ਅਸੀਂ ਇਸਨੂੰ ਟ੍ਰੈਕ ਕਰਨ ਵਿੱਚ ਤੁਹਾਡੀ ਮਦਦ ਕਰਾਂਗੇ।';
+
+  @override
+  String get guest_mode_title => 'ਮਹਿਮਾਨ ਮੋਡ';
+
+  @override
+  String get guest_mode_desc =>
+      'ਆਪਣੇ ਅਧਿਆਤਮਿਕ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਅਨਲੌਕ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ।';
+
+  @override
+  String get guest_signin_btn => 'ਸਾਈਨ ਇਨ';
+
+  @override
+  String get wisdom_title => 'ਅੱਜ ਲਈ ਗਿਆਨ';
 
   @override
   String get wisdom_dismissed =>
-      'ଆଜିର ଜ୍ଞାନ ଉପରେ ଚିନ୍ତନ କରାଯାଇଛି।\nଆସନ୍ତାକାଲି ଏକ ନୂତନ ଅନ୍ତର୍ਦୃଷ୍ଟି ଆସିବ।';
+      'ਅੱਜ ਦੇ ਗਿਆਨ \'ਤੇ ਵਿਚਾਰ ਕੀਤਾ ਗਿਆ ਹੈ।\nਕੱਲ੍ਹ ਇੱਕ ਨਵੀਂ ਸਮਝ ਆਵੇਗੀ।';
 
   @override
-  String get wisdom_loading => 'ଜ୍ଞାନ ଲୋଡ୍ ହେଉଛି...';
+  String get wisdom_loading => 'ਗਿਆਨ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...';
 
   @override
-  String get leaderboard_allTime => 'ସବୁ ସମୟ';
+  String get wisdom_signin_to_share => 'ਗਿਆਨ ਕਾਰਡ ਸਾਂਝੇ ਕਰਨ ਲਈ ਸਾਈਨ ਇਨ ਕਰੋ!';
 
   @override
-  String get leaderboard_thisWeek => 'ଏହି ସପ୍ତାହ';
+  String get wisdom_creating_card => 'ਤੁਹਾਡਾ ਬ੍ਰਹਮ ਕਾਰਡ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...';
 
   @override
-  String get leaderboard_yourProgress => 'ଆପଣଙ୍କର ଅଗ୍ରଗତି';
+  String get leaderboard_allTime => 'ਆਲ-ਟਾਈਮ';
+
+  @override
+  String get leaderboard_thisWeek => 'ਇਸ ਹਫ਼ਤੇ';
+
+  @override
+  String get leaderboard_yourProgress => 'ਤੁਹਾਡੀ ਤਰੱਕੀ';
+
+  @override
+  String get leaderboard_yourRank => 'ਤੁਹਾਡਾ ਰੈਂਕ';
 
   @override
   String leaderboard_jappsToPass(Object count, Object playerName) {
-    return '$playerNameଙ୍କୁ ଅତିକ୍ରମ କରିବା ପାଇଁ $count ଜପ';
+    return '$playerName ਨੂੰ ਪਾਰ ਕਰਨ ਲਈ $count ਜਾਪ';
   }
-
-  @override
-  String get leaderboard_empty => 'ଯାତ୍ରਾ ଆରମ୍ଭ ହେଉଛି!';
-
-  @override
-  String get leaderboard_emptySubtitle => 'ଲିଡରବୋର୍ଡରେ ପ୍ରଥମ ହୁଅନ୍ତୁ!';
-
-  @override
-  String get leaderboard_isEmpty => 'ଲିଡରବୋର୍ଡ ଖାଲି ଅଛି।';
-
-  @override
-  String get leaderboard_noBade => 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ବ୍ୟାଜ୍ ନାହିଁ';
-
-  @override
-  String get leaderboard_notOnBoard => 'ବୋର୍ଡରେ ଆସିବା ପାଇଁ ଜପ ଜାରି ରଖନ୍ତୁ!';
-
-  @override
-  String get leaderboard_topOfBoard => 'ଆପଣ ଶୀର୍ଷରେ ଅଛନ୍ତି! ✨';
-
-  @override
-  String get leaderboard_noChants => 'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଜପ ନାହିଁ';
-
-  @override
-  String leaderboard_topMantra(Object mantra) {
-    return 'ଶୀର୍ଷ ମନ୍ତ୍ର: $mantra';
-  }
-
-  @override
-  String get profile_yourProgress => 'ଆପଣଙ୍କର ଅଗ୍ରଗତି';
-
-  @override
-  String get profile_dailyStreak => 'ଦୈନିକ ଧାରା';
-
-  @override
-  String get profile_totalJapps => 'ମୋଟ ଜପ';
-
-  @override
-  String get profile_globalRank => 'ଗ୍ଲୋବାଲ୍ ରାଙ୍କ୍';
-
-  @override
-  String get profile_mantraTotals => 'ମନ୍ତ୍ର ମୋଟ';
-
-  @override
-  String get profile_achievements => 'ଉପଲବ୍ଧି';
-
-  @override
-  String get profile_shareProgress => 'ଆପଣଙ୍କର ଅଗ୍ରଗତି ସେୟାର କରନ୍ତୁ';
-
-  @override
-  String get profile_badgesEmpty =>
-      'ଆପଣଙ୍କର ପ୍ରଥମ ବ୍ୟାଜ୍ ଅର୍ଜନ କରିବା ପାଇଁ ଜପ ଆରମ୍ଭ କରନ୍ତୁ!';
-
-  @override
-  String get profile_mantrasEmpty => 'ଆପଣଙ୍କର ମୋଟ ଦେଖିବା ପାଇଁ ଜପ ଆରମ୍ଭ କରନ୍ତୁ!';
-
-  @override
-  String get profile_rateApp => 'ଆମ ଆପକୁ ରେଟ୍ କରନ୍ତୁ';
-
-  @override
-  String get profile_supportSubtitle => 'ଆପକୁ ଚାଲୁ ରଖିବାରେ ସାହାଯ୍ୟ କରନ୍ତୁ';
-
-  @override
-  String get profile_myBodhi => 'ମୋ ବୋଧି ବୃକ୍ଷ';
-
-  @override
-  String get profile_myBodhiSubtitle => 'ଆପଣଙ୍କ ଭକ୍ତିର ଏକ ଦୃଶ୍ୟମାନ ପ୍ରମାଣ ।';
-
-  @override
-  String get profile_yourAchievement => 'ଆପଣଙ୍କ ଉପଲବ୍ଧି';
-
-  @override
-  String get profile_yourAchievements => 'ଆପଣଙ୍କ ଉପଲବ୍ଧି';
-
-  @override
-  String get profile_aMark => 'ଆପଣଙ୍କ ସମର୍ପଣର ଚିହ୍ନ।';
-
-  @override
-  String get profile_changeName => 'ଆପଣଙ୍କ ନାମ ପରିବର୍ତ୍ତନ କରନ୍ତୁ';
-
-  @override
-  String get profile_enterName => 'ନୂଆ ନାମ ପ୍ରବେଶ କରନ୍ତୁ';
-
-  @override
-  String get settings_title => 'ସେଟିଂସମୂହ';
-
-  @override
-  String get settings_ambiance => 'ମନ୍ଦିର ପରିବେଶ';
-
-  @override
-  String get settings_ambianceDesc => 'ସୂକ୍ଷ୍ମ ପୃଷ୍ଠଭୂମି ମନ୍ଦିର ଧ୍ୱନି ବଜାନ୍ତୁ।';
-
-  @override
-  String get settings_reminders => 'ଦୈନିକ ସ୍ମାରକ';
-
-  @override
-  String get settings_remindersDesc =>
-      'ଯଦି ଆପଣ ଆଜି ଜପ କରିନାହାଁନ୍ତି ତେବେ ଏକ ବିଜ୍ଞପ୍ତି ਪ੍ਰਾਪਤ କରନ୍ତୁ।';
-
-  @override
-  String get settings_language => 'ଆପ୍ ଭାଷା';
-
-  @override
-  String get settings_feedback => 'ମତାମତ ଏବଂ ସମର୍ଥନ';
-
-  @override
-  String get settings_feedbackDesc =>
-      'ଏକ ବଗ୍ ରିପୋର୍ଟ କରନ୍ତୁ କିମ୍ବା ଏକ ବୈଶିଷ୍ଟ୍ୟ ପରାମର୍ଶ ଦିଅନ୍ତୁ।';
-
-  @override
-  String get settings_deletingAccount => 'Deleting your account...';
-
-  @override
-  String get settings_privacy => 'ଗୋପନୀୟତା ନୀତି';
-
-  @override
-  String get settings_terms => 'ନିୟମ ଏବଂ ସର୍ତ୍ତାବଳୀ';
-
-  @override
-  String get settings_deleteAccount => 'ମୋର ଖାତା ବିଲୋପ କରନ୍ତୁ';
-
-  @override
-  String get settings_signOut => 'ସାଇନ୍ ଆଉଟ୍';
-
-  @override
-  String get dialog_deleteTitle => 'ଖାତା ବିଲୋପ କରିବେ କି?';
-
-  @override
-  String get dialog_deleteBody =>
-      'ଏହି କାର୍ଯ୍ୟ ସ୍ଥାୟୀ ଅଟେ ଏବଂ ଏହାକୁ ପୂର୍ବବତ୍ କରାଯାଇପାରିବ ନାହିଁ। ଆପଣଙ୍କର ସମସ୍ତ ଜପ ଡାଟା, ଉପଲବ୍ଧି, ଏବଂ ବ୍ୟକ୍ତିଗତ ସୂଚନା ସ୍ଥାୟୀ ଭାବରେ ଲିଭାଇ ଦିଆଯିବ।\n\nଆପଣ ନିଶ୍ଚିତ କି ଆପଣ ଆଗକୁ ବଢ଼ିବାକୁ ଚାହୁଁଛନ୍ତି?';
-
-  @override
-  String get dialog_deleteConfirm => 'ହଁ, ମୋର ଖାତା ବିଲୋପ କରନ୍ତୁ';
-
-  @override
-  String get dialog_continue => 'ଜାରି ରଖନ୍ତୁ';
-
-  @override
-  String get dialog_pressBack => 'ବାହାରିବା ପାଇଁ ପୁଣିଥରେ ବ୍ୟାକ୍ ଦବାନ୍ତୁ';
-
-  @override
-  String get dialog_update => 'ଅଦ୍ୟତନ ଆବଶ୍ୟକ';
-
-  @override
-  String get dialog_updateNow => 'ଏବେ ଅଦ୍ୟତନ କରନ୍ତୁ';
-
-  @override
-  String get dialog_save => 'ସଂରକ୍ଷଣ କରନ୍ତୁ';
-
-  @override
-  String get dialog_something => 'କିଛି ଭୁଲ୍ ହୋଇଗଲା।';
-
-  @override
-  String get dialog_cancel => 'ବାତିଲ କରନ୍ତୁ';
-
-  @override
-  String get misc_japps => 'ଜପ';
-
-  @override
-  String get misc_days => 'ଦିନ';
-
-  @override
-  String get misc_badge => 'ବ୍ୟାଜ୍';
-
-  @override
-  String get lang_chooseLang => 'ଜାରି ରଖିବା ପାଇଁ ଆପଣଙ୍କ ପସନ୍ଦର ଭାଷା ବାଛନ୍ତୁ';
-
-  @override
-  String get lang_searchLang => 'ଭାଷା ଖୋଜନ୍ତୁ';
-
-  @override
-  String get garden_totalMala => 'ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଥିବା ମାଳା';
-
-  @override
-  String get misc_malas => 'ମାଳା';
 
   @override
   String leaderboard_malasToPass(Object count, Object playerName) {
-    return '$playerNameଙ୍କୁ ଅତିକ୍ରମ କରିବା ପାଇଁ $count ମାଳା';
+    return '$playerName ਨੂੰ ਪਾਰ ਕਰਨ ਲਈ $count ਮਾਲਾਵਾਂ';
   }
 
   @override
-  String get dialog_mic => 'ଅଡିଓ ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ଆବଶ୍ୟକ।';
+  String get leaderboard_empty => 'ਯਾਤਰਾ ਸ਼ੁਰੂ ਹੁੰਦੀ ਹੈ!';
 
   @override
-  String get custom_create => 'ଆପଣଙ୍କ ମନ୍ତ୍ର ସୃଷ୍ଟି କରନ୍ତୁ';
+  String get leaderboard_emptySubtitle =>
+      'ਲੀਡਰਬੋਰਡ ਦੀ ਸ਼ੋਭਾ ਵਧਾਉਣ ਵਾਲੇ ਪਹਿਲੇ ਵਿਅਕਤੀ ਬਣੋ!';
 
   @override
-  String get custom_yourMantra => 'ମନ୍ତ୍ର ନାମ';
+  String get leaderboard_isEmpty => 'ਲੀਡਰਬੋਰਡ ਖਾਲੀ ਹੈ।';
 
   @override
-  String get custom_hint => 'ଯଥା, ଓଁ ଗୁରବେ ନମଃ';
+  String get leaderboard_noBade => 'ਅਜੇ ਤੱਕ ਕੋਈ ਬੈਜ ਨਹੀਂ';
 
   @override
-  String get custom_back => 'ଏକ ପୃଷ୍ଠଭୂମି ବାଛନ୍ତୁ:';
+  String get leaderboard_notOnBoard => 'ਬੋਰਡ \'ਤੇ ਆਉਣ ਲਈ ਜਾਪ ਕਰਦੇ ਰਹੋ!';
 
   @override
-  String get custom_addVoice => 'ଆପଣଙ୍କ ସ୍ୱର ଯୋଗ କରନ୍ତୁ (ବୈକଳ୍ପିକ):';
+  String get leaderboard_topOfBoard => 'ਤੁਸੀਂ ਸਿਖਰ \'ਤੇ ਹੋ! ✨';
 
   @override
-  String get custom_recording => 'ରେକର୍ଡିଂ ଚାଲିଛି...';
+  String get leaderboard_noChants => 'ਅਜੇ ਤੱਕ ਕੋਈ ਜਾਪ ਨਹੀਂ';
 
   @override
-  String get custom_tapToRecord => 'ରେକର୍ଡ କରିବାକୁ ମାଇକ୍ ଟ୍ୟାପ୍ କରନ୍ତୁ';
+  String leaderboard_topMantra(String mantra) {
+    return 'ਚੋਟੀ ਦਾ ਮੰਤਰ: $mantra';
+  }
 
   @override
-  String get custom_saveMantra => 'ମନ୍ତ୍ର ସଂରକ୍ଷଣ କରନ୍ତୁ';
+  String get profile_yourProgress => 'ਤੁਹਾਡੀ ਤਰੱਕੀ';
 
   @override
-  String get custom_micAccess =>
-      'ଅଡିଓ ରେକର୍ଡ କରିବା ପାଇଁ ମାଇକ୍ରୋଫୋନ୍ ଅନୁମତି ଆବଶ୍ୟକ।';
+  String get profile_dailyStreak => 'ਰੋਜ਼ਾਨਾ ਸਟ੍ਰੀਕ';
 
   @override
-  String get profile_yourCustomMantra => 'ମୋ କଷ୍ଟମ୍ ମନ୍ତ୍ର';
+  String get profile_totalJapps => 'ਕੁੱਲ ਜਾਪ';
+
+  @override
+  String get profile_globalRank => 'ਗਲੋਬਲ ਰੈਂਕ';
+
+  @override
+  String get profile_mantraTotals => 'ਮੰਤਰ ਕੁੱਲ';
+
+  @override
+  String get profile_achievements => 'ਪ੍ਰਾਪਤੀਆਂ';
+
+  @override
+  String get profile_shareProgress => 'ਆਪਣੀ ਤਰੱਕੀ ਸਾਂਝੀ ਕਰੋ';
+
+  @override
+  String get profile_badgesEmpty =>
+      'ਆਪਣਾ ਪਹਿਲਾ ਬੈਜ ਕਮਾਉਣ ਲਈ ਜਾਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ!';
+
+  @override
+  String get profile_mantrasEmpty =>
+      'ਇੱਥੇ ਆਪਣਾ ਕੁੱਲ ਦੇਖਣ ਲਈ ਜਾਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ!';
+
+  @override
+  String get profile_rateApp => 'ਸਾਡੀ ਐਪ ਨੂੰ ਰੇਟ ਕਰੋ';
+
+  @override
+  String get profile_supportTitle => 'ਨਾਮ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰੋ';
+
+  @override
+  String get profile_supportSubtitle => 'ਐਪ ਨੂੰ ਚਲਾਉਂਦੇ ਰਹਿਣ ਵਿੱਚ ਮਦਦ ਕਰੋ';
+
+  @override
+  String get profile_myBodhi => 'ਮੇਰਾ ਬੋਧੀ ਰੁੱਖ';
+
+  @override
+  String get profile_myBodhiSubtitle => 'ਤੁਹਾਡੀ ਸ਼ਰਧਾ ਦਾ ਇੱਕ ਦ੍ਰਿਸ਼ ਪ੍ਰਮਾਣ।';
+
+  @override
+  String get profile_yourAchievement => 'ਤੁਹਾਡੀਆਂ ਪ੍ਰਾਪਤੀਆਂ';
+
+  @override
+  String get profile_yourAchievements => 'ਤੁਹਾਡੀਆਂ ਪ੍ਰਾਪਤੀਆਂ';
+
+  @override
+  String get profile_aMark => 'ਤੁਹਾਡੇ ਸਮਰਪਣ ਦਾ ਨਿਸ਼ਾਨ।';
+
+  @override
+  String get profile_changeName => 'ਆਪਣਾ ਨਾਮ ਬਦਲੋ';
+
+  @override
+  String get profile_enterName => 'ਨਵਾਂ ਨਾਮ ਦਰਜ ਕਰੋ';
+
+  @override
+  String get profile_shareApp => 'ਨਾਮ ਜਾਪ ਸਾਂਝਾ ਕਰੋ';
+
+  @override
+  String get profile_yourCustomMantra => 'ਮੇਰੇ ਕਸਟਮ ਮੰਤਰ';
 
   @override
   String get profile_noCustoms =>
-      'ଆପଣ ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି କଷ୍ଟମ୍ ମନ୍ତ୍ର ଯୋଗ କରିନାହାଁନ୍ତି।';
+      'ਤੁਸੀਂ ਅਜੇ ਤੱਕ ਕੋਈ ਕਸਟਮ ਮੰਤਰ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੇ ਹਨ।';
 
   @override
-  String get profile_addNewMantra => 'ନୂଆ ମନ୍ତ୍ର ଯୋଗ କରନ୍ତୁ';
-
-  @override
-  String get dialog_profilePictureUpdate => 'ପ୍ରୋଫାଇଲ୍ ଚିତ୍ର ଅଦ୍ୟତନ କରାଯାଇଛି!';
-
-  @override
-  String get dialog_failedToUpload => 'ପ୍ରତିଛବି ଅପଲୋଡ୍ କରିବାରେ ବିଫଳ।';
-
-  @override
-  String get dialog_exceptionCard => 'ସେୟାରଯୋଗ୍ୟ କାର୍ଡ ପ୍ରସଙ୍ଗ ଉପଲବ୍ଧ ନାହିଁ।';
-
-  @override
-  String get dialog_couldNotOpenPS => 'ପ୍ଲେ ଷ୍ଟୋର୍ ଖୋଲିପାରିଲା ନାହିଁ।';
+  String get profile_addNewMantra => 'ਨਵਾਂ ਮੰਤਰ ਸ਼ਾਮਲ ਕਰੋ';
 
   @override
   String profile_deleteMantra(Object mantraName) {
-    return '\"$mantraName\" ବିଲୋପ କରିବେ କି?';
+    return '\"$mantraName\" ਨੂੰ ਮਿਟਾਉਣਾ ਹੈ?';
   }
 
   @override
   String get profile_deleteMantraSure =>
-      'ଆପଣ ନିଶ୍ଚିତ କି? ଏହି ମନ୍ତ୍ର ସହିତ ଜଡିତ ସମସ୍ତ ଜପ ଗଣନା ମଧ୍ୟ ସ୍ଥାୟୀ ଭାବରେ ବିଲୋପ କରାଯିବ।';
+      'ਕੀ ਤੁਸੀਂ ਯਕੀਨੀ ਹੋ? ਇਸ ਮੰਤਰ ਨਾਲ ਜੁੜੀਆਂ ਸਾਰੀਆਂ ਜਾਪ ਗਿਣਤੀਆਂ ਵੀ ਸਥਾਈ ਤੌਰ \'ਤੇ ਮਿਟਾ ਦਿੱਤੀਆਂ ਜਾਣਗੀਆਂ।';
 
   @override
-  String get profile_yesDelete => 'ହଁ, ବିଲୋପ କରନ୍ତୁ';
+  String get profile_yesDelete => 'ਹਾਂ, ਮਿਟਾਓ';
 
   @override
-  String get profile_couldNotUserData =>
-      'ଉପଯୋଗକର୍ତ୍ତା ଡାଟା ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ।';
+  String get profile_couldNotUserData => 'ਉਪਭੋਗਤਾ ਡੇਟਾ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ।';
 
   @override
-  String get misc_anonymous => 'ଅଜ୍ଞାତ';
+  String get profile_offline_card_title => 'ਔਫਲਾਈਨ ਜਾਪ ਲੌਗ ਕਰੋ';
 
   @override
-  String get profile_sankalpaSet => 'ଏକ ପବିତ୍ର ସଂକଳ୍ପ କରନ୍ତୁ';
+  String get profile_offline_card_subtitle =>
+      'ਆਪਣੀ ਸਰੀਰਕ ਮਾਲਾ ਤੋਂ ਗਿਣਤੀਆਂ ਸ਼ਾਮਲ ਕਰੋ';
 
   @override
-  String get profile_sankalpaSubtitle => 'ଏକ ବ୍ୟକ୍ତିଗତ ଜପ ଲକ୍ଷ୍ୟ ସ୍ଥିର କରନ୍ତୁ।';
+  String get profile_gamification_header => 'ਗੈਮੀਫਿਕੇਸ਼ਨ';
 
   @override
-  String get profile_sankalpaTitle => 'ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ';
+  String get profile_commitments_header => 'ਵਚਨਬੱਧਤਾਵਾਂ';
 
   @override
-  String get profile_sankalpaChanting => 'ଜପ କରୁଛନ୍ତି';
+  String get profile_insights_header => 'ਮੰਤਰ ਜਾਣਕਾਰੀ';
+
+  @override
+  String get profile_my_mantras_header => 'ਮੇਰੇ ਮੰਤਰ';
+
+  @override
+  String get profile_quick_actions_header => 'ਤੇਜ਼ ਕਾਰਵਾਈਆਂ';
+
+  @override
+  String get profile_sankalpaSet => 'ਇੱਕ ਪਵਿੱਤਰ ਸੰਕਲਪ ਲਓ';
+
+  @override
+  String get profile_sankalpaSubtitle => 'ਇੱਕ ਨਿੱਜੀ ਜਾਪ ਦਾ ਟੀਚਾ ਨਿਰਧਾਰਤ ਕਰੋ।';
+
+  @override
+  String get profile_sankalpaTitle => 'ਤੁਹਾਡਾ ਜਪ ਸੰਕਲਪ';
+
+  @override
+  String get profile_sankalpaChanting => 'ਜਾਪ ਕਰ ਰਿਹਾ ਹੈ';
+
+  @override
+  String get profile_abandon => 'ਸੰਕਲਪ ਛੱਡੋ';
+
+  @override
+  String get profile_progress => 'ਤਰੱਕੀ';
+
+  @override
+  String get profile_deadline => 'ਅੰਤਮ ਤਾਰੀਖ';
+
+  @override
+  String get profile_achieved => 'ਪ੍ਰਾਪਤ ਕੀਤਾ!';
 
   @override
   String profile_sankalpaToReach(int targetCount) {
-    return ' $targetCount ଥର ପହଞ୍ଚିବା ପାଇଁ।';
+    return ' $targetCount ਵਾਰ ਪਹੁੰਚਣ ਲਈ।';
   }
 
   @override
   String profile_sankalpaByDate(String date) {
-    return '$date ସୁଦ୍ଧା';
+    return '$date ਤੱਕ';
   }
 
   @override
-  String get dialog_sankalpaTitle => 'ଆପଣଙ୍କ ଜପ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ';
+  String get settings_title => 'ਸੈਟਿੰਗਾਂ';
 
   @override
-  String get dialog_sankalpaSelectMantra => 'ମନ୍ତ୍ର ଚୟନ କରନ୍ତୁ';
+  String get settings_ambiance => 'ਮੰਦਰ ਦਾ ਮਾਹੌਲ';
 
   @override
-  String get dialog_sankalpaTargetCount => 'ଲକ୍ଷ୍ୟ ଗଣନା (ଯଥା, 11000)';
+  String get settings_ambianceDesc => 'ਹਲਕੀ ਪਿਛੋਕੜ ਮੰਦਰ ਦੀਆਂ ਆਵਾਜ਼ਾਂ ਚਲਾਓ।';
 
   @override
-  String get dialog_sankalpaTargetDate => 'ଲକ୍ଷ୍ୟ ତାରିଖ';
+  String get settings_reminders => 'ਰੋਜ਼ਾਨਾ ਰੀਮਾਈਂਡਰ';
 
   @override
-  String get dialog_sankalpaSelectDate => 'ଏକ ତାରିଖ ଚୟନ କରନ୍ତୁ';
+  String get settings_remindersDesc =>
+      'ਜੇਕਰ ਤੁਸੀਂ ਅੱਜ ਜਾਪ ਨਹੀਂ ਕੀਤਾ ਹੈ ਤਾਂ ਸੂਚਨਾ ਪ੍ਰਾਪ ਕਰੋ।';
 
   @override
-  String get dialog_sankalpaSetPledge => 'ମୋ ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ';
+  String get settings_language => 'ਐਪ ਭਾਸ਼ਾ';
 
   @override
-  String get dialog_sankalpaError =>
-      'ଦୟାକରି ସମସ୍ତ କ୍ଷେତ୍ର ସଠିକ୍ ଭାବରେ ପୂରଣ କରନ୍ତୁ।';
+  String get settings_feedback => 'ਫੀਡਬੈਕ ਅਤੇ ਸਮਰਥਨ';
 
   @override
-  String get dialog_sankalpaErrorTarget =>
-      'ଲକ୍ଷ୍ୟ ଗଣନା ଆପଣଙ୍କ ବର୍ତ୍ତମାନର ଗଣନାଠାରୁ ଅଧିକ ହେବା ଆବଶ୍ୟକ।';
+  String get settings_feedbackDesc =>
+      'ਬੱਗ ਦੀ ਰਿਪੋਰਟ ਕਰੋ ਜਾਂ ਕਿਸੇ ਵਿਸ਼ੇਸ਼ਤਾ ਦਾ ਸੁਝਾਅ ਦਿਓ।';
 
   @override
-  String get support_openUPI => 'ଆପଣଙ୍କ UPI ଆପ୍ ଖୋଲୁଛି...';
+  String get settings_deletingAccount => 'ਤੁਹਾਡਾ ਖਾਤਾ ਮਿਟਾਇਆ ਜਾ ਰਿਹਾ ਹੈ...';
 
   @override
-  String get support_cannotOpenUPI => 'UPI ଆପ୍ ଲଞ୍ଚ ହୋଇପାରିଲା ନାହିଁ।';
+  String get settings_privacy => 'ਪਰਦੇਦਾਰੀ ਨੀਤੀ';
 
   @override
-  String get support_upiError =>
-      'ତ୍ରୁଟି: ଖୋଲିବା ପାଇଁ କୌଣସି UPI ଆପ୍ ମିଳିଲା ନାହିଁ।';
+  String get settings_terms => 'ਨਿਯਮ ਅਤੇ ਸ਼ਰਤਾਂ';
 
   @override
-  String get support_chooseOffering => 'ଏକ ପ୍ରସାଦ ବାଛନ୍ତୁ';
+  String get settings_deleteAccount => 'ਮੇਰਾ ਖਾਤਾ ਮਿਟਾਓ';
 
   @override
-  String get support_enterAmt => 'କିମ୍ବା ଏକ କଷ୍ଟମ୍ ପରିମାଣ ଏଣ୍ଟର୍ କରନ୍ତୁ (INR)';
+  String get settings_signOut => 'ਸਾਈਨ ਆਉਟ';
 
   @override
-  String get support_validAmt =>
-      'ଦୟାକରି ଏକ ବୈଧ ପରିମାଣ ଚୟନ କରନ୍ତୁ କିମ୍ବା ଏଣ୍ଟର୍ କରନ୍ତୁ।';
+  String get settings_exit_guest => 'ਮਹਿਮਾਨ ਮੋਡ ਤੋਂ ਬਾਹਰ ਜਾਓ';
 
   @override
-  String get support_now => 'ଏବେ ସମର୍ଥନ କରନ୍ତୁ';
+  String get settings_support_header => 'ਸਮਰਥਨ ਅਤੇ ਕਾਨੂੰਨੀ';
 
   @override
-  String get home_chooseMala => 'ଆପଣଙ୍କ ମାଳା ବାଛନ୍ତୁ';
+  String get settings_account_header => 'ਖਾਤਾ';
 
   @override
-  String get home_chooseMalaDesc =>
-      'ଏକ ଶୈଳୀ ବାଛନ୍ତୁ ଯାହା ଆପଣଙ୍କ ଆତ୍ମା ସହିତ ପ୍ରତିଧ୍ୱନିତ ହୁଏ ।';
-
-  @override
-  String get tour_title1 => 'ଡିଜିଟାଲ୍ ଜପ ମାଳା';
-
-  @override
-  String get tour_body1 =>
-      'ଜପ କରିବାକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ। ଆମେ ଆପଣଙ୍କ ମାଳି ଗଣନା କରୁ, ମାଳା ଟ୍ରାକ୍ କରୁ ଏବଂ ଆପଣଙ୍କ ଧାରାକୁ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ବଜାୟ ରଖୁ।';
-
-  @override
-  String get tour_title2 => 'ଗ୍ଲୋବାଲ୍ ଲିଡରବୋର୍ଡ';
-
-  @override
-  String get tour_body2 =>
-      'ହଜାର ହଜାର ସହିତ ଜପ କରନ୍ତୁ। ଆଧ୍ୟାତ୍ମିକ ପ୍ରଗତି ଏବଂ ନିରନ୍ତରତା ମାଧ୍ୟମରେ ଉପରକୁ ଉଠନ୍ତୁ।';
-
-  @override
-  String get tour_title3 => 'ଦୈନିକ ଜ୍ଞାନ';
-
-  @override
-  String get tour_body3 =>
-      'ପ୍ରାଚୀନ ଗ୍ରନ୍ଥରୁ ବଛା ଯାଇଥିବା ଶ୍ଲୋକ ପ୍ରାପ୍ତ କରନ୍ତୁ — ଏକାଧିକ ଭାଷାରେ ଉପଲବ୍ଧ।';
-
-  @override
-  String get tour_title4 => 'ଆପଣଙ୍କ ଆଧ୍ୟାତ୍ମିକ ଯାତ୍ରା';
-
-  @override
-  String get tour_body4 =>
-      'ମାଇଲଖୁଣ୍ଟ ଟ୍ରାକ୍ କରନ୍ତୁ, ସଂକଳ୍ପ ସ୍ଥିର କରନ୍ତୁ ଏବଂ ଆପଣଙ୍କ ଅଭିବୃଦ୍ଧି ଏବଂ ଉପଲବ୍ଧି ଉପରେ ଚିନ୍ତନ କରନ୍ତୁ।';
-
-  @override
-  String get dialog_getStarted => 'ଆରମ୍ଭ କରନ୍ତୁ';
-
-  @override
-  String get dialog_next => 'ପରବର୍ତ୍ତୀ';
-
-  @override
-  String get dialog_skip => 'ଏଡାଇ ଦିଅନ୍ତୁ';
-
-  @override
-  String get malatype_regular => 'ସାଧାରଣ';
-
-  @override
-  String get malatype_crystal => 'ସ୍ଫଟିକ';
-
-  @override
-  String get malatype_royal => 'ରୟାଲ୍ ଗୋଲ୍ଡ';
-
-  @override
-  String get profile_abandon => 'ସଂକଳ୍ପ ତ୍ୟାଗ କରନ୍ତୁ';
-
-  @override
-  String get profile_progress => 'ପ୍ରଗତି';
-
-  @override
-  String get profile_deadline => 'ଶେଷ ତାରିଖ';
-
-  @override
-  String get profile_achieved => 'ହାସଲ ହେଲା!';
-
-  @override
-  String get support_donate => 'ଦାନ କରନ୍ତୁ';
-
-  @override
-  String get support_paymentSucc =>
-      'Razorpay ଦ୍ୱାରା ସୁରକ୍ଷିତ ଭାବରେ ପେମେଣ୍ଟ ପ୍ରକ୍ରିୟାକରଣ କରାଯାଏ';
-
-  @override
-  String get support_thank => '🙏 ଧନ୍ୟବାଦ';
-
-  @override
-  String get home_customizeMala => 'ମାଳା କଷ୍ଟମାଇଜ୍ କରନ୍ତୁ';
-
-  @override
-  String get dialog_checkoutMyProgress =>
-      'ନାମ ଜପ ଆପ୍‌ରେ ମୋର ଅଗ୍ରଗତି ଯାଞ୍ଚ କରନ୍ତୁ!';
-
-  @override
-  String get appTitle => 'ନାମ ଜପ';
-
-  @override
-  String get login_welcome => 'ନାମ ଜପକୁ ସ୍ୱାଗତ';
-
-  @override
-  String get profile_shareApp => 'ନାମ ଜପ ସେୟାର କରନ୍ତୁ';
-
-  @override
-  String get profile_supportTitle => 'ନାମ ଜପକୁ ସମର୍ଥନ କରନ୍ତୁ';
-
-  @override
-  String get dialog_updateDesc =>
-      'ମହତ୍ତ୍ୱପୂର୍ଣ୍ଣ ଅଦ୍ୟତନ ସହିତ ନାମ ଜପର ଏକ ନୂଆ ସଂସ୍କରଣ ଉପଲବ୍ଧ। ଜାରି ରଖିବା ପାଇଁ ଦୟାକରି ଆପ୍ ଅଦ୍ୟତନ କରନ୍ତୁ।';
+  String get support_title => 'ਨਾਮ ਜਾਪ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ ਕਰੋ';
 
   @override
   String get support_desc =>
-      'ନାମ ଜପ ହେଉଛି ପ୍ରେମର ପରିଶ୍ରମ, ଯାହା ଜଣେ ଏକକ ବିକାଶକାରୀଙ୍କ ଦ୍ୱାରା ନିର୍ମିତ। ଆପଣଙ୍କ ନିଃସ୍ୱାର୍ଥପର ଅବଦାନ (ସେବା) ସର୍ଭରଗୁଡ଼ିକୁ ଚାଲୁ ରଖିବାରେ, ବିଜ୍ଞାପନକୁ ସର୍ବନିମ୍ନ ରଖିବାରେ ଏବଂ ସମସ୍ତ ଭକ୍ତଙ୍କ ପାଇଁ ଆପକୁ ମାଗଣାରେ ରଖିବାରେ ସାହାଯ୍ୟ କରେ।';
-
-  @override
-  String get support_title => 'ନାମ ଜପ ପ୍ରକଳ୍ପକୁ ସମର୍ଥନ କରନ୍ତୁ';
+      'ਨਾਮ ਜਾਪ ਪਿਆਰ ਦੀ ਮਿਹਨਤ ਹੈ, ਜੋ ਇੱਕ ਇਕੱਲੇ ਡਿਵੈਲਪਰ ਦੁਆਰਾ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਤੁਹਾਡਾ ਨਿਰਸਵਾਰਥ ਯੋਗਦਾਨ (ਸੇਵਾ) ਸਰਵਰਾਂ ਨੂੰ ਚਾਲੂ ਰੱਖਣ, ਇਸ਼ਤਿਹਾਰਾਂ ਨੂੰ ਘੱਟ ਤੋਂ ਘੱਟ ਰੱਖਣ, ਅਤੇ ਸਾਰੇ ਸ਼ਰਧਾਲੂਆਂ ਲਈ ਐਪ ਨੂੰ ਮੁਫਤ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਕਰਦਾ ਹੈ।';
 
   @override
   String get support_afterTitile =>
-      'ନାମ ଜପକୁ ସମର୍ଥନ କରିଥିବାରୁ ଧନ୍ୟବାଦ — ପ୍ରତ୍ୟେକ ଅବଦାନ ସାହାଯ୍ୟ କରେ।';
+      'ਨਾਮ ਜਾਪ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਧੰਨਵਾਦ — ਹਰ ਯੋਗਦਾਨ ਮਦਦ ਕਰਦਾ ਹੈ।';
+
+  @override
+  String get support_openUPI => 'ਤੁਹਾਡੀ UPI ਐਪ ਖੁੱਲ੍ਹ ਰਹੀ ਹੈ...';
+
+  @override
+  String get support_cannotOpenUPI => 'UPI ਐਪ ਲਾਂਚ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ।';
+
+  @override
+  String get support_upiError => 'ਤਰੁੱਟੀ: ਖੋਲ੍ਹਣ ਲਈ ਕੋਈ UPI ਐਪ ਨਹੀਂ ਮਿਲੀ।';
+
+  @override
+  String get support_chooseOffering => 'ਇੱਕ ਭੇਟਾ ਚੁਣੋ';
+
+  @override
+  String get support_enterAmt => 'ਜਾਂ ਇੱਕ ਕਸਟਮ ਰਕਮ ਦਾਖਲ ਕਰੋ (INR)';
+
+  @override
+  String get support_validAmt => 'ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਰਕਮ ਚੁਣੋ ਜਾਂ ਦਾਖਲ ਕਰੋ।';
+
+  @override
+  String get support_now => 'ਹੁਣੇ ਸਮਰਥਨ ਕਰੋ';
+
+  @override
+  String get support_donate => 'ਦਾਨ ਕਰੋ';
+
+  @override
+  String get support_paymentSucc =>
+      'Razorpay ਦੁਆਰਾ ਭੁਗਤਾਨ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਕੀਤੇ ਗਏ';
+
+  @override
+  String get support_thank => '🙏 ਧੰਨਵਾਦ';
+
+  @override
+  String get support_offer_seva => 'ਸੇਵਾ ਦੀ ਪੇਸ਼ਕਸ਼ ਕਰੋ';
+
+  @override
+  String get support_signin_required =>
+      'ਯੋਗਦਾਨ ਪਾਉਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਸਾਈਨ ਇਨ ਕਰੋ।';
+
+  @override
+  String get support_payment_error =>
+      'ਭੁਗਤਾਨ ਸ਼ੁਰੂ ਨਹੀਂ ਕਰ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।';
+
+  @override
+  String get support_blessed => 'ਤੁਹਾਡੇ \'ਤੇ ਕਿਰਪਾ ਹੋਵੇ।';
+
+  @override
+  String get support_tier_flower => 'ਫੁੱਲ ਭੇਟ';
+
+  @override
+  String get support_tier_lamp => 'ਦੀਵਾ ਜਗਾਉਣਾ';
+
+  @override
+  String get support_tier_garland => 'ਮਾਲਾ ਸੇਵਾ';
+
+  @override
+  String get support_tier_temple => 'ਮੰਦਰ ਸਹਾਇਤਾ';
+
+  @override
+  String get support_tier_grand => 'ਮਹਾਨ ਭੇਟ';
+
+  @override
+  String get custom_create => 'ਆਪਣਾ ਮੰਤਰ ਬਣਾਓ';
+
+  @override
+  String get custom_yourMantra => 'ਮੰਤਰ ਦਾ ਨਾਮ';
+
+  @override
+  String get custom_hint => 'ਜਿਵੇਂ ਕਿ, ਓਮ ਗੁਰਵੇ ਨਮਹ';
+
+  @override
+  String get custom_back => 'ਇੱਕ ਪਿਛੋਕੜ ਚੁਣੋ:';
+
+  @override
+  String get custom_addVoice => 'ਆਪਣੀ ਆਵਾਜ਼ ਸ਼ਾਮਲ ਕਰੋ (ਵਿਕਲਪਿਕ):';
+
+  @override
+  String get custom_recording => 'ਰਿਕਾਰਡਿੰਗ ਹੋ ਰਹੀ ਹੈ...';
+
+  @override
+  String get custom_tapToRecord => 'ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ \'ਤੇ ਟੈਪ ਕਰੋ';
+
+  @override
+  String get custom_saveMantra => 'ਮੰਤਰ ਸੁਰੱਖਿਅਤ ਕਰੋ';
+
+  @override
+  String get custom_micAccess =>
+      'ਆਡੀਓ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ੍ਰੋਫੋਨ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ।';
+
+  @override
+  String get custom_preview => 'ਪੂਰਵਦਰਸ਼ਨ';
+
+  @override
+  String get custom_voice_saved => 'ਵੌਇਸ ਨੋਟ ਸੁਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ';
+
+  @override
+  String get custom_tap_record => 'ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ';
+
+  @override
+  String get custom_ready_use => 'ਵਰਤਣ ਲਈ ਤਿਆਰ';
+
+  @override
+  String get custom_error_empty_name => 'ਕਿਰਪਾ ਕਰਕੇ ਮੰਤਰ ਦਾ ਨਾਮ ਦਰਜ ਕਰੋ';
+
+  @override
+  String get garden_title => 'ਬੋਧੀ ਬਾਗ';
+
+  @override
+  String get garden_subtitle => 'ਆਪਣੇ ਅਧਿਆਤਮਿਕ ਜੰਗਲ ਨੂੰ ਵਧਾਓ';
+
+  @override
+  String get garden_growth => 'ਅਧਿਆਤਮਿਕ ਵਿਕਾਸ';
+
+  @override
+  String get garden_totalMala => 'ਪੂਰੀਆਂ ਹੋਈਆਂ ਮਾਲਾਵਾਂ';
+
+  @override
+  String get dialog_deleteTitle => 'ਖਾਤਾ ਮਿਟਾਉਣਾ ਹੈ?';
+
+  @override
+  String get dialog_deleteBody =>
+      'ਇਹ ਕਾਰਵਾਈ ਸਥਾਈ ਹੈ ਅਤੇ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ। ਤੁਹਾਡਾ ਸਾਰਾ ਜਾਪ ਡੇਟਾ, ਪ੍ਰਾਪਤੀਆਂ ਅਤੇ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਸਥਾਈ ਤੌਰ \'ਤੇ ਮਿਟਾ ਦਿੱਤੀ ਜਾਵੇਗੀ।\n\nਕੀ ਤੁਸੀਂ ਬਿਲਕੁਲ ਯਕੀਨੀ ਹੋ ਕਿ ਤੁਸੀਂ ਅੱਗੇ ਵਧਣਾ ਚਾਹੁੰਦੇ ਹੋ?';
+
+  @override
+  String get dialog_deleteConfirm => 'ਹਾਂ, ਮੇਰਾ ਖਾਤਾ ਮਿਟਾਓ';
+
+  @override
+  String get dialog_continue => 'ਜਾਰੀ ਰੱਖੋ';
+
+  @override
+  String get dialog_pressBack => 'ਬਾਹਰ ਜਾਣ ਲਈ ਦੁਬਾਰਾ ਵਾਪਸ ਦਬਾਓ';
+
+  @override
+  String get dialog_update => 'ਅੱਪਡੇਟ ਲੋੜੀਂਦਾ ਹੈ';
+
+  @override
+  String get dialog_updateDesc =>
+      'ਨਾਮ ਜਾਪ ਦਾ ਇੱਕ ਨਵਾਂ ਸੰਸਕਰਣ ਮਹੱਤਵਪੂਰਨ ਅੱਪਡੇਟਾਂ ਨਾਲ ਉਪਲਬਧ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਐਪ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ।';
+
+  @override
+  String get dialog_updateNow => 'ਹੁਣੇ ਅੱਪਡੇਟ ਕਰੋ';
+
+  @override
+  String get dialog_save => 'ਸੁਰੱਖਿਅਤ ਕਰੋ';
+
+  @override
+  String get dialog_close => 'ਬੰਦ ਕਰੋ';
+
+  @override
+  String get dialog_something => 'ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ।';
+
+  @override
+  String get dialog_cancel => 'ਰੱਦ ਕਰੋ';
+
+  @override
+  String get dialog_profilePictureUpdate => 'ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ!';
+
+  @override
+  String get dialog_failedToUpload => 'ਚਿੱਤਰ ਅੱਪਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਫਲ।';
+
+  @override
+  String get dialog_exceptionCard => 'ਸਾਂਝਾ ਕਰਨ ਯੋਗ ਕਾਰਡ ਸੰਦਰਭ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।';
+
+  @override
+  String get dialog_couldNotOpenPS => 'ਪਲੇ ਸਟੋਰ ਨਹੀਂ ਖੋਲ੍ਹ ਸਕਿਆ।';
+
+  @override
+  String get dialog_mic => 'ਆਡੀਓ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਮਾਈਕ੍ਰੋਫੋਨ ਦੀ ਇਜਾਜ਼ਤ ਦੀ ਲੋੜ ਹੈ।';
+
+  @override
+  String get dialog_getStarted => 'ਸ਼ੁਰੂ ਕਰੋ';
+
+  @override
+  String get dialog_next => 'ਅਗਲਾ';
+
+  @override
+  String get dialog_skip => 'ਛੱਡੋ';
+
+  @override
+  String get dialog_checkoutMyProgress => 'ਨਾਮ ਜਾਪ ਐਪ \'ਤੇ ਮੇਰੀ ਤਰੱਕੀ ਦੇਖੋ!';
+
+  @override
+  String get dialog_sankalpaTitle => 'ਆਪਣਾ ਜਪ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ';
+
+  @override
+  String get dialog_sankalpaSelectMantra => 'ਮੰਤਰ ਚੁਣੋ';
+
+  @override
+  String get dialog_sankalpaTargetCount => 'ਟੀਚਾ ਗਿਣਤੀ (ਜਿਵੇਂ, 11000)';
+
+  @override
+  String get dialog_sankalpaTargetDate => 'ਟੀਚਾ ਮਿਤੀ';
+
+  @override
+  String get dialog_sankalpaSelectDate => 'ਇੱਕ ਮਿਤੀ ਚੁਣੋ';
+
+  @override
+  String get dialog_sankalpaSetPledge => 'ਮੇਰਾ ਸੰਕਲਪ ਨਿਰਧਾਰਤ ਕਰੋ';
+
+  @override
+  String get dialog_sankalpaError => 'ਕਿਰਪਾ ਕਰਕੇ ਸਾਰੇ ਖੇਤਰ ਸਹੀ ਢੰਗ ਨਾਲ ਭਰੋ।';
+
+  @override
+  String get dialog_sankalpaErrorTarget =>
+      'ਟੀਚਾ ਗਿਣਤੀ ਤੁਹਾਡੀ ਮੌਜੂਦਾ ਗਿਣਤੀ ਤੋਂ ਵੱਧ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।';
+
+  @override
+  String get misc_japps => 'ਜਾਪ';
+
+  @override
+  String get misc_days => 'ਦਿਨ';
+
+  @override
+  String get misc_badge => 'ਬੈਜ';
+
+  @override
+  String get misc_malas => 'ਮਾਲਾਵਾਂ';
+
+  @override
+  String get misc_anonymous => 'ਅਗਿਆਤ';
+
+  @override
+  String get lang_chooseLang => 'ਜਾਰੀ ਰੱਖਣ ਲਈ ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ';
+
+  @override
+  String get lang_searchLang => 'ਭਾਸ਼ਾਵਾਂ ਖੋਜੋ';
+
+  @override
+  String get malatype_regular => 'ਨਿਯਮਤ';
+
+  @override
+  String get malatype_crystal => 'ਕ੍ਰਿਸਟਲ';
+
+  @override
+  String get malatype_royal => 'ਸ਼ਾਹੀ ਸੋਨਾ';
 }

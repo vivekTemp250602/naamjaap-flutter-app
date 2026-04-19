@@ -75,7 +75,7 @@ class _CustomMantraDialogState extends State<CustomMantraDialog> {
         ElevatedButton(
           onPressed: () {
             if (_textController.text.isNotEmpty) {
-              _firestoreService.addCustomMantra(
+              _firestoreService.createCustomMantra(
                   uid: widget.uid,
                   mantraName: _textController.text,
                   backgroundId: _selectedBackgroundId);

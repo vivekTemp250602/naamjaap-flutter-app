@@ -9,7 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:naamjaap/providers/locale_provider.dart';
 import 'package:naamjaap/screens/animated_splash_screen.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
+import 'package:naamjaap/services/local_quotes_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
+import 'package:naamjaap/services/local_notification_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -22,7 +24,7 @@ Future<void> main() async {
   );
 
   await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.debug, // IMPORTANT
+    androidProvider: AndroidProvider.playIntegrity,
   );
 
   runZonedGuarded<Future<void>>(() async {
@@ -34,8 +36,12 @@ Future<void> main() async {
 
     await RemoteConfigService().initialize();
 
+    await LocalQuotesService.init();
+
     LocaleProvider localeProvider = LocaleProvider();
     await localeProvider.loadSavedLocale();
+
+    await LocalNotificationService().init();
 
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -101,6 +107,19 @@ class NaamJaapApp extends StatelessWidget {
             return const Locale('en');
           },
           home: const AnimatedSplashScreen(),
+          // Cap text scale to 1.3x to prevent "Huge" system font from
+          // breaking fixed-width containers across all screens.
+          builder: (context, child) {
+            final mediaQuery = MediaQuery.of(context);
+            final cappedTextScaler = mediaQuery.textScaler.clamp(
+              minScaleFactor: 0.8,
+              maxScaleFactor: 1.3,
+            );
+            return MediaQuery(
+              data: mediaQuery.copyWith(textScaler: cappedTextScaler),
+              child: child!,
+            );
+          },
         );
       },
     );

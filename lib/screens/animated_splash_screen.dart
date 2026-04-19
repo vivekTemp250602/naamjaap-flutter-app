@@ -1,15 +1,18 @@
-import 'dart:ui' as ui;
-import 'dart:math';
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:math' as math;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:naamjaap/providers/locale_provider.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/screens/language_selector_page.dart';
 import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
-import 'package:naamjaap/screens/tour_screen.dart';
-import 'package:naamjaap/utils/constants.dart';
+import 'package:naamjaap/services/remote_config_service.dart';
+import 'package:naamjaap/services/version_check_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AnimatedSplashScreen extends StatefulWidget {
   const AnimatedSplashScreen({super.key});
@@ -20,297 +23,365 @@ class AnimatedSplashScreen extends StatefulWidget {
 
 class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _lotusController;
-  late AnimationController _auraController;
-  late AnimationController _particleController;
-  late AnimationController _raysController;
-
-  late Animation<double> _lotusScale;
-  late Animation<double> _logoFade;
+  // Controllers
+  late AnimationController _mainSequence; // Controls entry flow
+  late AnimationController _rotateController; // Rotating halo
+  late AnimationController _pulseController; // Breathing effect
+  late AnimationController _particleController; // Floating dust
 
   final AudioPlayer _player = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    // 🔊 Play Om Sound
-    _player.play(
-      AssetSource("audio/om_chant.mp3"),
-      volume: 0.35,
-    );
+    // 1. Play Divine Sound
+    _player.play(AssetSource("audio/om_chant.mp3"), volume: 0.6);
 
-    // 🌸 LOTUS BLOOM
-    _lotusController = AnimationController(
+    // 2. Setup Animations
+    _mainSequence = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 4), // Total splash duration
     );
 
-    _lotusScale = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _lotusController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOut),
-      ),
-    );
+    _rotateController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 20),
+    )..repeat();
 
-    _logoFade = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _lotusController,
-        curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
-      ),
-    );
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
 
-    // 🌟 ROTATING HALO
-    _auraController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 12))
-          ..repeat();
+    _particleController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 10),
+    )..repeat();
 
-    // ✨ FLOATING PARTICLES
-    _particleController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 6))
-          ..repeat();
+    _mainSequence.forward();
 
-    // 🌞 RADIATING RAYS (new)
-    _raysController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 10))
-          ..repeat();
-
-    _lotusController.forward();
-
-    _lotusController.addStatusListener((status) {
+    // 3. Navigation Listener (Trigger logic when animation is done)
+    _mainSequence.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        _navigateAfter();
+        _checkVersionAndNavigate(); // Changed function call
       }
     });
   }
 
   @override
   void dispose() {
-    _lotusController.dispose();
-    _auraController.dispose();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    _mainSequence.dispose();
+    _rotateController.dispose();
+    _pulseController.dispose();
     _particleController.dispose();
-    _raysController.dispose();
     _player.dispose();
     super.dispose();
   }
 
+  // --- NEW: VERSION CHECK + NAVIGATION ---
+  Future<void> _checkVersionAndNavigate() async {
+    if (!mounted) return;
+
+    // 1. Perform Version Check (This might show a blocking dialog)
+    await VersionCheckService.checkVersion(context);
+
+    // 2. Verify if we can proceed (Double check logic)
+    // If the dialog was shown and user didn't update, they are stuck there (good).
+    // If the dialog was NOT shown, we proceed.
+
+    // We fetch info again quickly to be safe
+    final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final int currentCode = int.parse(packageInfo.buildNumber);
+    final int minCode = RemoteConfigService().minRequiredVersionCode;
+
+    // Only navigate if version is valid
+    if (currentCode >= minCode) {
+      await _navigateAfter();
+    }
+  }
+
   Future<void> _navigateAfter() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool hasSeenTour =
-        prefs.getBool(AppConstants.prefsKeyHasSeenTour) ?? false;
+    // 1. Get Dependencies
+    final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
 
-    if (!hasSeenTour) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const TourScreen()),
-      );
-      return;
-    }
+    if (!mounted) return;
 
-    final user = FirebaseAuth.instance.currentUser;
+    Widget nextScreen;
 
-    if (user == null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+    // 2. Logic Flow
+    if (!localeProvider.isLocaleSet) {
+      // A. First Run: Select Language
+      nextScreen = const LanguageSelectorPage(uid: "", isFirstRun: true);
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (_) => MantraProvider(user.uid),
-            child: MainAppScreens(user: user),
-          ),
-        ),
-      );
+      // B. Language is set: Check Auth
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        // Not logged in -> Login Screen
+        nextScreen = const LoginScreen();
+      } else {
+        // Logged in -> Main App
+        nextScreen = ChangeNotifierProvider(
+          create: (_) => MantraProvider(user.uid),
+          child: MainAppScreens(user: user),
+        );
+      }
     }
+
+    // 3. Navigate
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => nextScreen,
+        transitionsBuilder: (_, animation, __, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 1000),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: Listenable.merge([
-          _lotusController,
-          _auraController,
-          _particleController,
-          _raysController,
-        ]),
-        builder: (context, _) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.surface,
-                  Colors.amber.shade50,
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+      backgroundColor: Colors.black,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 1. DIVINE BACKGROUND (Radial Glow)
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center:
+                        const Alignment(0, -0.2), // Light centered behind head
+                    radius: 1.2 + (_pulseController.value * 0.1),
+                    colors: [
+                      const Color(0xFFFFCC80), // Bright Gold Center
+                      const Color(0xFFFF8C00), // Saffron
+                      const Color(0xFF5D1049), // Deep Spiritual Purple
+                      const Color(0xFF000000), // Void
+                    ],
+                    stops: const [0.0, 0.3, 0.6, 1.0],
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // 2. ROTATING SACRED RAYS (The Halo)
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.15,
+            child: CustomPaint(
+              painter: DivineRaysPainter(_rotateController),
+              size: const Size(400, 400),
+            ),
+          ),
+
+          // 3. RISING GOLDEN DUST
+          CustomPaint(
+            painter: GoldenDustPainter(_particleController),
+            size: Size.infinite,
+          ),
+
+          // 4. THE DIVINE FIGURE (Premanand Ji)
+          Positioned(
+            bottom: 0, // Anchored to bottom
+            left: 0,
+            right: 0,
+            top: 100, // Push down slightly
+            child: AnimatedBuilder(
+              animation: _mainSequence,
+              builder: (context, child) {
+                // Intro Animation: Slide Up + Fade In
+                final slideVal = CurvedAnimation(
+                  parent: _mainSequence,
+                  curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
+                ).value;
+
+                // Continuous Breathing
+                final breathVal = _pulseController.value * 0.03;
+
+                return Transform.scale(
+                  scale: 0.9 +
+                      (0.1 * slideVal) +
+                      breathVal, // Grow in, then breathe
+                  child: Opacity(
+                    opacity: slideVal,
+                    child: child,
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/blessing_figure.webp', // USER: Ensure this file exists!
+                fit: BoxFit.contain,
               ),
             ),
-            child: Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // ✨ FLOATING PARTICLES
-                  CustomPaint(
-                    painter: ParticlePainter(_particleController.value),
-                    size: const Size(300, 300),
-                  ),
+          ),
 
-                  // 🌞 DIVINE ROTATING RAYS (NEW)
-                  CustomPaint(
-                    painter: RaysPainter(_raysController.value),
-                    size: const Size(260, 260),
-                  ),
+          // 5. APP TITLE (Overlay at bottom)
+          Positioned(
+            bottom: 60,
+            child: AnimatedBuilder(
+              animation: _mainSequence,
+              builder: (context, child) {
+                final val = CurvedAnimation(
+                        parent: _mainSequence,
+                        curve: const Interval(0.5, 1.0, curve: Curves.easeOut))
+                    .value;
 
-                  // 🌟 SOFT ROTATING HALO
-                  Transform.rotate(
-                    angle: _auraController.value * 2 * pi,
-                    child: Container(
-                      width: 240,
-                      height: 240,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            Colors.orange.shade300.withOpacity(0.18),
-                            Colors.deepOrange.shade200.withOpacity(0.04),
-                            Colors.transparent,
-                          ],
+                return Opacity(
+                  opacity: val,
+                  child: Transform.translate(
+                    offset: Offset(0, 20 * (1 - val)),
+                    child: Column(
+                      children: [
+                        Text(
+                          "NAAM JAAP",
+                          style: TextStyle(
+                            fontFamily: 'Serif',
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 4,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                  color: Colors.orange.shade900,
+                                  blurRadius: 20),
+                              const Shadow(
+                                  color: Colors.black,
+                                  blurRadius: 5,
+                                  offset: Offset(2, 2))
+                            ],
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Chant. Connect. Transcend.",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(0.9),
+                            letterSpacing: 1.5,
+                            shadows: const [
+                              Shadow(color: Colors.black, blurRadius: 4)
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-
-                  // 🌸 LOTUS BLOOM ANIMATION
-                  Transform.scale(
-                    scale: _lotusScale.value,
-                    child: CustomPaint(
-                      size: const Size(200, 200),
-                      painter: LotusPainter(_lotusScale.value),
-                    ),
-                  ),
-
-                  // 🕉️ LOGO FADE-IN
-                  FadeTransition(
-                    opacity: _logoFade,
-                    child: Image.asset(
-                      'assets/images/app_logo_simple.png',
-                      width: 100,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
 }
 
-// 🌸 LOTUS (same as before)
-class LotusPainter extends CustomPainter {
-  final double p;
-  LotusPainter(this.p);
+// --- PAINTERS ---
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    final flowerPaint = Paint()..style = PaintingStyle.fill;
-    const petalCount = 8;
-
-    for (int i = 0; i < petalCount; i++) {
-      final ang = (i / petalCount) * 2 * pi;
-      final len = radius * p;
-
-      final path = Path();
-      path.moveTo(center.dx, center.dy);
-
-      final p1 = Offset(center.dx + len * 0.5 * cos(ang - 0.3),
-          center.dy + len * 0.5 * sin(ang - 0.3));
-      final p2 = Offset(center.dx + len * cos(ang), center.dy + len * sin(ang));
-      final p3 = Offset(center.dx + len * 0.5 * cos(ang + 0.3),
-          center.dy + len * 0.5 * sin(ang + 0.3));
-
-      flowerPaint.shader = ui.Gradient.radial(
-        p2,
-        len,
-        [Colors.orange.shade200, Colors.pink.shade300],
-      );
-
-      path.quadraticBezierTo(p1.dx, p1.dy, p2.dx, p2.dy);
-      path.quadraticBezierTo(p3.dx, p3.dy, center.dx, center.dy);
-
-      canvas.drawPath(path, flowerPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-// ✨ FLOATING GOLDEN PARTICLES
-class ParticlePainter extends CustomPainter {
-  final double progress;
-  ParticlePainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rnd = Random(10);
-    final paint = Paint()..color = Colors.orange.shade300.withOpacity(0.45);
-
-    for (int i = 0; i < 24; i++) {
-      final x = rnd.nextDouble() * size.width;
-      final y =
-          (rnd.nextDouble() * size.height + progress * -200) % size.height;
-      final r = rnd.nextDouble() * 3 + 1;
-
-      canvas.drawCircle(Offset(x, y), r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
-
-// 🌞 RADIANT RAYS BEHIND LOTUS (NEW)
-class RaysPainter extends CustomPainter {
-  final double progress;
-  RaysPainter(this.progress);
+// 🌞 Rotating Rays of Light
+class DivineRaysPainter extends CustomPainter {
+  final Animation<double> animation;
+  DivineRaysPainter(this.animation) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final paint = Paint()
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..color = Colors.deepOrange.shade200.withOpacity(0.32);
+      ..color = Colors.white.withOpacity(0.15)
+      ..style = PaintingStyle.fill;
 
-    const rayCount = 20;
-    final radius = size.width / 2;
+    // Rotate the canvas
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    canvas.rotate(animation.value * 2 * math.pi);
 
+    const rayCount = 12;
     for (int i = 0; i < rayCount; i++) {
-      final angle = (i / rayCount) * 2 * pi + progress * 2 * pi;
+      // Draw a ray
+      final path = Path();
+      path.moveTo(0, 0);
+      path.lineTo(-15, -size.width); // Wide at ends
+      path.lineTo(15, -size.width);
+      path.close();
+      canvas.drawPath(path, paint);
+      canvas.rotate(2 * math.pi / rayCount);
+    }
+    canvas.restore();
 
-      final start = Offset(
-        center.dx + radius * 0.55 * cos(angle),
-        center.dy + radius * 0.55 * sin(angle),
-      );
+    // Inner Glow Circle
+    final glowPaint = Paint()
+      ..shader = RadialGradient(
+              colors: [Colors.orange.withOpacity(0.4), Colors.transparent])
+          .createShader(Rect.fromCircle(center: center, radius: 100));
+    canvas.drawCircle(center, 100, glowPaint);
+  }
 
-      final end = Offset(
-        center.dx + radius * cos(angle),
-        center.dy + radius * sin(angle),
-      );
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
 
-      canvas.drawLine(start, end, paint);
+// ✨ Rising Golden Dust
+class GoldenDustPainter extends CustomPainter {
+  final Animation<double> animation;
+  final List<_Particle> particles = [];
+
+  GoldenDustPainter(this.animation) : super(repaint: animation) {
+    final rnd = math.Random(42);
+    for (int i = 0; i < 40; i++) {
+      particles.add(_Particle(rnd));
+    }
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var p in particles) {
+      p.update(size.height, animation.value);
+      final paint = Paint()
+        ..color = Colors.amber.withOpacity(p.opacity * 0.8)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2); // Glowy dots
+
+      canvas.drawCircle(Offset(p.x * size.width, p.y), p.size, paint);
     }
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class _Particle {
+  late double x;
+  late double y;
+  late double size;
+  late double opacity;
+  late double speed;
+
+  _Particle(math.Random rnd) {
+    reset(rnd, true);
+  }
+
+  void reset(math.Random rnd, bool startRandomY) {
+    x = rnd.nextDouble();
+    y = startRandomY ? rnd.nextDouble() * 1000 : 1000; // Start below screen
+    size = 1.0 + rnd.nextDouble() * 3;
+    opacity = 0.2 + rnd.nextDouble() * 0.6;
+    speed = 0.5 + rnd.nextDouble() * 1.5;
+  }
+
+  void update(double height, double time) {
+    y -= speed;
+    if (y < -50) {
+      // Reset to bottom
+      y = height + 50;
+      x = math.Random().nextDouble() * 1.0; // New random X
+    }
+  }
 }

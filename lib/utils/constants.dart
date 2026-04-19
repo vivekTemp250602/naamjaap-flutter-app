@@ -30,23 +30,25 @@ class CustomBackground {
 
 class AppConstants {
   // Mantra Names - Used for display and as keys for SharedPreferences
-  static const String hareKrishna = 'Hare Krishna';
   static const String radhaRadha = 'Radha Radha';
   static const String ramRam = 'Ram Ram';
-  static const String prefsKeyHasSeenTour = 'hasSeenTour';
+  static const String hareKrishna = 'Hare Krishna';
+
+  static const String prefsKeyPendingJapaEvents = 'pendingJapaEvents';
 
   // List of all mantras for easy mapping in the UI
+  // UPDATED ORDER: Radha Radha -> Ram Ram -> Hare Krishna
   static const List<String> mantras = [
-    hareKrishna,
     radhaRadha,
     ramRam,
+    hareKrishna,
   ];
 
   // Map of mantra names to their audio file paths
   static const Map<String, String> mantraAudioPaths = {
-    hareKrishna: 'assets/audio/hare_krishna.mp3',
     radhaRadha: 'assets/audio/radha_radha.mp3',
     ramRam: 'assets/audio/ram_ram.mp3',
+    hareKrishna: 'assets/audio/hare_krishna.mp3',
   };
 
   static final List<CustomBackground> customBackgrounds = [
@@ -57,11 +59,11 @@ class AppConstants {
     _buildGradient(
         'gradient_4', Colors.orange.shade200, Colors.orange.shade800),
     _buildGradient('gradient_5', Colors.pink.shade200, Colors.pink.shade800),
-    _buildImage('image_1', 'assets/images/custom_galaxy.jpeg'),
-    _buildImage('image_2', 'assets/images/custom_mountain.jpeg'),
-    _buildImage('image_3', 'assets/images/custom_sky.jpeg'),
-    _buildImage('image_4', 'assets/images/custom_forest.jpeg'),
-    _buildImage('image_5', 'assets/images/custom_temple.jpg'),
+    _buildImage('image_1', 'assets/images/custom_galaxy.webp'),
+    _buildImage('image_2', 'assets/images/custom_mountain.webp'),
+    _buildImage('image_3', 'assets/images/custom_sky.webp'),
+    _buildImage('image_4', 'assets/images/custom_forest.webp'),
+    _buildImage('image_5', 'assets/images/custom_temple.webp'),
   ];
 
   static CustomBackground getBackgroundById(String id) {
@@ -109,13 +111,6 @@ class AppConstants {
 
   // Map of mantra names to their background image paths
   static const Map<String, List<String>> mantraImagePaths = {
-    hareKrishna: [
-      'assets/images/hare_krishna_1.png',
-      'assets/images/hare_krishna_2.png',
-      'assets/images/hare_krishna_3.png',
-      'assets/images/hare_krishna_4.png',
-      'assets/images/hare_krishna_5.png',
-    ],
     radhaRadha: [
       'assets/images/radha_radha_1.png',
       'assets/images/radha_radha_2.png',
@@ -129,6 +124,13 @@ class AppConstants {
       'assets/images/ram_ram_3.png',
       'assets/images/ram_ram_4.png',
       'assets/images/ram_ram_5.png',
+    ],
+    hareKrishna: [
+      'assets/images/hare_krishna_1.png',
+      'assets/images/hare_krishna_2.png',
+      'assets/images/hare_krishna_3.png',
+      'assets/images/hare_krishna_4.png',
+      'assets/images/hare_krishna_5.png',
     ],
   };
 

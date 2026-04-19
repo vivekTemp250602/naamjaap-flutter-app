@@ -1,0 +1,12 @@
+﻿Analyzing local_notification_service.dart...
+
+  error - local_notification_service.dart:63:43 - The named parameter 'settings' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - local_notification_service.dart:64:7 - Too many positional arguments: 0 expected, but 1 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
+  error - local_notification_service.dart:147:43 - The named parameter 'id' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - local_notification_service.dart:147:43 - The named parameter 'notificationDetails' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - local_notification_service.dart:147:43 - The named parameter 'scheduledDate' is required, but there's no corresponding argument. Try adding the required argument. - missing_required_argument
+  error - local_notification_service.dart:148:7 - Too many positional arguments: 0 expected, but 5 found. Try removing the extra positional arguments, or specifying the name for named arguments. - extra_positional_arguments_could_be_named
+  error - local_notification_service.dart:154:7 - The named parameter 'uiLocalNotificationDateInterpretation' isn't defined. Try correcting the name to an existing named parameter's name, or defining a named parameter with the name 'uiLocalNotificationDateInterpretation'. - undefined_named_parameter
+  error - local_notification_service.dart:154:46 - Undefined name 'UILocalNotificationDateInterpretation'. Try correcting the name to one that is defined, or defining the name. - undefined_identifier
+
+8 issues found.

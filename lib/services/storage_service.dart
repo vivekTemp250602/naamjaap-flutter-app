@@ -28,7 +28,6 @@ class StorageService {
 
       return downloadUrl;
     } catch (e) {
-      print("Error uploading profile picture: $e");
       rethrow; // Rethrow the error to be handled by the UI
     }
   }
@@ -42,7 +41,7 @@ class StorageService {
           .child('profile.jpg');
       await ref.delete();
     } catch (e) {
-      print("Could not delete profile picture (it may not have existed): $e");
+      // Silently handle error deleting profile picture
     }
   }
 }

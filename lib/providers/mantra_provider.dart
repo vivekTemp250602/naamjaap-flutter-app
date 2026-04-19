@@ -11,31 +11,90 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MantraProvider extends ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
-  final String _uid;
+  final String uid;
 
   List<Mantra> _allMantras = [];
   Mantra? _selectedMantra;
   bool _isLoading = true;
 
-  MalaType _selectedMalaType = MalaType.regular;
+  MalaType _selectedMalaType = MalaType.royal;
   MalaType get selectedMalaType => _selectedMalaType;
 
-  late StreamSubscription<DocumentSnapshot> _userStreamSubscription;
+  StreamSubscription<DocumentSnapshot>? _userStreamSubscription;
 
   List<Mantra> get allMantras => _allMantras;
   Mantra? get selectedMantra => _selectedMantra;
   bool get isLoading => _isLoading;
 
-  MantraProvider(this._uid) {
-    _listenToUserChanges();
+  MantraProvider(this.uid) {
+    if (uid == 'guest') {
+      _loadGuestMantras();
+    } else {
+      _listenToUserChanges();
+    }
   }
 
+  // --- 1. GUEST MODE LOGIC (NEW) ---
+  Future<void> _loadGuestMantras() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Load Mala Type preference
+    final String malaTypeName =
+        prefs.getString(prefsKeyMalaType) ?? MalaType.royal.name;
+    _selectedMalaType = MalaType.values.firstWhere(
+      (e) => e.name == malaTypeName,
+      orElse: () => MalaType.royal,
+    );
+
+    // Load ONLY Global Mantras (Guests don't have custom ones)
+    final List<Mantra> globalMantras =
+        RemoteConfigService().mantras.map((mantraName) {
+      final mantraKey = mantraName.toLowerCase().replaceAll(' ', '_');
+      return Mantra(
+        id: mantraKey,
+        name: mantraName,
+        isCustom: false,
+        imagePaths: AppConstants.mantraImagePaths[mantraName],
+        audioPath: AppConstants.mantraAudioPaths[mantraName]!,
+      );
+    }).toList();
+
+    _allMantras = globalMantras;
+
+    final List<String> order = RemoteConfigService().mantras;
+    _allMantras.sort((a, b) {
+      int indexA = order.indexOf(a.name);
+      int indexB = order.indexOf(b.name);
+      // Put unknown/custom mantras at the end
+      if (indexA == -1) indexA = 999;
+      if (indexB == -1) indexB = 999;
+      return indexA.compareTo(indexB);
+    });
+
+    // Load selected mantra preference
+    final lastMantraId = prefs.getString(AppConstants.prefsKeySelectedMantra);
+    if (lastMantraId != null) {
+      _selectedMantra = _allMantras.firstWhere((m) => m.id == lastMantraId,
+          orElse: () => _allMantras.first);
+    } else {
+      _selectedMantra = _allMantras.first;
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  // --- 2. LOGGED-IN USER LOGIC (EXISTING) ---
   void _listenToUserChanges() {
     _userStreamSubscription =
-        _firestoreService.getUserStatsStream(_uid).listen((userSnapshot) {
+        _firestoreService.getUserStatsStream(uid).listen((userSnapshot) {
       if (userSnapshot.exists) {
         final userData = userSnapshot.data() as Map<String, dynamic>;
         _buildMantraList(userData);
+      } else {
+        // Handle case where user doc doesn't exist yet (new user)
+        // We pass an empty map so at least Global Mantras load
+        _buildMantraList({});
       }
     });
   }
@@ -44,10 +103,10 @@ class MantraProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     final String malaTypeName =
-        prefs.getString(prefsKeyMalaType) ?? MalaType.regular.name;
+        prefs.getString(prefsKeyMalaType) ?? MalaType.royal.name;
     _selectedMalaType = MalaType.values.firstWhere(
       (e) => e.name == malaTypeName,
-      orElse: () => MalaType.regular,
+      orElse: () => MalaType.royal,
     );
 
     // 1. Get Global Mantras
@@ -86,6 +145,16 @@ class MantraProvider extends ChangeNotifier {
     // 3. Combine them
     _allMantras = [...globalMantras, ...processedCustomMantras];
 
+    final List<String> order = RemoteConfigService().mantras;
+    _allMantras.sort((a, b) {
+      int indexA = order.indexOf(a.name);
+      int indexB = order.indexOf(b.name);
+      // Put custom mantras (which won't be in the config list) at the end
+      if (indexA == -1) indexA = 999;
+      if (indexB == -1) indexB = 999;
+      return indexA.compareTo(indexB);
+    });
+
     // 4. Load or update the selected mantra
     final lastMantraId = prefs.getString(AppConstants.prefsKeySelectedMantra);
     if (lastMantraId != null) {
@@ -111,9 +180,12 @@ class MantraProvider extends ChangeNotifier {
     required String backgroundId,
     String? tempAudioPath,
   }) async {
+    // SECURITY GUARD: Guests cannot add custom mantras
+    if (uid == 'guest') return;
+
     // 1. Create the mantra in Firestore first to get its unique ID
     final String newMantraId = await _firestoreService.createCustomMantra(
-      uid: _uid,
+      uid: uid,
       mantraName: mantraName,
       backgroundId: backgroundId,
     );
@@ -133,7 +205,7 @@ class MantraProvider extends ChangeNotifier {
 
         // 3. Now, update Firestore with the new, permanent audio path
         await _firestoreService.updateCustomMantraAudioPath(
-          uid: _uid,
+          uid: uid,
           mantraId: newMantraId,
           audioPath: permanentRelativePath,
         );
@@ -144,8 +216,11 @@ class MantraProvider extends ChangeNotifier {
   }
 
   Future<void> deleteCustomMantra(String mantraId) async {
+    // SECURITY GUARD: Guests cannot delete mantras
+    if (uid == 'guest') return;
+
     // 1. Only job is to update Firestore.
-    await _firestoreService.deleteCustomMantra(_uid, mantraId);
+    await _firestoreService.deleteCustomMantra(uid, mantraId);
 
     // 2. If the deleted mantra was the selected one, default to the first
     if (_selectedMantra?.id == mantraId) {
@@ -164,7 +239,7 @@ class MantraProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _userStreamSubscription.cancel();
+    _userStreamSubscription?.cancel(); // Null-safe cancel
     super.dispose();
   }
 }

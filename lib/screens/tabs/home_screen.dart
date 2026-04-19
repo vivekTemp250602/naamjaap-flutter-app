@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
@@ -7,7 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:naamjaap/l10n/app_localizations.dart';
+import 'package:naamjaap/l10n/app_localizations.dart'; // Ensure imported
 import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/services/achievements_service.dart';
@@ -16,18 +18,72 @@ import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/mantra_info_service.dart';
+import 'package:naamjaap/services/rating_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/utils/mala_type.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
+class ZenithSparkles extends CustomPainter {
+  final AnimationController controller;
+  final List<_Sparkle> sparkles;
+  final math.Random random = math.Random();
+
+  ZenithSparkles(this.controller, this.sparkles) : super(repaint: controller);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..style = PaintingStyle.fill;
+    for (var s in sparkles) {
+      s.update(size.height, size.width);
+      paint.color = Colors.white.withOpacity(s.opacity * 0.5);
+      canvas.drawCircle(Offset(s.x, s.y), s.size, paint);
+      paint.color = Colors.amber.withOpacity(s.opacity * 0.2);
+      canvas.drawCircle(Offset(s.x, s.y), s.size * 3, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class _Sparkle {
+  late double x;
+  late double y;
+  late double speedY;
+  late double speedX;
+  late double size;
+  late double opacity;
+  final math.Random rnd;
+
+  _Sparkle(this.rnd) {
+    reset(true);
+  }
+
+  void reset(bool startRandom) {
+    x = rnd.nextDouble() * 500;
+    y = startRandom ? rnd.nextDouble() * 800 : 900;
+    speedY = 0.5 + rnd.nextDouble() * 1.5;
+    speedX = (rnd.nextDouble() - 0.5) * 0.2;
+    size = 1.0 + rnd.nextDouble() * 2.0;
+    opacity = 0.1 + rnd.nextDouble() * 0.5;
+  }
+
+  void update(double height, double width) {
+    y -= speedY;
+    x += speedX;
+    if (y < -50) reset(false);
+  }
+}
+
 class AnimatedBackground extends StatefulWidget {
   final List<String> imagePaths;
-
   const AnimatedBackground({super.key, required this.imagePaths});
 
   @override
@@ -41,13 +97,11 @@ class _AnimatedBackgroundState extends State<AnimatedBackground> {
   @override
   void initState() {
     super.initState();
-
     if (widget.imagePaths.length > 1) {
       _timer = Timer.periodic(const Duration(seconds: 20), (timer) {
         if (mounted) {
-          setState(() {
-            _currentIndex = (_currentIndex + 1) % widget.imagePaths.length;
-          });
+          setState(() =>
+              _currentIndex = (_currentIndex + 1) % widget.imagePaths.length);
         }
       });
     }
@@ -62,7 +116,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
       child: Container(
         key: ValueKey<String>(widget.imagePaths[_currentIndex]),
         decoration: BoxDecoration(
@@ -77,34 +131,49 @@ class _AnimatedBackgroundState extends State<AnimatedBackground> {
 }
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final User? user;
+  const HomeScreen({super.key, this.user});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen>
-    with AutomaticKeepAliveClientMixin {
-  // Services and controllers
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  // Services
   final AudioService _audioService = AudioService();
   final FirestoreService _firestoreService = FirestoreService();
-  late final String _uid;
-  late StreamSubscription<PlayerState> _playerStateSubscription;
   final AchievementsService _achievementsService = AchievementsService();
+  StreamSubscription<DocumentSnapshot>? _userDocSubscription;
+  final AdService _adService = AdService();
+  static const String _screenName = 'home';
+
+  late final String _uid;
+  late final bool _isGuest;
+
+  // Controllers
+  late StreamSubscription<PlayerState> _playerStateSubscription;
   late ConfettiController _malaConfettiController;
+  late AnimationController _particleController;
+  late AnimationController _pulseController;
+  late PageController _carouselController;
+  final RatingService _ratingService = RatingService();
   SyncService? _syncService;
 
-  // Ad Services variables
-  static const String _screenName = 'home';
-  final AdService _adService = AdService();
-
-  // State variables
-  int _totalMantraCount = 0;
+  // State
+  int _dbMantraCount = 0;
+  // int _totalMantraCount = 0;
   Map<String, dynamic> _pendingEvents = {};
   bool _isMuted = false;
   bool _isVibrationEnabled = true;
   bool _isPlaying = false;
   Timer? _syncTimer;
+  final List<_Sparkle> _sparkles = [];
+
+  // Tour Keys
+  final GlobalKey _keyCarousel = GlobalKey();
+  final GlobalKey _keyMala = GlobalKey();
+  final GlobalKey _keyDock = GlobalKey();
 
   @override
   void initState() {
@@ -114,31 +183,86 @@ class _HomeScreenState extends State<HomeScreen>
         onAdLoaded: () {
           if (mounted) setState(() {});
         });
-    _uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final random = math.Random();
+    for (int i = 0; i < 40; i++) {
+      _sparkles.add(_Sparkle(random));
+    }
+
+    _uid = widget.user?.uid ?? 'guest';
+    _isGuest = widget.user == null;
+
     _malaConfettiController =
         ConfettiController(duration: const Duration(seconds: 3));
+    _particleController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 20))
+          ..repeat();
+    _pulseController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..repeat(reverse: true);
+    _carouselController = PageController(viewportFraction: 0.65);
 
     final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
 
-    _syncService = SyncService(
-      connectivityService:
-          Provider.of<ConnectivityService>(context, listen: false),
-      firestoreService: _firestoreService,
-      uid: _uid,
-      onSyncComplete: () => _onSyncComplete(mantraProvider),
-    );
+    void providerListener() {
+      if (!mantraProvider.isLoading) {
+        // Once loaded, force a data fetch for the selected mantra
+        if (!_isGuest) {
+          _fetchInitialDataFromFirestore(mantraProvider.selectedMantra?.id);
+        }
+        mantraProvider
+            .removeListener(providerListener); // Detach listener once done
+      }
+    }
+
+    mantraProvider.addListener(providerListener);
+
+    if (!_isGuest) {
+      _syncService = SyncService(
+        connectivityService:
+            Provider.of<ConnectivityService>(context, listen: false),
+        firestoreService: _firestoreService,
+        uid: _uid,
+        onSyncComplete: () => _onSyncComplete(mantraProvider),
+      );
+    }
 
     _loadPreferences();
-    _loadInitialCounts();
+
+    _userDocSubscription =
+        _firestoreService.getUserStatsStream(_uid).listen((snapshot) {
+      if (snapshot.exists && mounted) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final jappsMap = data['japps'] as Map<String, dynamic>? ?? {};
+
+        // Get ID directly from provider context safely
+        final currentMantraId =
+            Provider.of<MantraProvider>(context, listen: false)
+                .selectedMantra
+                ?.id;
+
+        setState(() {
+          // If provider isn't ready yet, we might miss this update,
+          // but the providerListener above handles the initial load.
+          // This handles subsequent real-time updates.
+          if (currentMantraId != null) {
+            _dbMantraCount = jappsMap[currentMantraId] as int? ?? 0;
+          }
+        });
+      }
+    });
 
     _playerStateSubscription =
         _audioService.onPlayerStateChanged.listen((state) {
       if (mounted) setState(() => _isPlaying = state == PlayerState.playing);
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startHomeTour());
   }
 
   @override
   void dispose() {
+    _userDocSubscription?.cancel();
     _adService.disposeAdForScreen(_screenName);
     _syncTimer?.cancel();
     _syncService?.syncPendingData();
@@ -146,13 +270,39 @@ class _HomeScreenState extends State<HomeScreen>
     _malaConfettiController.dispose();
     _playerStateSubscription.cancel();
     _audioService.dispose();
+    _particleController.dispose();
+    _pulseController.dispose();
+    _carouselController.dispose();
     super.dispose();
   }
 
   @override
   bool get wantKeepAlive => true;
 
-  // --- Helper Methods ---
+  // --- LOGIC ---
+
+  Future<void> _fetchInitialDataFromFirestore(String? mantraId) async {
+    if (mantraId == null) return;
+    final doc = await _firestoreService.getUserDocument(_uid);
+    if (doc.exists && mounted) {
+      final data = doc.data() as Map<String, dynamic>;
+      final jappsMap = data['japps'] as Map<String, dynamic>? ?? {};
+      setState(() {
+        _dbMantraCount = jappsMap[mantraId] as int? ?? 0;
+      });
+    }
+  }
+
+  void _startHomeTour() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasSeenTour = prefs.getBool('has_seen_home_tour') ?? false;
+
+    if (!hasSeenTour) {
+      ShowCaseWidget.of(context)
+          .startShowCase([_keyCarousel, _keyMala, _keyDock]);
+      await prefs.setBool('has_seen_home_tour', true);
+    }
+  }
 
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
@@ -166,64 +316,101 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
-  Future<void> _loadInitialCounts() async {
-    final userDoc = await _firestoreService.getUserDocument(_uid);
-    if (!userDoc.exists || !mounted) return;
+  // Future<void> _loadInitialCounts() async {
+  //   if (_isGuest) return;
+  //   final userDoc = await _firestoreService.getUserDocument(_uid);
+  //   if (!userDoc.exists || !mounted) return;
+  //   final userData = userDoc.data() as Map<String, dynamic>;
+  //   final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
+  //   final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
+  //   final mantraKey = mantraProvider.selectedMantra?.id ?? '';
 
-    final userData = userDoc.data() as Map<String, dynamic>;
-    final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
-    final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
+  //   if (mantraProvider.selectedMantra != null) {
+  //     final index =
+  //         mantraProvider.allMantras.indexOf(mantraProvider.selectedMantra!);
+  //     if (index != -1 && _carouselController.hasClients) {
+  //       _carouselController.jumpToPage(index);
+  //     }
+  //   }
 
-    // Use the provider's selected mantra to get the right count
-    final mantraKey = mantraProvider.selectedMantra?.id ?? '';
+  //   setState(() {
+  //     _totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
+  //   });
+  // }
 
-    setState(() {
-      _totalMantraCount = jappsMap[mantraKey] as int? ?? 0;
-      // _streakCount = userData['currentStreak'] ?? 0; // REMOVED
-    });
-  }
-
-  Future<void> _loadTotalCounts(String mantraId) async {
-    final userDoc = await _firestoreService.getUserDocument(_uid);
-    if (!userDoc.exists || !mounted) return;
-
-    final userData = userDoc.data() as Map<String, dynamic>;
-    final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
-
-    setState(() {
-      _totalMantraCount = jappsMap[mantraId] as int? ?? 0;
-      // _streakCount = userData['currentStreak'] ?? 0; // REMOVED
-    });
-  }
+  // ... [Keep _loadTotalCounts, _onSyncComplete, _onMantraSelected] ...
+  // Future<void> _loadTotalCounts(String mantraId) async {
+  //   if (_isGuest) {
+  //     setState(() => _totalMantraCount = 0);
+  //     return;
+  //   }
+  //   final userDoc = await _firestoreService.getUserDocument(_uid);
+  //   if (!userDoc.exists || !mounted) return;
+  //   final userData = userDoc.data() as Map<String, dynamic>;
+  //   final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
+  //   setState(() => _totalMantraCount = jappsMap[mantraId] as int? ?? 0);
+  // }
 
   void _onSyncComplete(MantraProvider provider) {
     if (mounted) {
-      setState(() {
-        _pendingEvents.clear();
-      });
-      // We get the mantraId from the provider
-      _loadInitialCounts();
+      setState(() => _pendingEvents.clear());
     }
   }
 
   void _onMantraSelected(Mantra mantra) async {
-    await _syncService?.syncPendingData();
-    if (_isPlaying) await _audioService.stop();
+    if (_isPlaying) await _audioService.stopMantra();
+    setState(() {
+      _isPlaying = false;
+    });
 
-    // Tell the provider to change
+    await _syncService?.syncPendingData();
     Provider.of<MantraProvider>(context, listen: false)
         .setSelectedMantra(mantra);
 
-    // Load the new counts
-    await _loadTotalCounts(mantra.id);
+    if (!_isGuest) {
+      final userDoc = await _firestoreService.getUserDocument(_uid);
+      if (userDoc.exists && mounted) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        final jappsMap = data['japps'] as Map<String, dynamic>? ?? {};
+        setState(() {
+          _dbMantraCount = jappsMap[mantra.id] as int? ?? 0;
+          _pendingEvents.clear();
+        });
+      }
+    } else {
+      setState(() => _dbMantraCount = 0);
+    }
   }
 
   Future<void> _incrementCounter() async {
-    if (_isVibrationEnabled) HapticFeedback.lightImpact();
+    // 1. Haptic Feedback
+    if (_isVibrationEnabled) HapticFeedback.mediumImpact();
 
-    final mantraKey =
-        Provider.of<MantraProvider>(context, listen: false).selectedMantra!.id;
+    final provider = Provider.of<MantraProvider>(context, listen: false);
+    final selectedMantra = provider.selectedMantra!;
+    final mantraKey = selectedMantra.id;
 
+    // 🪄 RESTORED: Only call the audio player if it's actually stopped. ZERO LAG!
+    if (!_isPlaying && !_isMuted) {
+      setState(() => _isPlaying = true);
+      String path = selectedMantra.isCustom
+          ? selectedMantra.customAudioPath!
+          : selectedMantra.audioPath;
+      if (!selectedMantra.isCustom && path.startsWith('assets/')) {
+        path = path.replaceFirst('assets/', '');
+      }
+      _audioService.startMantraLoop(path, selectedMantra.isCustom);
+    }
+
+    if (_isGuest) {
+      setState(() => _dbMantraCount++);
+      if (_dbMantraCount > 0 && _dbMantraCount % 108 == 0) {
+        _celebrateMala();
+      }
+      return;
+    }
+
+    // --- SYNC GLITCH FIX ---
     final String eventId = DateTime.now().microsecondsSinceEpoch.toString();
 
     setState(() {
@@ -231,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('pendingJappsLedger', json.encode(_pendingEvents));
+    await prefs.setString('pendingJapaEvents', json.encode(_pendingEvents));
 
     _syncTimer?.cancel();
     _syncTimer = Timer(
@@ -240,25 +427,24 @@ class _HomeScreenState extends State<HomeScreen>
     final int pendingForMantra =
         _pendingEvents.values.where((e) => e['mantraId'] == mantraKey).length;
 
-    final int currentTotal = _totalMantraCount + pendingForMantra;
-    if (currentTotal > 0 && currentTotal % 108 == 0) {
-      _malaConfettiController.play();
-      _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
-      _firestoreService.incrementTotalMalas(_uid);
-      _achievementsService.checkAndAwardBadges(_uid);
-    }
+    final int currentTotal = _dbMantraCount + pendingForMantra;
 
-    if (!_isPlaying) {
-      _audioService.play(
-          Provider.of<MantraProvider>(context, listen: false).selectedMantra!);
+    if (currentTotal > 0 && currentTotal % 108 == 0) {
+      _celebrateMala();
+      _achievementsService.checkAndAwardBadges(_uid);
+      _ratingService.checkAndAskForReview();
     }
+  }
+
+  void _celebrateMala() {
+    _malaConfettiController.play();
+    // Play one-shot sound on top of the looping mantra audio
+    _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
   }
 
   void _toggleMute() async {
     final newMuteStatus = !_isMuted;
-    setState(() {
-      _isMuted = newMuteStatus;
-    });
+    setState(() => _isMuted = newMuteStatus);
     await _audioService.setMuted(newMuteStatus);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.prefsKeyMute, newMuteStatus);
@@ -266,183 +452,460 @@ class _HomeScreenState extends State<HomeScreen>
 
   void _toggleVibration() async {
     final newStatus = !_isVibrationEnabled;
-    setState(() {
-      _isVibrationEnabled = newStatus;
-    });
+    setState(() => _isVibrationEnabled = newStatus);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(AppConstants.prefsKeyVibrationEnabled, newStatus);
   }
 
-  // --- Bottom Sheet for Mala Styles ---
+  // --- DIALOGS & SHEETS ---
+
+  void _showMantraInfo(String mantraName) {
+    final descriptions = MantraInfoService.getDescription(mantraName);
+    InfoLanguage selectedLanguage = InfoLanguage.hindi;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            String displayText = descriptions['en'] ?? '';
+            if (selectedLanguage == InfoLanguage.hindi) {
+              displayText = descriptions['hi'] ?? displayText;
+            } else if (selectedLanguage == InfoLanguage.sanskrit) {
+              displayText = descriptions['sa'] ?? displayText;
+            }
+
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ScaleTransition(
+                    scale: CurvedAnimation(
+                        parent: ModalRoute.of(context)!.animation!,
+                        curve: Curves.easeOutBack),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: BackdropFilter(
+                        filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF4A0E4E), Color(0xFF100505)],
+                              ),
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                  color:
+                                      const Color(0xFFFFD700).withOpacity(0.3),
+                                  width: 1.5),
+                              boxShadow: [
+                                BoxShadow(
+                                    color:
+                                        Colors.purple.shade900.withOpacity(0.5),
+                                    blurRadius: 40,
+                                    spreadRadius: 2)
+                              ]),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // --- HEADER ---
+                              Container(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.white
+                                                .withOpacity(0.1)))),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.auto_stories_rounded,
+                                        color: Color(0xFFFFD700), size: 32),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      mantraName,
+                                      style: const TextStyle(
+                                          fontFamily: 'Serif',
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFFFD700),
+                                          letterSpacing: 1,
+                                          shadows: [
+                                            Shadow(
+                                                color: Colors.black,
+                                                blurRadius: 4,
+                                                offset: Offset(0, 2))
+                                          ]),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // --- CONTENT BODY ---
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(24, 24, 24, 10),
+                                child: SizedBox(
+                                  height: 200,
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    child: AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 400),
+                                      child: Text(
+                                        displayText,
+                                        key: ValueKey<String>(displayText +
+                                            selectedLanguage.toString()),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          height: 1.6,
+                                          color: Colors.white.withOpacity(0.9),
+                                          fontFamily: selectedLanguage ==
+                                                  InfoLanguage.english
+                                              ? 'Serif'
+                                              : 'Sans',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // --- LANGUAGE TABS ---
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.4),
+                                      borderRadius: BorderRadius.circular(50),
+                                      border:
+                                          Border.all(color: Colors.white10)),
+                                  child: Row(
+                                    children: [
+                                      _buildLangTab(
+                                          "English",
+                                          InfoLanguage.english,
+                                          selectedLanguage,
+                                          (val) => setDialogState(
+                                              () => selectedLanguage = val)),
+                                      _buildLangTab(
+                                          "हिन्दी",
+                                          InfoLanguage.hindi,
+                                          selectedLanguage,
+                                          (val) => setDialogState(
+                                              () => selectedLanguage = val)),
+                                      _buildLangTab(
+                                          "Sanskrit",
+                                          InfoLanguage.sanskrit,
+                                          selectedLanguage,
+                                          (val) => setDialogState(
+                                              () => selectedLanguage = val)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              // --- CLOSE BUTTON ---
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)),
+                                    backgroundColor:
+                                        Colors.white.withOpacity(0.1),
+                                  ),
+                                  // LOC: Close
+                                  child: Text(
+                                    AppLocalizations.of(context)!.dialog_close,
+                                    style: const TextStyle(
+                                        color: Colors.white70,
+                                        letterSpacing: 1.5,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLangTab(String label, InfoLanguage lang, InfoLanguage current,
+      ValueChanged<InfoLanguage> onSelect) {
+    final bool isSelected = lang == current;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onSelect(lang);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFFF8C00) : Colors.transparent,
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                          color: Colors.orange.withOpacity(0.4), blurRadius: 10)
+                    ]
+                  : null),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white54,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 13),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showMalaStyleSheet(BuildContext context) {
     final mantraProvider = Provider.of<MantraProvider>(context, listen: false);
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      isScrollControlled:
-          true, // Allows the sheet to take up more space if needed
+      isScrollControlled: true,
       builder: (sheetContext) {
         return ChangeNotifierProvider.value(
           value: mantraProvider,
           child: Consumer<MantraProvider>(
             builder: (context, provider, child) {
-              final selectedMala = provider.selectedMalaType;
-
-              return Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(28)), // Softer curve
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(80),
-                      blurRadius: 30,
-                      offset: const Offset(0, -10),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.fromLTRB(
-                    24.0, 16.0, 24.0, 40.0), // More bottom padding
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Handle Bar
-                    Center(
-                      child: Container(
-                        width: 48,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(2.5),
-                        ),
+              return ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(35)),
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(24, 12, 24, 40),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          const Color(0xFF4A0E4E).withOpacity(0.95),
+                          const Color(0xFF2E0422).withOpacity(0.95),
+                          Colors.black.withOpacity(0.98),
+                        ],
                       ),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(35)),
+                      border: Border(
+                        top: BorderSide(
+                            color: const Color(0xFFFFD700).withOpacity(0.3),
+                            width: 1.5),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.purple.shade900.withOpacity(0.4),
+                          blurRadius: 50,
+                          spreadRadius: 5,
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 28),
-
-                    // Title
-                    Text(
-                      AppLocalizations.of(context)!.home_chooseMala,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black87,
-                                letterSpacing: 0.5,
-                              ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)!.home_chooseMalaDesc,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey.shade600,
-                          ),
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Horizontal Scrollable List of Styles
-                    SizedBox(
-                      height: 150, // Taller to accommodate shadows and padding
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: MalaType.values.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 16),
-                        itemBuilder: (context, index) {
-                          final malaType = MalaType.values[index];
-                          final isSelected = selectedMala == malaType;
-                          final primaryColor =
-                              Theme.of(context).colorScheme.primary;
-
-                          return GestureDetector(
-                            onTap: () {
-                              provider.setSelectedMalaType(malaType);
-                              HapticFeedback
-                                  .selectionClick(); // Nice haptic feel
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeOut,
-                              width: 110,
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 2), // Space for shadow
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? primaryColor.withAlpha(10)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? primaryColor
-                                      : Colors.grey.shade200,
-                                  width: isSelected ? 2 : 1,
-                                ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // 1. Handle Bar
+                        Center(
+                          child: Container(
+                            width: 50,
+                            height: 5,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFFFD700).withOpacity(0.4),
+                                borderRadius: BorderRadius.circular(10),
                                 boxShadow: [
-                                  if (isSelected)
-                                    BoxShadow(
-                                      color: primaryColor.withAlpha(40),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 4),
-                                    )
-                                  else
-                                    BoxShadow(
-                                      color: Colors.black.withAlpha(10),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Preview Circle Container
-                                  Container(
-                                    width: 64,
-                                    height: 64,
-                                    padding: const EdgeInsets.all(
-                                        2), // Gap between border and bead
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: isSelected
-                                          ? Border.all(
-                                              color: primaryColor.withAlpha(90),
-                                              width: 2)
-                                          : null,
-                                    ),
-                                    child: CustomPaint(
-                                      painter: MalaPainter(
-                                        beadCount: 1,
-                                        activeBeadIndex: 0,
-                                        malaType: malaType,
-                                        context: context,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    malaType.getDisplayName(context),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: isSelected
-                                          ? FontWeight.w700
-                                          : FontWeight.w500,
-                                      fontSize: 13,
-                                      color: isSelected
-                                          ? primaryColor
-                                          : Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                  BoxShadow(
+                                      color: Colors.orange.withOpacity(0.3),
+                                      blurRadius: 10)
+                                ]),
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+
+                        // 2. Title
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.palette_rounded,
+                                color: Color(0xFFFFD700), size: 24),
+                            const SizedBox(width: 12),
+                            // LOC: Choose Your Mala
+                            Text(
+                              AppLocalizations.of(context)!.home_chooseMala,
+                              style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontFamily: 'Serif',
+                                  letterSpacing: 0.5,
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black45,
+                                        blurRadius: 10,
+                                        offset: Offset(0, 2))
+                                  ]),
                             ),
-                          );
-                        },
-                      ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        // LOC: Select the sacred beads...
+                        Text(
+                          AppLocalizations.of(context)!.home_chooseMalaDesc,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.6),
+                            fontFamily: 'Sans',
+                          ),
+                        ),
+
+                        const SizedBox(height: 35),
+
+                        // 3. Premium Horizontal List
+                        SizedBox(
+                          height: 160,
+                          child: ListView.separated(
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: MalaType.values.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(width: 20),
+                            itemBuilder: (context, index) {
+                              final type = MalaType.values[index];
+                              final isSelected =
+                                  provider.selectedMalaType == type;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  provider.setSelectedMalaType(type);
+                                  HapticFeedback.selectionClick();
+                                },
+                                child: AnimatedContainer(
+                                  duration: 300.ms,
+                                  curve: Curves.easeOutCubic,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    gradient: isSelected
+                                        ? LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Colors.orange.shade900
+                                                  .withOpacity(0.4),
+                                              Colors.deepOrange.shade900
+                                                  .withOpacity(0.6),
+                                            ],
+                                          )
+                                        : LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Colors.white.withOpacity(0.05),
+                                              Colors.white.withOpacity(0.02),
+                                            ],
+                                          ),
+                                    borderRadius: BorderRadius.circular(28),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? const Color(0xFFFFD700)
+                                          : Colors.white.withOpacity(0.1),
+                                      width: isSelected ? 2 : 1,
+                                    ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                                color: Colors.orange
+                                                    .withOpacity(0.3),
+                                                blurRadius: 20,
+                                                offset: const Offset(0, 5))
+                                          ]
+                                        : [],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // Bead Preview
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isSelected
+                                              ? Colors.black.withOpacity(0.3)
+                                              : Colors.white.withOpacity(0.05),
+                                          boxShadow: isSelected
+                                              ? [
+                                                  BoxShadow(
+                                                      color: Colors.orange
+                                                          .withOpacity(0.4),
+                                                      blurRadius: 15)
+                                                ]
+                                              : null,
+                                        ),
+                                        child: CustomPaint(
+                                          size: const Size(45, 45),
+                                          painter: MalaPainter(
+                                            beadCount: 1,
+                                            activeBeadIndex: 0,
+                                            malaType: type,
+                                            context: context,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 18),
+                                      // Label
+                                      Text(
+                                        type.getDisplayName(context),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: isSelected
+                                              ? FontWeight.w800
+                                              : FontWeight.w500,
+                                          color: isSelected
+                                              ? const Color(0xFFFFD700)
+                                              : Colors.white70,
+                                          fontSize: 14,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                  ],
+                  ),
                 ),
               );
             },
@@ -452,479 +915,556 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  void _showMantraInfo(String mantraName) {
-    final descriptions = MantraInfoService.getDescription(mantraName);
-    InfoLanguage selectedLanguage = InfoLanguage.english;
+  // --- UI WIDGETS ---
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            String displayText = descriptions['en'] ?? '';
+  Widget _buildTopStreakBadge() {
+    if (_isGuest) return const SizedBox(height: 40);
 
-            switch (selectedLanguage) {
-              case InfoLanguage.hindi:
-                displayText = descriptions['hi'] ?? displayText;
-                break;
-              case InfoLanguage.sanskrit:
-                displayText = descriptions['sa'] ?? displayText;
-                break;
-              case InfoLanguage.english:
-                displayText = descriptions['en'] ?? displayText;
-                break;
-            }
-
-            return AlertDialog(
-              title: Text(mantraName),
-              content: SizedBox(
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      child: SingleChildScrollView(
-                        child: Text(
-                          displayText,
-                          style: const TextStyle(height: 1.5),
-                        ),
-                      ),
-                    ),
-                    const Divider(height: 24),
-                    ToggleButtons(
-                      isSelected: [
-                        selectedLanguage == InfoLanguage.english,
-                        selectedLanguage == InfoLanguage.hindi,
-                        selectedLanguage == InfoLanguage.sanskrit,
-                      ],
-                      onPressed: (index) {
-                        setDialogState(() {
-                          selectedLanguage = InfoLanguage.values[index];
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(8.0),
-                      children: const [
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text('English')),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text('हिन्दी')),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text('Sanskrit')),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(AppLocalizations.of(context)!.dialog_close),
-                ),
-              ],
-            );
-          },
-        );
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _firestoreService.getUserStatsStream(_uid),
+      builder: (context, snapshot) {
+        int streak = 0;
+        if (snapshot.hasData && snapshot.data!.exists) {
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+          streak = data['currentStreak'] ?? 0;
+        }
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white24)),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.local_fire_department_rounded,
+                  color: Colors.orangeAccent, size: 20),
+              const SizedBox(width: 6),
+              // LOC: Streak Days
+              Text("$streak ${AppLocalizations.of(context)!.misc_days}",
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ).animate().fadeIn().slideY(begin: -1, end: 0);
       },
     );
   }
 
-  void _onMantraSwiped(
-      DragEndDetails details, List<Mantra> allMantras, Mantra selectedMantra) {
-    if (details.primaryVelocity == null) return;
+  Widget _build3DMantraCarousel(
+      List<Mantra> allMantras, Mantra selectedMantra) {
+    // ... [Keep this widget's logic exactly as is] ...
+    // Just minimal localization if any inside here (none found usually)
+    // Just providing structure
+    return SizedBox(
+      height: 80,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          PageView.builder(
+            controller: _carouselController,
+            itemCount: allMantras.length,
+            onPageChanged: (index) {
+              _onMantraSelected(allMantras[index]);
+              HapticFeedback.selectionClick();
+            },
+            itemBuilder: (context, index) {
+              return AnimatedBuilder(
+                animation: _carouselController,
+                builder: (context, child) {
+                  double value = 1.0;
+                  if (_carouselController.position.haveDimensions) {
+                    value = _carouselController.page! - index;
+                    value = (1 - (value.abs() * 0.3)).clamp(0.0, 1.0);
+                  } else {
+                    value = (index == allMantras.indexOf(selectedMantra))
+                        ? 1.0
+                        : 0.7;
+                  }
+                  final isSelected = value > 0.9;
+                  return Center(
+                    child: Transform.scale(
+                      scale: value.clamp(0.85, 1.0),
+                      child: Opacity(
+                        opacity: value.clamp(0.6, 1.0),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          decoration: BoxDecoration(
+                            gradient: isSelected
+                                ? LinearGradient(colors: [
+                                    Colors.orange.shade400,
+                                    Colors.deepOrange
+                                  ])
+                                : null,
+                            color: isSelected
+                                ? null
+                                : Colors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                                color:
+                                    isSelected ? Colors.white : Colors.white24,
+                                width: isSelected ? 2 : 1),
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                        color: Colors.orange.withOpacity(0.5),
+                                        blurRadius: 20,
+                                        spreadRadius: 1)
+                                  ]
+                                : null,
+                          ),
+                          child: Text(
+                            allMantras[index].name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color:
+                                    isSelected ? Colors.white : Colors.white70,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                letterSpacing: 0.5),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+          Positioned(
+            left: 8,
+            child: _buildNavButton(
+              icon: Icons.arrow_back_ios_new_rounded,
+              condition: _carouselController.hasClients &&
+                  _carouselController.position.haveDimensions &&
+                  (_carouselController.page ?? 0) > 0.1,
+              onTap: () {
+                _carouselController.previousPage(
+                    duration: 300.ms, curve: Curves.easeOutCubic);
+                HapticFeedback.selectionClick();
+              },
+            ),
+          ),
+          Positioned(
+            right: 8,
+            child: _buildNavButton(
+              icon: Icons.arrow_forward_ios_rounded,
+              condition: _carouselController.hasClients &&
+                  _carouselController.position.haveDimensions &&
+                  (_carouselController.page ?? 0) < allMantras.length - 1.1,
+              onTap: () {
+                _carouselController.nextPage(
+                    duration: 300.ms, curve: Curves.easeOutCubic);
+                HapticFeedback.selectionClick();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    final int currentIndex = allMantras.indexOf(selectedMantra);
-    if (currentIndex == -1) return;
+  Widget _buildNavButton(
+      {required IconData icon,
+      required bool condition,
+      required VoidCallback onTap}) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 300),
+      opacity: condition ? 1.0 : 0.0,
+      child: condition
+          ? GestureDetector(
+              onTap: onTap,
+              child: Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(0.5),
+                  border: Border.all(color: Colors.white.withOpacity(0.3)),
+                ),
+                child: Icon(icon, color: Colors.white, size: 16),
+              ),
+            )
+          : const SizedBox(),
+    );
+  }
 
-    if (details.primaryVelocity! < 0) {
-      // Swiped Left (velocity is negative) -> Go to NEXT mantra
-      final int nextIndex = (currentIndex + 1) % allMantras.length;
-      _onMantraSelected(allMantras[nextIndex]);
-    } else if (details.primaryVelocity! > 0) {
-      // Swiped Right (velocity is positive) -> Go to PREVIOUS mantra
-      final int prevIndex =
-          (currentIndex - 1 + allMantras.length) % allMantras.length;
-      _onMantraSelected(allMantras[prevIndex]);
-    }
+  Widget _buildFloatingDock(Mantra selectedMantra) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDockItem(
+                  _isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+                  _toggleMute,
+                  _isMuted ? Colors.redAccent : Colors.white),
+              const SizedBox(width: 20),
+              _buildDockItem(Icons.palette_rounded,
+                  () => _showMalaStyleSheet(context), Colors.white),
+              const SizedBox(width: 20),
+              _buildDockItem(Icons.info_outline_rounded,
+                  () => _showMantraInfo(selectedMantra.name), Colors.white),
+              const SizedBox(width: 20),
+              _buildDockItem(
+                  _isVibrationEnabled
+                      ? Icons.vibration_rounded
+                      : Icons.smartphone_rounded,
+                  _toggleVibration,
+                  _isVibrationEnabled ? Colors.greenAccent : Colors.grey),
+              if (!_isGuest) ...[
+                const SizedBox(width: 20),
+                _buildDockItem(Icons.add_rounded, () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ChangeNotifierProvider.value(
+                              value: Provider.of<MantraProvider>(context,
+                                  listen: false),
+                              child: const CustomMantraEditor())));
+                }, Colors.amber),
+              ]
+            ],
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: 500.ms).slideY(begin: 1, end: 0);
+  }
+
+  Widget _buildDockItem(IconData icon, VoidCallback onTap, Color color) {
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
+      child: Icon(icon, color: color, size: 26),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    // Get the ad for this screen
     final bannerAd = _adService.getAdForScreen(_screenName);
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
 
     return Consumer<MantraProvider>(builder: (context, mantraProvider, child) {
+      // 1. Handle Loading State
       if (mantraProvider.isLoading || mantraProvider.selectedMantra == null) {
-        return Container(
-          color: Theme.of(context).colorScheme.surface,
-          child: const Center(child: CircularProgressIndicator()),
-        );
+        return const Center(child: CircularProgressIndicator());
       }
 
       final selectedMantra = mantraProvider.selectedMantra!;
       final allMantras = mantraProvider.allMantras;
 
-      // Variables
-      final mantraKey = selectedMantra.id;
-      final pendingForMantra =
-          _pendingEvents.values.where((e) => e['mantraId'] == mantraKey).length;
-      final displayTotal = _totalMantraCount + pendingForMantra;
-      final malaProgressCounter = displayTotal % 108;
-      return Stack(
-        children: [
-          /// Mantra Background
-          AnimatedSwitcher(
-              duration: const Duration(milliseconds: 700),
-              child: selectedMantra.isCustom
-                  ? AppConstants.getBackgroundById(selectedMantra.backgroundId!)
-                      .child
-                  : AnimatedBackground(
-                      key: ValueKey<String>(selectedMantra.id),
-                      imagePaths:
-                          AppConstants.mantraImagePaths[selectedMantra.name]!,
-                    )),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                Colors.black.withAlpha(140),
-                Colors.black.withAlpha(70),
-                Colors.black.withAlpha(140)
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+      // 2. Calculate Counts
+      final int displayTotal;
+      final int malaProgressCounter;
+
+      if (_isGuest) {
+        displayTotal = _dbMantraCount;
+        malaProgressCounter = displayTotal % 108;
+      } else {
+        final mantraKey = selectedMantra.id;
+        final pendingForMantra = _pendingEvents.values
+            .where((e) => e['mantraId'] == mantraKey)
+            .length;
+        displayTotal = _dbMantraCount + pendingForMantra;
+        malaProgressCounter = displayTotal % 108;
+      }
+
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
+          children: [
+            // -------------------------------------------------------------
+            // SECTION A: THE ADVERTISEMENTS
+            // This is kept separate at the top. Nothing can overlap it.
+            // -------------------------------------------------------------
+            Container(
+              width: double.infinity,
+              color: Colors.black, // Ensures solid background behind ad
+              child: SafeArea(
+                bottom: false, // Only padding for top notch
+                child: isAdLoaded
+                    ? Container(
+                        alignment: Alignment.center,
+                        width: bannerAd.size.width.toDouble(),
+                        height: bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: bannerAd),
+                      )
+                    : const SizedBox.shrink(), // Takes 0 space if no ad
+              ),
             ),
-          ),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SafeArea(
-                child: Column(
-              children: [
-                // --- STREAK CHIP FIX ---
-                StreamBuilder<DocumentSnapshot>(
-                  stream: _firestoreService.getUserStatsStream(_uid),
-                  builder: (context, snapshot) {
-                    int streakCount = 0;
-                    if (snapshot.hasData && snapshot.data!.exists) {
-                      final userData =
-                          snapshot.data!.data() as Map<String, dynamic>;
-                      streakCount = userData['currentStreak'] ?? 0;
-                    }
 
-                    return Chip(
-                      avatar: Icon(Icons.local_fire_department,
-                          color: Colors.orange.shade800),
-                      label: Text(
-                          '$streakCount ${AppLocalizations.of(context)!.home_dayStreak} ',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      backgroundColor: Colors.white.withAlpha(190),
-                      elevation: 4,
-                    );
-                  },
-                ),
-                // --- END STREAK CHIP FIX ---
-
-                // Mantra Selector
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: SizedBox(
-                    height: 50,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          // 1. The Existing Mantras
-                          ...allMantras.map((mantra) {
-                            final isSelected = selectedMantra.id == mantra.id;
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: GestureDetector(
-                                onTap: () => _onMantraSelected(mantra),
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? Colors.orange.withAlpha(210)
-                                        : Colors.black.withAlpha(70),
-                                    borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? Colors.orange.shade300
-                                          : Colors.white.withAlpha(128),
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    mantra.name,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-
-                          // 2. The NEW "Add Mantra" Button
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                // Navigate to CustomMantraEditor
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) =>
-                                        ChangeNotifierProvider.value(
-                                      value: mantraProvider,
-                                      child: const CustomMantraEditor(),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withAlpha(40),
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(
-                                    color: Colors.white.withAlpha(180),
-                                    width: 1,
-                                    style: BorderStyle
-                                        .solid, // or BorderStyle.none
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.add,
-                                        color: Colors.white, size: 18),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "Add",
-                                      style: TextStyle(
-                                        color: Colors.white.withAlpha(200),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+            // -------------------------------------------------------------
+            // SECTION B: THE APP CONTENT
+            // Everything else (Background, Sparkles, Game) lives here
+            // -------------------------------------------------------------
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Layer 1: Background Image
+                  AnimatedSwitcher(
+                    duration: const Duration(seconds: 1),
+                    child: selectedMantra.isCustom
+                        ? AppConstants.getBackgroundById(
+                                selectedMantra.backgroundId!)
+                            .child
+                        : AnimatedBackground(
+                            key: ValueKey<String>(selectedMantra.id),
+                            imagePaths: AppConstants
+                                .mantraImagePaths[selectedMantra.name]!,
                           ),
+                  ),
+
+                  // Layer 2: Black Gradient Overlay
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black54,
+                          Colors.transparent,
+                          Colors.black87,
                         ],
+                        stops: [0.0, 0.4, 1.0],
                       ),
                     ),
                   ),
-                ),
 
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Mantra Info Button
-                      TextButton.icon(
-                        onPressed: () => _showMantraInfo(selectedMantra.name),
-                        icon: const Icon(Icons.info_outline),
-                        label:
-                            Text(AppLocalizations.of(context)!.home_mantraInfo),
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.white.withAlpha(220),
-                        ),
-                      ),
-
-                      TextButton.icon(
-                        onPressed: () => _showMalaStyleSheet(context),
-                        icon: const Icon(Icons.style, color: Colors.white),
-                        label: Text(
-                          AppLocalizations.of(context)!.home_customizeMala,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.black.withAlpha(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: BorderSide(color: Colors.white.withAlpha(50)),
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Layer 3: Sparkles (Confined to this Expanded area)
+                  CustomPaint(
+                    painter: ZenithSparkles(_particleController, _sparkles),
                   ),
-                ),
 
-                // Internet Status - Vibration - Sound
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  // Layer 4: Main UI Elements
+                  Column(
                     children: [
-                      const SizedBox(
-                        width: 10,
+                      const SizedBox(height: 10),
+
+                      // Streak Badge
+                      _buildTopStreakBadge(),
+
+                      const SizedBox(height: 20),
+
+                      // Carousel Tour
+                      _buildShowcase(
+                        key: _keyCarousel,
+                        title: AppLocalizations.of(context)!
+                            .tour_home_carousel_title,
+                        description: AppLocalizations.of(context)!
+                            .tour_home_carousel_desc,
+                        child:
+                            _build3DMantraCarousel(allMantras, selectedMantra),
                       ),
 
-                      // Vibration Status
-                      IconButton(
-                        icon: Icon(_isVibrationEnabled
-                            ? Icons.vibration
-                            : Icons.mobile_off_rounded),
-                        iconSize: 28,
-                        color: Colors.white.withAlpha(210),
-                        onPressed: _toggleVibration,
-                        tooltip: _isVibrationEnabled
-                            ? 'Vibration On'
-                            : 'Vibration Off',
-                      ),
+                      const Spacer(),
 
-                      // Sound Status
-                      IconButton(
-                        icon:
-                            Icon(_isMuted ? Icons.volume_off : Icons.volume_up),
-                        iconSize: 28,
-                        color: Colors.white.withAlpha(210),
-                        onPressed: _toggleMute,
-                        tooltip: _isMuted ? 'Sound Off' : 'Sound On',
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Tap to Chant Button
-                Expanded(
-                  child: GestureDetector(
-                    onHorizontalDragEnd: (details) =>
-                        _onMantraSwiped(details, allMantras, selectedMantra),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: SizedBox(
-                        width: 340,
-                        height: 340,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            MalaWidget(
-                              activeBeadIndex: malaProgressCounter,
-                              beadCount: 109,
-                            ),
-                            GestureDetector(
-                              onTap: _incrementCounter,
-                              child: Container(
-                                width: 260,
-                                height: 260,
+                      // Mala Tour & Interaction
+                      _buildShowcase(
+                        key: _keyMala,
+                        title:
+                            AppLocalizations.of(context)!.tour_home_mala_title,
+                        description:
+                            AppLocalizations.of(context)!.tour_home_mala_desc,
+                        child: GestureDetector(
+                          onTap: _incrementCounter,
+                          child: AnimatedBuilder(
+                            animation: _pulseController,
+                            builder: (context, child) {
+                              // Responsive sizing: use 85% of screen width, capped at 320
+                              final screenWidth = MediaQuery.of(context).size.width;
+                              final malaSize = (screenWidth * 0.85).clamp(240.0, 320.0);
+                              final innerSize = malaSize * 0.75;
+                              final counterFontSize = (malaSize * 0.25).clamp(56.0, 80.0);
+                              return Container(
+                                width: malaSize,
+                                height: malaSize,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Colors.orange.shade700,
-                                  gradient: RadialGradient(colors: [
-                                    Colors.orange.shade500,
-                                    Colors.orange.shade800
-                                  ]),
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Colors.orange.shade900
-                                            .withAlpha(160),
-                                        spreadRadius: 2,
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 10)),
-                                    BoxShadow(
-                                        color: Colors.black.withAlpha(129),
-                                        spreadRadius: 10,
-                                        blurRadius: 40),
+                                      color: Colors.orange.withOpacity(
+                                          0.2 + (_pulseController.value * 0.1)),
+                                      blurRadius:
+                                          40 + (_pulseController.value * 20),
+                                      spreadRadius: 5,
+                                    )
                                   ],
                                 ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        transitionBuilder: (Widget child,
-                                            Animation<double> animation) {
-                                          return ScaleTransition(
-                                              scale: animation, child: child);
-                                        },
-                                        child: Text(
-                                          (malaProgressCounter == 0 &&
-                                                  displayTotal > 0)
-                                              ? "108"
-                                              : (malaProgressCounter)
-                                                  .toString(),
-                                          key: ValueKey<int>(displayTotal),
-                                          style: const TextStyle(
-                                            fontSize: 72,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            shadows: [
-                                              Shadow(
-                                                  blurRadius: 10.0,
-                                                  color: Colors.black54,
-                                                  offset: Offset(2.0, 2.0))
-                                            ],
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    MalaWidget(
+                                      activeBeadIndex: malaProgressCounter,
+                                      beadCount: 109,
+                                    ),
+                                    Container(
+                                      width: innerSize,
+                                      height: innerSize,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: RadialGradient(
+                                          colors: [
+                                            Colors.orange.shade400
+                                                .withOpacity(0.9),
+                                            Colors.deepOrange.shade900
+                                                .withOpacity(0.95),
+                                          ],
+                                          center: const Alignment(-0.2, -0.2),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            blurRadius: 20,
+                                            spreadRadius: 2,
                                           ),
+                                          BoxShadow(
+                                            color:
+                                                Colors.white.withOpacity(0.2),
+                                            blurRadius: 5,
+                                            offset: const Offset(-10, -10),
+                                          )
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AnimatedSwitcher(
+                                              duration: 150.ms,
+                                              transitionBuilder:
+                                                  (child, anim) =>
+                                                      ScaleTransition(
+                                                          scale: anim,
+                                                          child: child),
+                                              child: Text(
+                                                (malaProgressCounter == 0 &&
+                                                        displayTotal > 0)
+                                                    ? "108"
+                                                    : "$malaProgressCounter",
+                                                key: ValueKey(
+                                                    malaProgressCounter),
+                                                style: TextStyle(
+                                                  fontSize: counterFontSize,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: Colors.white,
+                                                  fontFamily: 'Serif',
+                                                  height: 1.0,
+                                                  shadows: const [
+                                                    Shadow(
+                                                      color: Colors.black45,
+                                                      blurRadius: 10,
+                                                      offset: Offset(2, 4),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "${AppLocalizations.of(context)!.home_total} $displayTotal",
+                                              style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.8),
+                                                fontSize: 16,
+                                                letterSpacing: 1,
+                                              ),
+                                            )
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        '${AppLocalizations.of(context)!.home_total}: ${displayTotal.toString()}',
-                                        style: TextStyle(
-                                          color: Colors.white.withAlpha(170),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                          ],
+                              );
+                            },
+                          ),
                         ),
                       ),
+
+                      const Spacer(),
+
+                      // Dock Tour
+                      _buildShowcase(
+                        key: _keyDock,
+                        title: AppLocalizations.of(context)!
+                            .tour_home_toolkit_title,
+                        description: AppLocalizations.of(context)!
+                            .tour_home_toolkit_desc,
+                        child: _buildFloatingDock(selectedMantra),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Provide safe-area bottom padding dynamically
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 80),
+                    ],
+                  ),
+
+                  // Layer 5: Confetti
+                  // This sits at the top of the Expanded widget.
+                  // Because it is in the Expanded widget, "TopCenter" here means
+                  // immediately BELOW the Ad. It cannot touch the Ad.
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: ConfettiWidget(
+                      confettiController: _malaConfettiController,
+                      numberOfParticles: 50,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      colors: const [
+                        Colors.orange,
+                        Colors.yellow,
+                        Colors.white
+                      ],
                     ),
                   ),
-                ),
-                Text("",
-                    style: TextStyle(
-                        color: Colors.white.withAlpha(190), fontSize: 18)),
-                const SizedBox(height: 36),
-
-                if (bannerAd != null &&
-                    _adService.isAdLoadedForScreen(_screenName))
-                  Container(
-                    alignment: Alignment.center,
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
-                  ),
-              ],
-            )),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _malaConfettiController,
-              emissionFrequency: 0,
-              numberOfParticles: 60,
-              maxBlastForce: 50,
-              minBlastForce: 20,
-              gravity: 0.1,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: const [
-                Colors.orange,
-                Colors.amber,
-                Colors.yellow,
-                Colors.white,
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     });
+  }
+
+  Widget _buildShowcase({
+    required GlobalKey key,
+    required String title,
+    required String description,
+    required Widget child,
+  }) {
+    return Showcase(
+      key: key,
+      title: title,
+      description: description,
+      targetShapeBorder: const CircleBorder(),
+      tooltipBackgroundColor: const Color(0xFF1A1A1A),
+      textColor: Colors.white,
+      titleTextStyle: const TextStyle(
+          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
+      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
+      tooltipPadding: const EdgeInsets.all(20),
+      tooltipBorderRadius: BorderRadius.circular(20),
+      child: child,
+    );
   }
 }

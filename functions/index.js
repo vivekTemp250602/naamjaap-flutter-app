@@ -3,12 +3,9 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 
 // 2. NOW import functions and other modules.
-const {onCall, HttpsError} = require("firebase-functions/v2/https");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {onRequest} = require("firebase-functions/v2/https");
 const {setGlobalOptions} = require("firebase-functions/v2");
-const {defineSecret} = require("firebase-functions/params"); // NEW
-const Razorpay = require("razorpay");
 const {GoogleAuth} = require("google-auth-library");
 const {google} = require("googleapis");
 
@@ -18,125 +15,7 @@ setGlobalOptions({region: "us-central1"});
 // Initialize Firestore
 const db = admin.firestore();
 
-// 3. DEFINE the secrets our functions will need
-const RAZORPAY_KEY_ID = defineSecret("RAZORPAY_KEY_ID");
-const RAZORPAY_KEY_SECRET = defineSecret("RAZORPAY_KEY_SECRET");
-
-// 4. YOUR NEW RAZORPAY FUNCTIONS (v2 Syntax)
-exports.createRazorpayOrder = onCall(
-    {secrets: [RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET]},
-    async (request) => {
-      console.log("🔥 AUTH RECEIVED:", request.auth);
-      if (!request.auth) {
-        throw new HttpsError(
-            "unauthenticated",
-            "You must be logged in to make a payment.",
-        );
-      }
-      // Initialize Razorpay *INSIDE* the function
-      const razorpay = new Razorpay({
-        key_id: RAZORPAY_KEY_ID.value(), // Access the secret value
-        key_secret: RAZORPAY_KEY_SECRET.value(),
-      });
-      const amount = request.data.amount;
-      const currency = "INR";
-      const receipt = `receipt_naapjaap_${new Date().getTime()}`;
-      if (!amount || typeof amount !== "number" || amount <= 0) {
-        throw new HttpsError(
-            "invalid-argument",
-            "The function must be called with a valid 'amount'.",
-        );
-      }
-      try {
-        const options = {
-          amount: amount, // Amount in smallest unit (paisa)
-          currency: currency,
-          receipt: receipt,
-          payment_capture: 1, // Auto-capture payment
-        };
-        const order = await razorpay.orders.create(options);
-        return {order_id: order.id};
-      } catch (error) {
-        console.error("Razorpay order creation failed:", error);
-        throw new HttpsError(
-            "internal",
-            "Failed to create Razorpay order.",
-        );
-      }
-    });
-
-exports.grantPremiumAccessOnPayment = onCall(async (request) => {
-  if (!request.auth) {
-    throw new HttpsError(
-        "unauthenticated",
-        "You must be logged in.",
-    );
-  }
-  const uid = request.auth.uid;
-  try {
-    await db.collection("users").doc(uid).update({
-      isPremium: true,
-    });
-    return {status: "success", message: "Premium access granted."};
-  } catch (error) {
-    console.error("Failed to grant premium access:", error);
-    throw new HttpsError(
-        "internal",
-        "Failed to update user profile.",
-    );
-  }
-});
-
-
 // 5. ALL YOUR OLD FUNCTIONS (Converted to v2 Syntax)
-exports.sendDailyReminders = onSchedule(
-    {schedule: "every day 09:00", timeZone: "Asia/Kolkata"},
-    async (event) => {
-      const usersSnapshot = await db
-          .collection("users")
-          .where("settings.enableReminders", "==", true)
-          .get();
-
-      if (usersSnapshot.empty) {
-        console.log("No users with reminders enabled.");
-        return;
-      }
-
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-      const messages = [];
-      for (const userDoc of usersSnapshot.docs) {
-        const userData = userDoc.data();
-        const fcmToken = userData.fcmToken;
-        let lastChantDate = null;
-        if (userData.lastChantDate) {
-          lastChantDate = userData.lastChantDate.toDate();
-        }
-
-        if (
-          fcmToken &&
-        (!lastChantDate || lastChantDate.getTime() < today.getTime())
-        ) {
-          messages.push({
-            notification: {
-              title: "🌟 Your spiritual journey awaits!",
-              body:
-              // eslint-disable-next-line max-len
-              "A moment of peace is just a tap away. Let's continue our Japa practice.",
-            },
-            token: fcmToken,
-          });
-        }
-      }
-
-      if (messages.length > 0) {
-        console.log(`Sending ${messages.length} reminders.`);
-        await admin.messaging().sendEach(messages);
-      } else {
-        console.log("All users are up to date. No reminders sent.");
-      }
-    });
 
 exports.resetWeeklyLeaderboard = onSchedule(
     {schedule: "every monday 00:00", timeZone: "Asia/Kolkata"},
@@ -302,42 +181,3 @@ exports.addQuotesInBatch = onRequest(async (req, res) => {
     res.status(500).send("Error adding quotes.");
   }
 });
-
-// --------------------------------------------------
-// AUTO CLEANER: Remove old japa_events (SAFE)
-// --------------------------------------------------
-exports.cleanOldJapaEvents = onSchedule({
-  schedule: "every day 03:00", // Daily at 3 AM IST
-  timeZone: "Asia/Kolkata",
-},
-async () => {
-  const RETENTION_DAYS = 14; // ✅ safe default
-
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - RETENTION_DAYS);
-
-  console.log(`🧹 Cleaning japa_events older than ${RETENTION_DAYS} days`);
-
-  const usersSnapshot = await db.collection("users").get();
-
-  let deletedCount = 0;
-
-  for (const userDoc of usersSnapshot.docs) {
-    const eventsRef = userDoc.ref.collection("japa_events");
-
-    const oldEventsSnapshot = await eventsRef.where("createdAt", "<", cutoffDate).limit(500).get();
-
-    if (oldEventsSnapshot.empty) continue;
-
-    const batch = db.batch();
-    oldEventsSnapshot.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-      deletedCount++;
-    });
-
-    await batch.commit();
-  }
-
-  console.log(`✅ Deleted ${deletedCount} old japa_events`);
-},
-);

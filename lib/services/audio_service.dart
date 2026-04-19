@@ -12,28 +12,57 @@ class AudioService {
   Stream<PlayerState> get onPlayerStateChanged => _player.onPlayerStateChanged;
 
   AudioService._internal() {
-    // 1. INITIALIZE AUDIO CONTEXT (The Fix)
-    _configureAudioContext();
+    // 🪄 Non-blocking initialization. Doesn't lag the app!
+    _initAudioSafely();
   }
 
-  // Tells the OS to mix sounds instead of pausing them
-  Future<void> _configureAudioContext() async {
-    final AudioContext audioContext = AudioContext(
-      iOS: AudioContextIOS(
-        category: AVAudioSessionCategory.ambient, // Allows mixing
-        options: const {AVAudioSessionOptions.mixWithOthers},
-      ),
-      android: AudioContextAndroid(
-        isSpeakerphoneOn: true,
+  Future<void> _initAudioSafely() async {
+    await AudioPlayer.global.setAudioContext(AudioContext(
+      android: const AudioContextAndroid(
+        isSpeakerphoneOn: false,
         stayAwake: true,
         contentType: AndroidContentType.music,
         usageType: AndroidUsageType.media,
-        audioFocus: AndroidAudioFocus.none, // Do not request exclusive focus
+        audioFocus: AndroidAudioFocus.none, // Allows multiple sounds to play together
       ),
-    );
-
-    // Apply to global scope so both players share this rule
-    await AudioPlayer.global.setAudioContext(audioContext);
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.playback,
+        options: const {
+          AVAudioSessionOptions.mixWithOthers, // Allows mixing with other audio
+        },
+      ),
+    ));
+    await _player.setReleaseMode(ReleaseMode.loop);
+    await _fxPlayer.setReleaseMode(ReleaseMode.stop);
+    
+    // Set audio context for both players to allow simultaneous playback
+    await _player.setAudioContext(AudioContext(
+      android: const AudioContextAndroid(
+        isSpeakerphoneOn: false,
+        stayAwake: true,
+        contentType: AndroidContentType.music,
+        usageType: AndroidUsageType.media,
+        audioFocus: AndroidAudioFocus.none,
+      ),
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.playback,
+        options: const {AVAudioSessionOptions.mixWithOthers},
+      ),
+    ));
+    
+    await _fxPlayer.setAudioContext(AudioContext(
+      android: const AudioContextAndroid(
+        isSpeakerphoneOn: false,
+        stayAwake: false,
+        contentType: AndroidContentType.sonification,
+        usageType: AndroidUsageType.notification,
+        audioFocus: AndroidAudioFocus.none,
+      ),
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.playback,
+        options: const {AVAudioSessionOptions.mixWithOthers},
+      ),
+    ));
   }
 
   Future<void> setMuted(bool muted) async {
@@ -49,14 +78,8 @@ class AudioService {
 
   Future<void> startMantraLoop(String audioPath, bool isCustom) async {
     if (_isMuted) return;
-
-    // Prevent restarting if already playing
     if (_player.state == PlayerState.playing) return;
 
-    // Ensure we are in loop mode
-    await _player.setReleaseMode(ReleaseMode.loop);
-
-    // Resume if paused, otherwise play from start
     if (_player.state == PlayerState.paused) {
       await _player.resume();
     } else {
@@ -70,22 +93,14 @@ class AudioService {
 
   Future<void> stopMantra() async {
     await _player.stop();
-    await _player.setReleaseMode(ReleaseMode.release);
   }
 
   Future<void> playOneShotSound(String assetPath) async {
     if (_isMuted) return;
 
-    // Clean the path (remove assets/ prefix if present)
-    String cleanPath = assetPath;
-    if (cleanPath.startsWith('assets/')) {
-      cleanPath = cleanPath.replaceFirst('assets/', '');
-    }
+    String cleanPath = assetPath.replaceFirst('assets/', '');
 
-    // Stop previous FX if any (overlap protection)
-    if (_fxPlayer.state == PlayerState.playing) await _fxPlayer.stop();
-
-    // Play the Ding!
+    // Play the one-shot sound on top of the existing audio
     await _fxPlayer.play(AssetSource(cleanPath));
   }
 

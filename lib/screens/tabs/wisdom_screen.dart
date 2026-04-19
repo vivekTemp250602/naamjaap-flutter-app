@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:naamjaap/screens/login_screen.dart';
+import 'package:naamjaap/services/local_quotes_service.dart';
 import 'package:naamjaap/widgets/shareable_quote_template.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -260,177 +261,196 @@ class _WisdomScreenState extends State<WisdomScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
+    final bool showAd = !_isPremium && isAdLoaded;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Stack(
+      // CHANGED: Root is a Column to physically separate Ad from the visual effects
+      body: Column(
         children: [
-          // 1. Divine Background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFFF8C00),
-                  Color(0xFFFF5E62),
-                  Color(0xFF6A0572),
-                ],
-                stops: [0.0, 0.6, 1.0],
+          // -------------------------------------------------------------
+          // 1. THE AD SECTION (Pinned Top)
+          // -------------------------------------------------------------
+          if (showAd)
+            Container(
+              width: double.infinity,
+              color:
+                  Colors.black, // Solid background ensures no policy violation
+              child: SafeArea(
+                bottom: false,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: bannerAd.size.width.toDouble(),
+                  height: bannerAd.size.height.toDouble(),
+                  child: AdWidget(ad: bannerAd),
+                ),
               ),
             ),
-          ),
 
-          // 2. Sparkles
-          CustomPaint(painter: WisdomSparkles(_particleController)),
-
-          // 3. Content
-          SafeArea(
-            child: Column(
+          // -------------------------------------------------------------
+          // 2. MAIN CONTENT (Expanded)
+          // -------------------------------------------------------------
+          Expanded(
+            child: Stack(
               children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    // LOC: Divine Wisdom
-                    AppLocalizations.of(context)!.nav_wisdom,
-                    style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1),
-                  ),
-                ),
-
-                // Glassmorphic Tab Bar
+                // A. Divine Background (Now inside Expanded)
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white.withOpacity(0.2)),
-                  ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicator: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFFF8C00),
+                        Color(0xFFFF5E62),
+                        Color(0xFF6A0572),
                       ],
+                      stops: [0.0, 0.6, 1.0],
                     ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: Colors.deepOrange,
-                    unselectedLabelColor: Colors.white,
-                    labelStyle: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                    dividerColor: Colors.transparent,
-                    indicatorPadding: const EdgeInsets.all(4),
-                    tabs: [
-                      Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/peacock_feather.png',
-                                height: 20),
-                            const SizedBox(width: 8),
-                            const Text('Gita'),
-                          ],
-                        ),
-                      ),
-                      const Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.architecture_rounded, size: 20),
-                            SizedBox(width: 8),
-                            const Text('Ramayana'),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                // B. Sparkles
+                CustomPaint(painter: WisdomSparkles(_particleController)),
 
-                // Content View
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
+                // C. Content Body
+                SafeArea(
+                  top: !showAd,
+                  child: Column(
                     children: [
-                      _buildQuoteStream(
-                        _firestoreService.getDailyGitaQuoteStream(),
-                        AppConstants.defaultGitaQuote,
-                        showcaseKey: _keyQuote,
+                      // Header
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          AppLocalizations.of(context)!.nav_wisdom,
+                          style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 1),
+                        ),
                       ),
-                      _buildQuoteStream(
-                        _firestoreService.getDailyRamayanaQuoteStream(),
-                        AppConstants.defaultRamayanaQuote,
+
+                      // Glassmorphic Tab Bar
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+                        height: 55,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(30),
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.2)),
+                        ),
+                        child: TabBar(
+                          controller: _tabController,
+                          indicator: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          labelColor: Colors.deepOrange,
+                          unselectedLabelColor: Colors.white,
+                          labelStyle: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                          dividerColor: Colors.transparent,
+                          indicatorPadding: const EdgeInsets.all(4),
+                          tabs: [
+                            Tab(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                      'assets/images/peacock_feather.webp',
+                                      height: 20),
+                                  const SizedBox(width: 8),
+                                  const Text('Gita'),
+                                ],
+                              ),
+                            ),
+                            const Tab(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.architecture_rounded, size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Ramayana'),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+
+                      const SizedBox(height: 20),
+
+                      // Content View
+                      Expanded(
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            _buildQuoteStream(
+                              LocalQuotesService.getTodaysGitaQuote(),
+                              showcaseKey: _keyQuote,
+                            ),
+                            _buildQuoteStream(
+                              LocalQuotesService.getTodaysRamayanaQuote(),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // REMOVED: Ad Widget from here (moved to top)
                     ],
                   ),
                 ),
 
-                // Ad Banner
-                if (bannerAd != null &&
-                    !_isPremium &&
-                    _adService.isAdLoadedForScreen(_screenName))
-                  Container(
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
+                // D. Hidden Layer for Sharing
+                if (_isCapturing)
+                  Transform.translate(
+                    offset: Offset(MediaQuery.of(context).size.width, 0),
+                    child: RepaintBoundary(
+                      key: _shareKey,
+                      child: ShareableQuoteTemplate(
+                        quote: _shareableQuote,
+                        source: _shareableSource,
+                        langCode: _shareableLangCode,
+                      ),
+                    ),
                   ),
 
-                const SizedBox(height: 65),
+                // E. Loading Overlay
+                if (_isProcessingShare)
+                  Container(
+                    color: Colors.black.withOpacity(0.7),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(color: Colors.white),
+                          const SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)!.wisdom_creating_card,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
-
-          // Hidden Layer for Sharing
-          if (_isCapturing)
-            Transform.translate(
-              offset: Offset(MediaQuery.of(context).size.width, 0),
-              child: RepaintBoundary(
-                key: _shareKey,
-                child: ShareableQuoteTemplate(
-                  quote: _shareableQuote,
-                  source: _shareableSource,
-                  langCode: _shareableLangCode,
-                ),
-              ),
-            ),
-
-          // Loading Overlay
-          if (_isProcessingShare)
-            Container(
-              color: Colors.black.withOpacity(0.7),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(color: Colors.white),
-                    const SizedBox(height: 16),
-                    // LOC: Creating Card
-                    Text(
-                      AppLocalizations.of(context)!.wisdom_creating_card,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ],
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -508,69 +528,45 @@ class _WisdomScreenState extends State<WisdomScreen>
     ).animate().fadeIn().slideY(begin: 0.2, end: 0);
   }
 
-  Widget _buildQuoteStream(
-      Stream<DocumentSnapshot> stream, Map<String, String> defaultQuote,
+  // Import the new service at the top of wisdom_screen.dart
+  // import 'package:naamjaap/services/local_quotes_service.dart';
+
+  Widget _buildQuoteStream(Map<String, dynamic> quoteData,
       {GlobalKey? showcaseKey}) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        setState(() {});
-        await Future.delayed(const Duration(seconds: 1));
-      },
-      color: Colors.deepOrange,
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        physics: const BouncingScrollPhysics(),
-        children: [
-          if (_uid == 'guest') _buildGuestBanner(),
-          StreamBuilder<DocumentSnapshot>(
-            stream: stream,
-            builder: (context, quoteSnapshot) {
-              if (quoteSnapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox(
-                  height: 300,
-                  child: Center(
-                      child: CircularProgressIndicator(color: Colors.white)),
-                );
-              }
-              Map<String, dynamic> quoteData;
-              if (quoteSnapshot.hasError ||
-                  !quoteSnapshot.hasData ||
-                  !quoteSnapshot.data!.exists) {
-                quoteData = defaultQuote;
-              } else {
-                quoteData = quoteSnapshot.data!.data() as Map<String, dynamic>;
-              }
+    // 1. Create the base card
+    Widget card = QuoteCard(
+      textEN: quoteData['text_en'] ?? '...',
+      textHI: quoteData['text_hi'] ?? '...',
+      textSA: quoteData['text_sa'] ?? '...',
+      source: quoteData['source'] ?? '...',
+      onShare: (quote, source, langCode) =>
+          _onShareQuote(quote, source, langCode),
+    )
+        .animate()
+        .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack);
 
-              // Create the card
-              Widget card = QuoteCard(
-                textEN: quoteData['text_en'] ?? '...',
-                textHI: quoteData['text_hi'] ?? '...',
-                textSA: quoteData['text_sa'] ?? '...',
-                source: quoteData['source'] ?? '...',
-                onShare: (quote, source, langCode) =>
-                    _onShareQuote(quote, source, langCode),
-              ).animate().scale(
-                  delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack);
+    // 2. Wrap it in Showcase ONLY if the key exists, but don't return yet!
+    Widget finalCard = card;
+    if (showcaseKey != null) {
+      finalCard = _buildShowcase(
+        key: showcaseKey,
+        // LOC: Tour Title
+        title: AppLocalizations.of(context)!.tour_wisdom_card_title,
+        // LOC: Tour Desc
+        description: AppLocalizations.of(context)!.tour_wisdom_card_desc,
+        child: card,
+      );
+    }
 
-              // 6. WRAP WITH SHOWCASE IF KEY EXISTS
-              if (showcaseKey != null) {
-                return _buildShowcase(
-                  key: showcaseKey,
-                  // LOC: Tour Title
-                  title: AppLocalizations.of(context)!.tour_wisdom_card_title,
-                  // LOC: Tour Desc
-                  description:
-                      AppLocalizations.of(context)!.tour_wisdom_card_desc,
-                  child: card,
-                );
-              }
-
-              return card;
-            },
-          ),
-          const SizedBox(height: 80),
-        ],
-      ),
+    // 3. ALWAYS return the ListView so the height is dynamic
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      physics: const BouncingScrollPhysics(),
+      children: [
+        if (_uid == 'guest') _buildGuestBanner(),
+        finalCard, // Put the card (with or without showcase) inside the list
+        const SizedBox(height: 80),
+      ],
     );
   }
 }

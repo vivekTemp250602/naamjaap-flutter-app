@@ -22,7 +22,7 @@ class VersionCheckService {
         }
       }
     } catch (e) {
-      debugPrint("Version check failed: $e");
+      // Silently handle version check error
     }
   }
 

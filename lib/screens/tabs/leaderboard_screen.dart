@@ -100,131 +100,166 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFFF8C00),
-                  Color(0xFFFF5E62),
-                  Color(0xFF6A0572),
-                ],
-                stops: [0.0, 0.6, 1.0],
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: StreamBuilder<DocumentSnapshot>(
-                    stream:
-                        _firestoreService.getUserStatsStream(_currentUserId),
-                    builder: (context, userSnapshot) {
-                      if (widget.user == null ||
-                          !userSnapshot.hasData ||
-                          !userSnapshot.data!.exists) {
-                        return _buildGuestOrEmptyState();
-                      }
+      // 1. Wrap the entire body in ONE StreamBuilder
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: _firestoreService.getUserStatsStream(_currentUserId),
+        builder: (context, userSnapshot) {
+          bool isPremium = false;
+          Map<String, dynamic>? userData;
 
-                      final userData =
-                          userSnapshot.data!.data() as Map<String, dynamic>;
+          // Safely check if user data exists
+          if (userSnapshot.hasData && userSnapshot.data!.exists) {
+            userData = userSnapshot.data!.data() as Map<String, dynamic>;
+            isPremium = userData['isPremium'] ?? false;
+          }
 
-                      final bool isPremium = userData['isPremium'] ?? false;
+          // 2. Determine Ad Visibility
+          final bool showAd = !isPremium && isAdLoaded && widget.user != null;
 
-                      return Column(
-                        children: [
-                          // Ad banner
-                          if (bannerAd != null &&
-                              !isPremium &&
-                              _adService.isAdLoadedForScreen(_screenName))
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              alignment: Alignment.center,
-                              color: Colors.white.withOpacity(0.1),
-                              width: bannerAd.size.width.toDouble(),
-                              height: bannerAd.size.height.toDouble(),
-                              child: AdWidget(ad: bannerAd),
-                            ),
-
-                          // Leaderboard Ranks
-                          Expanded(
-                            child: StreamBuilder<QuerySnapshot>(
-                              stream: _selectedLeaderboard ==
-                                      LeaderboardType.allTime
-                                  ? _firestoreService.getLeaderboardStream()
-                                  : _firestoreService
-                                      .getWeeklyLeaderboardStream(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator(
-                                          color: Colors.white));
-                                }
-                                if (!snapshot.hasData ||
-                                    snapshot.data!.docs.isEmpty) {
-                                  return _buildEmptyState();
-                                }
-
-                                final docs = snapshot.data!.docs;
-
-                                return Stack(
-                                  children: [
-                                    CustomScrollView(
-                                      physics: const BouncingScrollPhysics(
-                                          parent:
-                                              AlwaysScrollableScrollPhysics()),
-                                      slivers: [
-                                        SliverToBoxAdapter(
-                                          child: _buildPodium(docs),
-                                        ),
-                                        if (docs.length > 3)
-                                          SliverPadding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                16, 10, 16, 100),
-                                            sliver: SliverList(
-                                              delegate:
-                                                  SliverChildBuilderDelegate(
-                                                (context, index) {
-                                                  final realIndex = index + 3;
-                                                  final doc = docs[realIndex];
-                                                  return _buildRankTile(
-                                                      doc, realIndex + 1);
-                                                },
-                                                childCount: docs.length - 3,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    Positioned(
-                                      bottom: 55,
-                                      left: 20,
-                                      right: 20,
-                                      child: _buildStickyUserRank(docs),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+          return Column(
+            children: [
+              // -------------------------------------------------------------
+              // 1. THE AD SECTION
+              // -------------------------------------------------------------
+              if (showAd)
+                Container(
+                  width: double.infinity,
+                  color: Colors.black,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: bannerAd.size.width.toDouble(),
+                      height: bannerAd.size.height.toDouble(),
+                      child: AdWidget(ad: bannerAd),
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
+
+              // -------------------------------------------------------------
+              // 2. THE LEADERBOARD CONTENT
+              // -------------------------------------------------------------
+              Expanded(
+                child: Stack(
+                  children: [
+                    // A. Gradient Background
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFFF8C00),
+                            Color(0xFFFF5E62),
+                            Color(0xFF6A0572),
+                          ],
+                          stops: [0.0, 0.6, 1.0],
+                        ),
+                      ),
+                    ),
+
+                    // B. Main Content
+                    SafeArea(
+                      top: !showAd, // 🪄 THE FIX: Dynamic top padding!
+                      child: Column(
+                        children: [
+                          _buildHeader(),
+                          Expanded(
+                            child: (widget.user == null || userData == null)
+                                ? _buildGuestOrEmptyState()
+                                : Column(
+                                    children: [
+                                      // Leaderboard List
+                                      Expanded(
+                                        child: StreamBuilder<QuerySnapshot>(
+                                          stream: _selectedLeaderboard ==
+                                                  LeaderboardType.allTime
+                                              ? _firestoreService
+                                                  .getLeaderboardStream()
+                                              : _firestoreService
+                                                  .getWeeklyLeaderboardStream(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          color: Colors.white));
+                                            }
+                                            if (!snapshot.hasData ||
+                                                snapshot.data!.docs.isEmpty) {
+                                              return _buildEmptyState();
+                                            }
+
+                                            final docs = snapshot.data!.docs;
+
+                                            return Stack(
+                                              children: [
+                                                CustomScrollView(
+                                                  physics:
+                                                      const BouncingScrollPhysics(
+                                                          parent:
+                                                              AlwaysScrollableScrollPhysics()),
+                                                  slivers: [
+                                                    SliverToBoxAdapter(
+                                                      child: _buildPodium(docs),
+                                                    ),
+                                                    if (docs.length > 3)
+                                                      SliverPadding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(16,
+                                                                10, 16, 100),
+                                                        sliver: SliverList(
+                                                          delegate:
+                                                              SliverChildBuilderDelegate(
+                                                            (context, index) {
+                                                              final realIndex =
+                                                                  index + 3;
+                                                              final doc = docs[
+                                                                  realIndex];
+                                                              return _buildRankTile(
+                                                                  doc,
+                                                                  realIndex +
+                                                                      1);
+                                                            },
+                                                            childCount:
+                                                                docs.length - 3,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                                // Sticky Rank
+                                                Positioned(
+                                                  bottom: 55,
+                                                  left: 20,
+                                                  right: 20,
+                                                  child: _buildStickyUserRank(
+                                                      docs),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -549,7 +584,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
       child: BackdropFilter(
         filter: ui.ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          // Fixed height to prevent bloating
+          height: 70,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.7),
             borderRadius: BorderRadius.circular(20),
@@ -563,56 +600,109 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
             ],
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(index != -1 ? "#$rank" : "-",
+              // LEFT SECTION: Rank Number (never shrinks)
+              SizedBox(
+                width: 50,
+                child: Text(
+                  index != -1 ? "#$rank" : "-",
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900)),
-              const SizedBox(width: 16),
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: Colors.grey.shade800,
-                backgroundImage: widget.user?.photoURL != null
-                    ? NetworkImage(widget.user!.photoURL!)
-                    : null,
-                child: widget.user?.photoURL == null
-                    ? const Icon(Icons.person, color: Colors.white70, size: 20)
-                    : null,
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    height: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // LOC: Your Rank
-                  Text(AppLocalizations.of(context)!.leaderboard_yourRank,
-                      style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 10,
-                          letterSpacing: 0.5)),
-                  Text(name,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14)),
-                ],
+
+              const SizedBox(width: 8),
+
+              // MIDDLE SECTION: Avatar + User Info (flexible, takes remaining space)
+              Expanded(
+                child: Row(
+                  children: [
+                    // Avatar (never shrinks)
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey.shade800,
+                      backgroundImage: widget.user?.photoURL != null
+                          ? NetworkImage(widget.user!.photoURL!)
+                          : null,
+                      child: widget.user?.photoURL == null
+                          ? const Icon(Icons.person,
+                              color: Colors.white70, size: 20)
+                          : null,
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    // User Info (flexible, can shrink with ellipsis)
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // LOC: Your Rank
+                          Text(
+                            AppLocalizations.of(context)!.leaderboard_yourRank,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 10,
+                              letterSpacing: 0.5,
+                              height: 1.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              height: 1.2,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const Spacer(),
+
+              const SizedBox(width: 8),
+
+              // RIGHT SECTION: Score Pill (never shrinks)
               Container(
+                constraints: const BoxConstraints(minWidth: 70),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.amber.withOpacity(0.5))),
+                  color: Colors.amber.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: Colors.amber.withOpacity(0.5), width: 1.5),
+                ),
                 // LOC: Malas
                 child: Text(
-                    "$malas ${AppLocalizations.of(context)!.misc_malas}",
-                    style: const TextStyle(
-                        color: Colors.amber,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold)),
+                  "$malas ${AppLocalizations.of(context)!.misc_malas}",
+                  style: const TextStyle(
+                    color: Colors.amber,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    height: 1.0,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
               ),
             ],
           ),
@@ -669,6 +759,18 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                 orElse: () => "Unknown");
           }
 
+          // --- 🪄 THE FIX: Dynamic Japps and Label based on the active tab ---
+          final int displayJapps =
+              _selectedLeaderboard == LeaderboardType.allTime
+                  ? (userData['total_japps'] ?? 0)
+                  : (userData['weekly_total_japps'] ?? 0);
+
+          final String displayLabel = _selectedLeaderboard ==
+                  LeaderboardType.allTime
+              ? AppLocalizations.of(context)!.misc_japps // e.g., "Total Japps"
+              : AppLocalizations.of(context)!
+                  .leaderboard_thisWeek; // e.g., "This Week"
+
           return Dialog(
             backgroundColor: Colors.transparent,
             insetPadding: const EdgeInsets.all(20),
@@ -711,12 +813,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildDialogStat(
-                              Icons.stars_rounded,
-                              "${userData['total_japps'] ?? 0}",
-                              AppLocalizations.of(context)!
-                                  .misc_japps, // LOC: Japps
-                              Colors.purple),
+                          // --- Apply the dynamic values here ---
+                          _buildDialogStat(Icons.stars_rounded, "$displayJapps",
+                              displayLabel, Colors.purple),
                           _buildDialogStat(
                               Icons.local_fire_department,
                               "${userData['currentStreak'] ?? 0}",

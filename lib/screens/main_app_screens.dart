@@ -6,7 +6,6 @@ import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/tabs/home_screen.dart';
 import 'package:naamjaap/screens/tabs/leaderboard_screen.dart';
 import 'package:naamjaap/screens/tabs/profile_screen.dart';
-import 'package:naamjaap/screens/tabs/settings_screen.dart';
 import 'package:naamjaap/screens/tabs/wisdom_screen.dart';
 import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';

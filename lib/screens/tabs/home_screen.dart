@@ -18,6 +18,7 @@ import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/connectivity_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/mantra_info_service.dart';
+import 'package:naamjaap/services/rating_service.dart';
 import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/utils/mala_type.dart';
@@ -29,7 +30,6 @@ import 'package:showcaseview/showcaseview.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
-// ... [Keep ZenithSparkles and _Sparkle classes exactly as they are] ...
 class ZenithSparkles extends CustomPainter {
   final AnimationController controller;
   final List<_Sparkle> sparkles;
@@ -157,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen>
   late AnimationController _particleController;
   late AnimationController _pulseController;
   late PageController _carouselController;
+  final RatingService _ratingService = RatingService();
   SyncService? _syncService;
 
   // State
@@ -382,13 +383,14 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _incrementCounter() async {
-    // 1. Haptic Feedback (Keep this, users love it)
+    // 1. Haptic Feedback
     if (_isVibrationEnabled) HapticFeedback.mediumImpact();
 
     final provider = Provider.of<MantraProvider>(context, listen: false);
     final selectedMantra = provider.selectedMantra!;
     final mantraKey = selectedMantra.id;
 
+    // 🪄 RESTORED: Only call the audio player if it's actually stopped. ZERO LAG!
     if (!_isPlaying && !_isMuted) {
       setState(() => _isPlaying = true);
       String path = selectedMantra.isCustom
@@ -408,19 +410,16 @@ class _HomeScreenState extends State<HomeScreen>
       return;
     }
 
-    // --- FIX 2: SYNC GLITCH (Prevents Count Rollback) ---
+    // --- SYNC GLITCH FIX ---
     final String eventId = DateTime.now().microsecondsSinceEpoch.toString();
 
-    // A. Update Local State Immediately
     setState(() {
       _pendingEvents[eventId] = {'mantraId': mantraKey};
     });
 
-    // B. Save to Disk with the CORRECT KEY matching SyncService
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('pendingJapaEvents', json.encode(_pendingEvents));
 
-    // C. Debounce Sync (Wait 5s before hitting DB to save battery/data)
     _syncTimer?.cancel();
     _syncTimer = Timer(
         const Duration(seconds: 5), () => _syncService?.syncPendingData());
@@ -433,11 +432,13 @@ class _HomeScreenState extends State<HomeScreen>
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _celebrateMala();
       _achievementsService.checkAndAwardBadges(_uid);
+      _ratingService.checkAndAskForReview();
     }
   }
 
   void _celebrateMala() {
     _malaConfettiController.play();
+    // Play one-shot sound on top of the looping mantra audio
     _audioService.playOneShotSound('assets/audio/mala_complete.mp3');
   }
 
@@ -1155,9 +1156,13 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    // Get the ad for this screen
     final bannerAd = _adService.getAdForScreen(_screenName);
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
 
     return Consumer<MantraProvider>(builder: (context, mantraProvider, child) {
+      // 1. Handle Loading State
       if (mantraProvider.isLoading || mantraProvider.selectedMantra == null) {
         return const Center(child: CircularProgressIndicator());
       }
@@ -1165,6 +1170,7 @@ class _HomeScreenState extends State<HomeScreen>
       final selectedMantra = mantraProvider.selectedMantra!;
       final allMantras = mantraProvider.allMantras;
 
+      // 2. Calculate Counts
       final int displayTotal;
       final int malaProgressCounter;
 
@@ -1182,197 +1188,256 @@ class _HomeScreenState extends State<HomeScreen>
 
       return Scaffold(
         backgroundColor: Colors.black,
-        body: Stack(
-          fit: StackFit.expand,
+        body: Column(
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(seconds: 1),
-              child: selectedMantra.isCustom
-                  ? AppConstants.getBackgroundById(selectedMantra.backgroundId!)
-                      .child
-                  : AnimatedBackground(
-                      key: ValueKey<String>(selectedMantra.id),
-                      imagePaths:
-                          AppConstants.mantraImagePaths[selectedMantra.name]!,
-                    ),
-            ),
+            // -------------------------------------------------------------
+            // SECTION A: THE ADVERTISEMENTS
+            // This is kept separate at the top. Nothing can overlap it.
+            // -------------------------------------------------------------
             Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black54,
-                    Colors.transparent,
-                    Colors.black87,
-                  ],
-                  stops: [0.0, 0.4, 1.0],
-                ),
+              width: double.infinity,
+              color: Colors.black, // Ensures solid background behind ad
+              child: SafeArea(
+                bottom: false, // Only padding for top notch
+                child: isAdLoaded
+                    ? Container(
+                        alignment: Alignment.center,
+                        width: bannerAd.size.width.toDouble(),
+                        height: bannerAd.size.height.toDouble(),
+                        child: AdWidget(ad: bannerAd),
+                      )
+                    : const SizedBox.shrink(), // Takes 0 space if no ad
               ),
             ),
-            CustomPaint(
-                painter: ZenithSparkles(_particleController, _sparkles)),
-            SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  _buildTopStreakBadge(),
-                  const SizedBox(height: 20),
 
-                  // LOC: Showcase Carousel
-                  _buildShowcase(
-                    key: _keyCarousel,
-                    title:
-                        AppLocalizations.of(context)!.tour_home_carousel_title,
-                    description:
-                        AppLocalizations.of(context)!.tour_home_carousel_desc,
-                    child: _build3DMantraCarousel(allMantras, selectedMantra),
+            // -------------------------------------------------------------
+            // SECTION B: THE APP CONTENT
+            // Everything else (Background, Sparkles, Game) lives here
+            // -------------------------------------------------------------
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Layer 1: Background Image
+                  AnimatedSwitcher(
+                    duration: const Duration(seconds: 1),
+                    child: selectedMantra.isCustom
+                        ? AppConstants.getBackgroundById(
+                                selectedMantra.backgroundId!)
+                            .child
+                        : AnimatedBackground(
+                            key: ValueKey<String>(selectedMantra.id),
+                            imagePaths: AppConstants
+                                .mantraImagePaths[selectedMantra.name]!,
+                          ),
                   ),
 
-                  const Spacer(),
-
-                  // LOC: Showcase Mala
-                  _buildShowcase(
-                    key: _keyMala,
-                    title: AppLocalizations.of(context)!.tour_home_mala_title,
-                    description:
-                        AppLocalizations.of(context)!.tour_home_mala_desc,
-                    child: GestureDetector(
-                      onTap: _incrementCounter,
-                      child: AnimatedBuilder(
-                        animation: _pulseController,
-                        builder: (context, child) {
-                          return Container(
-                            width: 320,
-                            height: 320,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.orange.withOpacity(
-                                        0.2 + (_pulseController.value * 0.1)),
-                                    blurRadius:
-                                        40 + (_pulseController.value * 20),
-                                    spreadRadius: 5,
-                                  )
-                                ]),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                MalaWidget(
-                                  activeBeadIndex: malaProgressCounter,
-                                  beadCount: 109,
-                                ),
-                                Container(
-                                  width: 240,
-                                  height: 240,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        Colors.orange.shade400.withOpacity(0.9),
-                                        Colors.deepOrange.shade900
-                                            .withOpacity(0.95),
-                                      ],
-                                      center: const Alignment(-0.2, -0.2),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          blurRadius: 20,
-                                          spreadRadius: 2),
-                                      BoxShadow(
-                                          color: Colors.white.withOpacity(0.2),
-                                          blurRadius: 5,
-                                          offset: const Offset(-10, -10))
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        AnimatedSwitcher(
-                                          duration: 150.ms,
-                                          transitionBuilder: (child, anim) =>
-                                              ScaleTransition(
-                                                  scale: anim, child: child),
-                                          child: Text(
-                                            (malaProgressCounter == 0 &&
-                                                    displayTotal > 0)
-                                                ? "108"
-                                                : "$malaProgressCounter",
-                                            key: ValueKey(malaProgressCounter),
-                                            style: const TextStyle(
-                                                fontSize: 80,
-                                                fontWeight: FontWeight.w900,
-                                                color: Colors.white,
-                                                fontFamily: 'Serif',
-                                                height: 1.0,
-                                                shadows: [
-                                                  Shadow(
-                                                      color: Colors.black45,
-                                                      blurRadius: 10,
-                                                      offset: Offset(2, 4))
-                                                ]),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        // LOC: Total Count
-                                        Text(
-                                          "${AppLocalizations.of(context)!.home_total} $displayTotal",
-                                          style: TextStyle(
-                                              color:
-                                                  Colors.white.withOpacity(0.8),
-                                              fontSize: 16,
-                                              letterSpacing: 1),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                  // Layer 2: Black Gradient Overlay
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black54,
+                          Colors.transparent,
+                          Colors.black87,
+                        ],
+                        stops: [0.0, 0.4, 1.0],
                       ),
                     ),
                   ),
 
-                  const Spacer(),
-
-                  // LOC: Showcase Dock
-                  _buildShowcase(
-                    key: _keyDock,
-                    title:
-                        AppLocalizations.of(context)!.tour_home_toolkit_title,
-                    description:
-                        AppLocalizations.of(context)!.tour_home_toolkit_desc,
-                    child: _buildFloatingDock(selectedMantra),
+                  // Layer 3: Sparkles (Confined to this Expanded area)
+                  CustomPaint(
+                    painter: ZenithSparkles(_particleController, _sparkles),
                   ),
 
-                  const SizedBox(height: 20),
+                  // Layer 4: Main UI Elements
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
 
-                  if (bannerAd != null &&
-                      _adService.isAdLoadedForScreen(_screenName))
-                    Container(
-                      alignment: Alignment.center,
-                      width: bannerAd.size.width.toDouble(),
-                      height: bannerAd.size.height.toDouble(),
-                      child: AdWidget(ad: bannerAd),
+                      // Streak Badge
+                      _buildTopStreakBadge(),
+
+                      const SizedBox(height: 20),
+
+                      // Carousel Tour
+                      _buildShowcase(
+                        key: _keyCarousel,
+                        title: AppLocalizations.of(context)!
+                            .tour_home_carousel_title,
+                        description: AppLocalizations.of(context)!
+                            .tour_home_carousel_desc,
+                        child:
+                            _build3DMantraCarousel(allMantras, selectedMantra),
+                      ),
+
+                      const Spacer(),
+
+                      // Mala Tour & Interaction
+                      _buildShowcase(
+                        key: _keyMala,
+                        title:
+                            AppLocalizations.of(context)!.tour_home_mala_title,
+                        description:
+                            AppLocalizations.of(context)!.tour_home_mala_desc,
+                        child: GestureDetector(
+                          onTap: _incrementCounter,
+                          child: AnimatedBuilder(
+                            animation: _pulseController,
+                            builder: (context, child) {
+                              // Responsive sizing: use 85% of screen width, capped at 320
+                              final screenWidth = MediaQuery.of(context).size.width;
+                              final malaSize = (screenWidth * 0.85).clamp(240.0, 320.0);
+                              final innerSize = malaSize * 0.75;
+                              final counterFontSize = (malaSize * 0.25).clamp(56.0, 80.0);
+                              return Container(
+                                width: malaSize,
+                                height: malaSize,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.orange.withOpacity(
+                                          0.2 + (_pulseController.value * 0.1)),
+                                      blurRadius:
+                                          40 + (_pulseController.value * 20),
+                                      spreadRadius: 5,
+                                    )
+                                  ],
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    MalaWidget(
+                                      activeBeadIndex: malaProgressCounter,
+                                      beadCount: 109,
+                                    ),
+                                    Container(
+                                      width: innerSize,
+                                      height: innerSize,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: RadialGradient(
+                                          colors: [
+                                            Colors.orange.shade400
+                                                .withOpacity(0.9),
+                                            Colors.deepOrange.shade900
+                                                .withOpacity(0.95),
+                                          ],
+                                          center: const Alignment(-0.2, -0.2),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            blurRadius: 20,
+                                            spreadRadius: 2,
+                                          ),
+                                          BoxShadow(
+                                            color:
+                                                Colors.white.withOpacity(0.2),
+                                            blurRadius: 5,
+                                            offset: const Offset(-10, -10),
+                                          )
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            AnimatedSwitcher(
+                                              duration: 150.ms,
+                                              transitionBuilder:
+                                                  (child, anim) =>
+                                                      ScaleTransition(
+                                                          scale: anim,
+                                                          child: child),
+                                              child: Text(
+                                                (malaProgressCounter == 0 &&
+                                                        displayTotal > 0)
+                                                    ? "108"
+                                                    : "$malaProgressCounter",
+                                                key: ValueKey(
+                                                    malaProgressCounter),
+                                                style: TextStyle(
+                                                  fontSize: counterFontSize,
+                                                  fontWeight: FontWeight.w900,
+                                                  color: Colors.white,
+                                                  fontFamily: 'Serif',
+                                                  height: 1.0,
+                                                  shadows: const [
+                                                    Shadow(
+                                                      color: Colors.black45,
+                                                      blurRadius: 10,
+                                                      offset: Offset(2, 4),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "${AppLocalizations.of(context)!.home_total} $displayTotal",
+                                              style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.8),
+                                                fontSize: 16,
+                                                letterSpacing: 1,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      // Dock Tour
+                      _buildShowcase(
+                        key: _keyDock,
+                        title: AppLocalizations.of(context)!
+                            .tour_home_toolkit_title,
+                        description: AppLocalizations.of(context)!
+                            .tour_home_toolkit_desc,
+                        child: _buildFloatingDock(selectedMantra),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Provide safe-area bottom padding dynamically
+                      SizedBox(height: MediaQuery.of(context).padding.bottom + 80),
+                    ],
+                  ),
+
+                  // Layer 5: Confetti
+                  // This sits at the top of the Expanded widget.
+                  // Because it is in the Expanded widget, "TopCenter" here means
+                  // immediately BELOW the Ad. It cannot touch the Ad.
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: ConfettiWidget(
+                      confettiController: _malaConfettiController,
+                      numberOfParticles: 50,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      colors: const [
+                        Colors.orange,
+                        Colors.yellow,
+                        Colors.white
+                      ],
                     ),
-
-                  const SizedBox(height: 65),
+                  ),
                 ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: ConfettiWidget(
-                confettiController: _malaConfettiController,
-                numberOfParticles: 50,
-                blastDirectionality: BlastDirectionality.explosive,
-                colors: const [Colors.orange, Colors.yellow, Colors.white],
               ),
             ),
           ],

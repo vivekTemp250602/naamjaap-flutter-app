@@ -59,11 +59,11 @@ class AppConstants {
     _buildGradient(
         'gradient_4', Colors.orange.shade200, Colors.orange.shade800),
     _buildGradient('gradient_5', Colors.pink.shade200, Colors.pink.shade800),
-    _buildImage('image_1', 'assets/images/custom_galaxy.jpeg'),
-    _buildImage('image_2', 'assets/images/custom_mountain.jpeg'),
-    _buildImage('image_3', 'assets/images/custom_sky.jpeg'),
-    _buildImage('image_4', 'assets/images/custom_forest.jpeg'),
-    _buildImage('image_5', 'assets/images/custom_temple.jpg'),
+    _buildImage('image_1', 'assets/images/custom_galaxy.webp'),
+    _buildImage('image_2', 'assets/images/custom_mountain.webp'),
+    _buildImage('image_3', 'assets/images/custom_sky.webp'),
+    _buildImage('image_4', 'assets/images/custom_forest.webp'),
+    _buildImage('image_5', 'assets/images/custom_temple.webp'),
   ];
 
   static CustomBackground getBackgroundById(String id) {

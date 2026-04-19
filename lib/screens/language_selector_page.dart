@@ -273,7 +273,7 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
                         ),
                       ],
                     ),
-                    child: Image.asset('assets/images/app_logo_simple.png',
+                    child: Image.asset('assets/images/app_logo_simple.webp',
                         width: 90, height: 90),
                   ),
                   const SizedBox(height: 24),

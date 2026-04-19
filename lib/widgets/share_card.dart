@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class ShareCard extends StatelessWidget {
@@ -21,7 +20,7 @@ class ShareCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withAlpha(50),
             blurRadius: 20,
             offset: const Offset(0, 10),
           )
@@ -31,7 +30,7 @@ class ShareCard extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           // Background Mandala (Subtle)
-          Positioned(
+          const Positioned(
             right: -50,
             top: -50,
             child: Opacity(
@@ -54,7 +53,7 @@ class ShareCard extends StatelessWidget {
                   Text(
                     "SPIRITUAL MILESTONE",
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withAlpha(220),
                       fontSize: 12,
                       letterSpacing: 2,
                       fontWeight: FontWeight.bold,
@@ -69,8 +68,8 @@ class ShareCard extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                      color: Colors.white.withOpacity(0.5), width: 2),
+                  border:
+                      Border.all(color: Colors.white.withAlpha(130), width: 2),
                 ),
                 child: const CircleAvatar(
                   radius: 30,
@@ -91,14 +90,14 @@ class ShareCard extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // 3. The Big Number (Glassmorphic)
+              // 3. The Big Number
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withAlpha(30),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withOpacity(0.4)),
+                  border: Border.all(color: Colors.white.withAlpha(60)),
                 ),
                 child: Column(
                   children: [
@@ -146,7 +145,7 @@ class ShareCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/app_logo_simple.png',
+                    'assets/images/app_logo_simple.webp',
                     height: 24,
                     color: Colors.white, // Tint logo white if possible
                   ),

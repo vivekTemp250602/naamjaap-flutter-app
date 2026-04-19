@@ -171,7 +171,7 @@ class ShareableQuoteTemplate extends StatelessWidget {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/app_logo_simple.png',
+                    'assets/images/app_logo_simple.webp',
                     height: 110,
                   ),
                   const SizedBox(height: 15),

@@ -278,28 +278,32 @@ class _GardenScreenState extends State<GardenScreen>
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // LOC: Spiritual Growth
-                                          Text(
-                                              AppLocalizations.of(context)!
-                                                  .garden_growth,
-                                              style: TextStyle(
-                                                  color: Colors.white
-                                                      .withOpacity(0.7),
-                                                  fontSize: 13)),
-                                          const SizedBox(height: 6),
-                                          // LOC: Malas
-                                          Text(
-                                              "$totalMalas ${AppLocalizations.of(context)!.misc_malas}",
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // LOC: Spiritual Growth
+                                        Text(
+                                            AppLocalizations.of(context)!
+                                                .garden_growth,
+                                            style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.7),
+                                                fontSize: 13)),
+                                        const SizedBox(height: 6),
+                                        // LOC: Malas
+                                        Text(
+                                            "$totalMalas ${AppLocalizations.of(context)!.misc_malas}",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.bold),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis),
+                                      ],
+                                    ),
+                                  ),
                                       Container(
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(

@@ -218,7 +218,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                 );
               },
               child: Image.asset(
-                'assets/images/blessing_figure.png', // USER: Ensure this file exists!
+                'assets/images/blessing_figure.webp', // USER: Ensure this file exists!
                 fit: BoxFit.contain,
               ),
             ),

@@ -10,6 +10,7 @@ import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:naamjaap/services/notification_service.dart';
+import 'package:naamjaap/services/local_notification_service.dart';
 import 'package:naamjaap/services/storage_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,6 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
+  bool _isNotificationSoundEnabled = false;
   bool _isDeleting = false;
 
   static const String _screenName = 'setting';
@@ -145,6 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (mounted) {
       setState(() {
         _areRemindersEnabled = settings['enableReminders'] ?? false;
+        _isNotificationSoundEnabled = settings['enableNotificationSound'] ?? false;
       });
     }
   }
@@ -163,8 +166,14 @@ class _SettingsScreenState extends State<SettingsScreen>
       isEnabled: isEnabled,
     );
 
+    await LocalNotificationService().scheduleDailyReminders(
+      isEnabled: isEnabled,
+      enableSound: _isNotificationSoundEnabled,
+    );
+
     await _firestoreService.updateUserSettings(_uid, {
       'enableReminders': isEnabled,
+      'enableNotificationSound': _isNotificationSoundEnabled,
       'notificationLanguage': langCode,
     });
   }
@@ -172,6 +181,13 @@ class _SettingsScreenState extends State<SettingsScreen>
   Future<void> _toggleReminders(bool value) async {
     setState(() {
       _areRemindersEnabled = value;
+    });
+    await _updateUserPreferences();
+  }
+
+  Future<void> _toggleNotificationSound(bool value) async {
+    setState(() {
+      _isNotificationSoundEnabled = value;
     });
     await _updateUserPreferences();
   }
@@ -421,212 +437,257 @@ class _SettingsScreenState extends State<SettingsScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
+    // Determine if we should show the ad
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
 
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
-      body: Stack(
+      // CHANGED: Root is a Column to physically separate Ad from Content
+      body: Column(
         children: [
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // 1. DIVINE HEADER (Sliver)
-              SliverAppBar(
-                expandedHeight: 250,
-                pinned: true,
-                stretch: true,
-                backgroundColor: const Color(0xFFFF5E62),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: _buildHeader(),
-                  stretchModes: const [
-                    StretchMode.zoomBackground,
-                    StretchMode.blurBackground
-                  ],
-                ),
-              ),
-
-              // 2. PREFERENCES (Overlapping Card)
-              _buildSettingsCard(
-                overlap: true, // PULLS IT UP
-                children: [
-                  if (!_isGuest) ...[
-                    Divider(
-                        height: 1,
-                        indent: 20,
-                        endIndent: 20,
-                        color: Colors.grey.shade100),
-                    _buildSwitchTile(
-                      // LOC: Reminders
-                      title: AppLocalizations.of(context)!.settings_reminders,
-                      subtitle:
-                          AppLocalizations.of(context)!.settings_remindersDesc,
-                      icon: Icons.notifications_active_rounded,
-                      value: _areRemindersEnabled,
-                      onChanged: _toggleReminders,
-                      activeColor: Colors.amber.shade800,
-                    ),
-                  ],
-                  Divider(
-                      height: 1,
-                      indent: 20,
-                      endIndent: 20,
-                      color: Colors.grey.shade100),
-                  _buildActionTile(
-                    // LOC: Language
-                    title: AppLocalizations.of(context)!.settings_language,
-                    subtitle: Provider.of<LocaleProvider>(context)
-                            .locale
-                            ?.languageCode
-                            .toUpperCase() ??
-                        AppLocalizations.of(context)!.localeName.toUpperCase(),
-                    icon: Icons.language_rounded,
-                    iconColor: Colors.purple,
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                LanguageSelectorPage(uid: _uid))),
-                  ),
-                ],
-              ),
-
-              // 3. SUPPORT & LEGAL
-              // LOC: Support Header
-              SliverToBoxAdapter(
-                  child: _buildSectionHeader(
-                      AppLocalizations.of(context)!.settings_support_header)),
-              _buildSettingsCard(
-                children: [
-                  _buildActionTile(
-                    // LOC: Feedback
-                    title: AppLocalizations.of(context)!.settings_feedback,
-                    icon: Icons.feedback_rounded,
-                    iconColor: Colors.teal,
-                    onTap: _launchFeedbackForm,
-                  ),
-                  Divider(
-                      height: 1,
-                      indent: 20,
-                      endIndent: 20,
-                      color: Colors.grey.shade100),
-                  _buildActionTile(
-                    // LOC: Privacy
-                    title: AppLocalizations.of(context)!.settings_privacy,
-                    icon: Icons.privacy_tip_rounded,
-                    iconColor: Colors.green,
-                    onTap: _launchPrivacyPolicy,
-                  ),
-                  Divider(
-                      height: 1,
-                      indent: 20,
-                      endIndent: 20,
-                      color: Colors.grey.shade100),
-                  _buildActionTile(
-                    // LOC: Terms
-                    title: AppLocalizations.of(context)!.settings_terms,
-                    icon: Icons.gavel_rounded,
-                    iconColor: Colors.brown,
-                    onTap: _launchTerms,
-                  ),
-                ],
-              ),
-
-              // 4. ACCOUNT / DANGER ZONE
-              if (!_isGuest) ...[
-                // LOC: Account Header
-                SliverToBoxAdapter(
-                    child: _buildSectionHeader(
-                        AppLocalizations.of(context)!.settings_account_header)),
-                _buildSettingsCard(
-                  children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 8),
-                      onTap: _showDeleteAccountDialog,
-                      leading: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(12)),
-                        child: Icon(Icons.delete_forever_rounded,
-                            color: Colors.red.shade400),
-                      ),
-                      // LOC: Delete Account
-                      title: Text(
-                        AppLocalizations.of(context)!.settings_deleteAccount,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.red),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.red),
-                    ),
-                  ],
-                ),
-              ],
-
-              // 5. SIGN OUT BUTTON & AD
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        icon: const Icon(Icons.logout_rounded),
-                        // LOC: Sign Out / Exit Guest
-                        label: Text(_isGuest
-                            ? AppLocalizations.of(context)!.settings_exit_guest
-                            : AppLocalizations.of(context)!.settings_signOut),
-                        onPressed: _signOut,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.red,
-                          elevation: 2,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 32),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              side: BorderSide(color: Colors.red.shade100)),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(height: 40),
-                      if (bannerAd != null &&
-                          _adService.isAdLoadedForScreen(_screenName))
-                        Container(
-                          alignment: Alignment.center,
-                          width: bannerAd.size.width.toDouble(),
-                          height: bannerAd.size.height.toDouble(),
-                          child: AdWidget(ad: bannerAd),
-                        ),
-                      const SizedBox(height: 65),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          // Loading Overlay
-          if (_isDeleting)
+          // -------------------------------------------------------------
+          // 1. THE AD SECTION (Pinned Top)
+          // -------------------------------------------------------------
+          if (isAdLoaded)
             Container(
-              color: Colors.black.withOpacity(0.7),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(color: Colors.white),
-                    const SizedBox(height: 20),
-                    // LOC: Deleting
-                    Text(AppLocalizations.of(context)!.settings_deletingAccount,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            decoration: TextDecoration.none)),
-                  ],
+              width: double.infinity,
+              color:
+                  Colors.black, // Solid background ensures no policy violation
+              child: SafeArea(
+                bottom: false,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: bannerAd.size.width.toDouble(),
+                  height: bannerAd.size.height.toDouble(),
+                  child: AdWidget(ad: bannerAd),
                 ),
               ),
             ),
+
+          // -------------------------------------------------------------
+          // 2. MAIN CONTENT (Expanded)
+          // -------------------------------------------------------------
+          Expanded(
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    // 1. DIVINE HEADER (Sliver)
+                    SliverAppBar(
+                      expandedHeight: 250,
+                      pinned: true,
+                      stretch: true,
+                      backgroundColor: const Color(0xFFFF5E62),
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: _buildHeader(),
+                        stretchModes: const [
+                          StretchMode.zoomBackground,
+                          StretchMode.blurBackground
+                        ],
+                      ),
+                    ),
+
+                    // 2. PREFERENCES (Overlapping Card)
+                    _buildSettingsCard(
+                      overlap: true, // PULLS IT UP
+                      children: [
+                        if (!_isGuest) ...[
+                          Divider(
+                              height: 1,
+                              indent: 20,
+                              endIndent: 20,
+                              color: Colors.grey.shade100),
+                          _buildSwitchTile(
+                            // LOC: Reminders
+                            title: AppLocalizations.of(context)!
+                                .settings_reminders,
+                            subtitle: AppLocalizations.of(context)!
+                                .settings_remindersDesc,
+                            icon: Icons.notifications_active_rounded,
+                            value: _areRemindersEnabled,
+                            onChanged: _toggleReminders,
+                            activeColor: Colors.amber.shade800,
+                          ),
+                          if (_areRemindersEnabled)
+                            _buildSwitchTile(
+                              title: 'Notification Sound',
+                              subtitle: 'Play sound for reminders (otherwise visual/vibrate)',
+                              icon: Icons.volume_up_rounded,
+                              value: _isNotificationSoundEnabled,
+                              onChanged: _toggleNotificationSound,
+                              activeColor: Colors.amber.shade800,
+                            ),
+                        ],
+                        Divider(
+                            height: 1,
+                            indent: 20,
+                            endIndent: 20,
+                            color: Colors.grey.shade100),
+                        _buildActionTile(
+                          // LOC: Language
+                          title:
+                              AppLocalizations.of(context)!.settings_language,
+                          subtitle: Provider.of<LocaleProvider>(context)
+                                  .locale
+                                  ?.languageCode
+                                  .toUpperCase() ??
+                              AppLocalizations.of(context)!
+                                  .localeName
+                                  .toUpperCase(),
+                          icon: Icons.language_rounded,
+                          iconColor: Colors.purple,
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      LanguageSelectorPage(uid: _uid))),
+                        ),
+                      ],
+                    ),
+
+                    // 3. SUPPORT & LEGAL
+                    // LOC: Support Header
+                    SliverToBoxAdapter(
+                        child: _buildSectionHeader(AppLocalizations.of(context)!
+                            .settings_support_header)),
+                    _buildSettingsCard(
+                      children: [
+                        _buildActionTile(
+                          // LOC: Feedback
+                          title:
+                              AppLocalizations.of(context)!.settings_feedback,
+                          icon: Icons.feedback_rounded,
+                          iconColor: Colors.teal,
+                          onTap: _launchFeedbackForm,
+                        ),
+                        Divider(
+                            height: 1,
+                            indent: 20,
+                            endIndent: 20,
+                            color: Colors.grey.shade100),
+                        _buildActionTile(
+                          // LOC: Privacy
+                          title: AppLocalizations.of(context)!.settings_privacy,
+                          icon: Icons.privacy_tip_rounded,
+                          iconColor: Colors.green,
+                          onTap: _launchPrivacyPolicy,
+                        ),
+                        Divider(
+                            height: 1,
+                            indent: 20,
+                            endIndent: 20,
+                            color: Colors.grey.shade100),
+                        _buildActionTile(
+                          // LOC: Terms
+                          title: AppLocalizations.of(context)!.settings_terms,
+                          icon: Icons.gavel_rounded,
+                          iconColor: Colors.brown,
+                          onTap: _launchTerms,
+                        ),
+                      ],
+                    ),
+
+                    // 4. ACCOUNT / DANGER ZONE
+                    if (!_isGuest) ...[
+                      // LOC: Account Header
+                      SliverToBoxAdapter(
+                          child: _buildSectionHeader(
+                              AppLocalizations.of(context)!
+                                  .settings_account_header)),
+                      _buildSettingsCard(
+                        children: [
+                          ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            onTap: _showDeleteAccountDialog,
+                            leading: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  color: Colors.red.shade50,
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Icon(Icons.delete_forever_rounded,
+                                  color: Colors.red.shade400),
+                            ),
+                            // LOC: Delete Account
+                            title: Text(
+                              AppLocalizations.of(context)!
+                                  .settings_deleteAccount,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios,
+                                size: 16, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ],
+
+                    // 5. SIGN OUT BUTTON (Ad removed from here)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.logout_rounded),
+                              // LOC: Sign Out / Exit Guest
+                              label: Text(_isGuest
+                                  ? AppLocalizations.of(context)!
+                                      .settings_exit_guest
+                                  : AppLocalizations.of(context)!
+                                      .settings_signOut),
+                              onPressed: _signOut,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.red,
+                                elevation: 2,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 32),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    side:
+                                        BorderSide(color: Colors.red.shade100)),
+                                textStyle: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(height: 65),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Loading Overlay (Stays in Stack to cover content)
+                if (_isDeleting)
+                  Container(
+                    color: Colors.black.withOpacity(0.7),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const CircularProgressIndicator(color: Colors.white),
+                          const SizedBox(height: 20),
+                          // LOC: Deleting
+                          Text(
+                              AppLocalizations.of(context)!
+                                  .settings_deletingAccount,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  decoration: TextDecoration.none)),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

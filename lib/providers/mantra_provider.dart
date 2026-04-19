@@ -17,7 +17,7 @@ class MantraProvider extends ChangeNotifier {
   Mantra? _selectedMantra;
   bool _isLoading = true;
 
-  MalaType _selectedMalaType = MalaType.regular;
+  MalaType _selectedMalaType = MalaType.royal;
   MalaType get selectedMalaType => _selectedMalaType;
 
   StreamSubscription<DocumentSnapshot>? _userStreamSubscription;
@@ -40,10 +40,10 @@ class MantraProvider extends ChangeNotifier {
 
     // Load Mala Type preference
     final String malaTypeName =
-        prefs.getString(prefsKeyMalaType) ?? MalaType.regular.name;
+        prefs.getString(prefsKeyMalaType) ?? MalaType.royal.name;
     _selectedMalaType = MalaType.values.firstWhere(
       (e) => e.name == malaTypeName,
-      orElse: () => MalaType.regular,
+      orElse: () => MalaType.royal,
     );
 
     // Load ONLY Global Mantras (Guests don't have custom ones)
@@ -60,6 +60,16 @@ class MantraProvider extends ChangeNotifier {
     }).toList();
 
     _allMantras = globalMantras;
+
+    final List<String> order = RemoteConfigService().mantras;
+    _allMantras.sort((a, b) {
+      int indexA = order.indexOf(a.name);
+      int indexB = order.indexOf(b.name);
+      // Put unknown/custom mantras at the end
+      if (indexA == -1) indexA = 999;
+      if (indexB == -1) indexB = 999;
+      return indexA.compareTo(indexB);
+    });
 
     // Load selected mantra preference
     final lastMantraId = prefs.getString(AppConstants.prefsKeySelectedMantra);
@@ -93,10 +103,10 @@ class MantraProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     final String malaTypeName =
-        prefs.getString(prefsKeyMalaType) ?? MalaType.regular.name;
+        prefs.getString(prefsKeyMalaType) ?? MalaType.royal.name;
     _selectedMalaType = MalaType.values.firstWhere(
       (e) => e.name == malaTypeName,
-      orElse: () => MalaType.regular,
+      orElse: () => MalaType.royal,
     );
 
     // 1. Get Global Mantras
@@ -134,6 +144,16 @@ class MantraProvider extends ChangeNotifier {
 
     // 3. Combine them
     _allMantras = [...globalMantras, ...processedCustomMantras];
+
+    final List<String> order = RemoteConfigService().mantras;
+    _allMantras.sort((a, b) {
+      int indexA = order.indexOf(a.name);
+      int indexB = order.indexOf(b.name);
+      // Put custom mantras (which won't be in the config list) at the end
+      if (indexA == -1) indexA = 999;
+      if (indexB == -1) indexB = 999;
+      return indexA.compareTo(indexB);
+    });
 
     // 4. Load or update the selected mantra
     final lastMantraId = prefs.getString(AppConstants.prefsKeySelectedMantra);

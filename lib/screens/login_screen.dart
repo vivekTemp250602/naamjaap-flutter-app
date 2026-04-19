@@ -163,200 +163,240 @@ class _LoginScreenState extends State<LoginScreen>
 
           // 4. MAIN CONTENT
           SafeArea(
-            child: Column(
-              children: [
-                const Spacer(flex: 2),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      MediaQuery.of(context).padding.bottom,
+                ),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      const Spacer(flex: 2),
 
-                // APP LOGO
-                Hero(
-                  tag: 'app_logo',
-                  child: Image.asset(
-                    'assets/images/app_logo_simple.png',
-                    width: 160,
-                  ),
-                ).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(
-                    begin: 0,
-                    end: -15,
-                    duration: 2000.ms,
-                    curve: Curves.easeInOut),
-
-                const SizedBox(height: 20),
-
-                // WELCOME TEXT
-                Text(
-                  l10n.login_welcome ?? "Welcome to Naam Jaap",
-                  style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(
-                            color: Colors.black26,
-                            blurRadius: 10,
-                            offset: Offset(0, 4))
-                      ]),
-                ).animate().fade().slideY(begin: 0.3, end: 0),
-
-                const Spacer(flex: 3),
-
-                // 5. THE GLASS ALTAR (Login Area)
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(30)),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 30),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        border: Border(
-                            top: BorderSide(
-                                color: Colors.white.withOpacity(0.3))),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (_isLoading)
-                            const CircularProgressIndicator(color: Colors.white)
-                          else ...[
-                            // GOOGLE SIGN IN BUTTON
-                            SizedBox(
-                              width: double.infinity,
-                              height: 55,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black87,
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                ),
-                                onPressed: _handleGoogleSignIn,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/images/google_logo.png',
-                                        height: 24),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      l10n.login_signInWithGoogle,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      // APP LOGO
+                      Hero(
+                        tag: 'app_logo',
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 160),
+                          child: FractionallySizedBox(
+                            widthFactor: 0.38,
+                            child: Image.asset(
+                              'assets/images/app_logo_simple.webp',
+                              fit: BoxFit.contain,
                             ),
+                          ),
+                        ),
+                      ).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(
+                          begin: 0,
+                          end: -15,
+                          duration: 2000.ms,
+                          curve: Curves.easeInOut),
 
-                            const SizedBox(height: 16),
+                      const SizedBox(height: 20),
 
-                            // DIVIDER OR
-                            Row(
+                      // WELCOME TEXT
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            l10n.login_welcome,
+                            style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                      color: Colors.black26,
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4))
+                                ]),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ).animate().fade().slideY(begin: 0.3, end: 0),
+
+                      const Spacer(flex: 3),
+
+                      // 5. THE GLASS ALTAR (Login Area)
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(30)),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 30),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              border: Border(
+                                  top: BorderSide(
+                                      color: Colors.white.withOpacity(0.3))),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                    child: Divider(
-                                        color: Colors.white.withOpacity(0.3))),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Text("OR",
-                                      style: TextStyle(
-                                          color:
-                                              Colors.white.withOpacity(0.7))),
-                                ),
-                                Expanded(
-                                    child: Divider(
-                                        color: Colors.white.withOpacity(0.3))),
+                                if (_isLoading)
+                                  const CircularProgressIndicator(
+                                      color: Colors.white)
+                                else ...[
+                                  // GOOGLE SIGN IN BUTTON
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 55,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: Colors.black87,
+                                        elevation: 5,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                      ),
+                                      onPressed: _handleGoogleSignIn,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                              'assets/images/google_logo.webp',
+                                              height: 24),
+                                          const SizedBox(width: 12),
+                                          Flexible(
+                                            child: Text(
+                                              l10n.login_signInWithGoogle,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  // DIVIDER OR
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Divider(
+                                              color: Colors.white
+                                                  .withOpacity(0.3))),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: Text("OR",
+                                            style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.7))),
+                                      ),
+                                      Expanded(
+                                          child: Divider(
+                                              color: Colors.white
+                                                  .withOpacity(0.3))),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  // GUEST MODE BUTTON
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 55,
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            color: Colors.white, width: 1.5),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      onPressed: () => _handleGuestLogin(),
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.temple_buddhist,
+                                              color: Colors.white),
+                                          SizedBox(width: 10),
+                                          Flexible(
+                                            child: Text(
+                                              "Prarambh (Continue as Guest)",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 24),
+
+                                  // IMPLICIT TERMS FOOTER
+                                  Text.rich(
+                                    TextSpan(
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          height: 1.4),
+                                      children: [
+                                        TextSpan(
+                                            text: l10n.login_termsAgreement),
+                                        TextSpan(
+                                          text: l10n.login_termsAndConditions,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Colors.white),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _launchURL(
+                                                'https://vivektemp250602.github.io/terms.html'),
+                                        ),
+                                        TextSpan(text: l10n.login_and),
+                                        TextSpan(
+                                          text: l10n.login_privacyPolicy,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Colors.white),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => _launchURL(
+                                                'https://vivektemp250602.github.io/privacy.html'),
+                                        ),
+                                        const TextSpan(text: "."),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ],
                             ),
-
-                            const SizedBox(height: 16),
-
-                            // GUEST MODE BUTTON
-                            SizedBox(
-                              width: double.infinity,
-                              height: 55,
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(
-                                      color: Colors.white, width: 1.5),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  foregroundColor: Colors.white,
-                                ),
-                                onPressed: () => _handleGuestLogin(),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.temple_buddhist,
-                                        color: Colors.white),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      "Prarambh (Continue as Guest)",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 24),
-
-                            // IMPLICIT TERMS FOOTER (The new addition)
-                            Text.rich(
-                              TextSpan(
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    height: 1.4),
-                                children: [
-                                  TextSpan(
-                                      text: l10n.login_termsAgreement ??
-                                          "By continuing, you agree to the "),
-                                  TextSpan(
-                                    text: l10n.login_termsAndConditions ??
-                                        "Terms & Conditions",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline,
-                                        decorationColor: Colors.white),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL(
-                                          'https://vivektemp250602.github.io/terms.html'),
-                                  ),
-                                  TextSpan(text: l10n.login_and ?? " and "),
-                                  TextSpan(
-                                    text: l10n.login_privacyPolicy ??
-                                        "Privacy Policy",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline,
-                                        decorationColor: Colors.white),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _launchURL(
-                                          'https://vivektemp250602.github.io/privacy.html'),
-                                  ),
-                                  const TextSpan(text: "."),
-                                ],
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
+                          ),
+                        ),
+                      ).animate().slideY(
+                          begin: 1,
+                          end: 0,
+                          duration: 600.ms,
+                          curve: Curves.easeOutQuart),
+                    ],
                   ),
-                ).animate().slideY(
-                    begin: 1,
-                    end: 0,
-                    duration: 600.ms,
-                    curve: Curves.easeOutQuart),
-              ],
+                ),
+              ),
             ),
           ),
         ],

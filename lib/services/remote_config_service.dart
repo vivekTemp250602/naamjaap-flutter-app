@@ -31,7 +31,7 @@ class RemoteConfigService {
 
       await _remoteConfig.fetchAndActivate();
     } catch (error) {
-      print('Remote Config fetch failed: $error');
+      // Silently handle remote config fetch error
     }
   }
 }

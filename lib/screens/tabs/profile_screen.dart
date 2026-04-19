@@ -19,7 +19,6 @@ import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/screens/garden_screen.dart';
 import 'package:naamjaap/screens/login_screen.dart';
-import 'package:naamjaap/screens/support_screen.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/audio_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
@@ -477,32 +476,40 @@ class _ProfileScreenState extends State<ProfileScreen>
                         color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // LOC: Offline Title
-                      Text(
-                        AppLocalizations.of(context)!
-                            .profile_offline_card_title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
+
+                  // --- FIX START: Wrapped in Expanded ---
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!
+                              .profile_offline_card_title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                          maxLines: 1, // Optional: Prevents title breaking
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      // LOC: Offline Subtitle
-                      Text(
-                        AppLocalizations.of(context)!
-                            .profile_offline_card_subtitle,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
+                        Text(
+                          AppLocalizations.of(context)!
+                              .profile_offline_card_subtitle,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Spacer(),
+                  // --- FIX END ---
+
+                  const SizedBox(width: 8), // Added small spacing
                   const Icon(Icons.arrow_forward_ios_rounded,
                       color: Colors.white54, size: 18),
                 ],
@@ -679,26 +686,35 @@ class _ProfileScreenState extends State<ProfileScreen>
                       color: Colors.white, size: 36),
                 ),
                 const SizedBox(width: 20),
+
+                // --- FIX START: Wrapped in Expanded ---
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // LOC: Bodhi
-                      Text(AppLocalizations.of(context)!.profile_myBodhi,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      // LOC: Subtitle
                       Text(
-                          AppLocalizations.of(context)!.profile_myBodhiSubtitle,
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 13)),
+                        AppLocalizations.of(context)!.profile_myBodhi,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.profile_myBodhiSubtitle,
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.9), fontSize: 13),
+                        maxLines: 2, // Allow 2 lines for subtitle
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
+                // --- FIX END ---
+
+                const SizedBox(width: 10), // Spacing before badge
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -706,7 +722,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  // LOC: Malas
                   child: Text(
                       "$totalMalas ${AppLocalizations.of(context)!.misc_malas}",
                       style: const TextStyle(
@@ -722,6 +737,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   // --- SANKALPA SECTION ---
+  // --- SANKALPA SECTION (FIXED OVERFLOW) ---
   Widget _buildSankalpaCard(Map<String, dynamic> userData,
       MantraProvider provider, Map<String, dynamic> jappsMap) {
     final sankalpaData = userData['sankalpa'] as Map<String, dynamic>?;
@@ -746,8 +762,11 @@ class _ProfileScreenState extends State<ProfileScreen>
             const SizedBox(height: 16),
             DropdownButtonFormField(
               value: _selectedSankalpaMantra,
+              isExpanded: true, // FIX: Prevents overflow in dropdown
               items: provider.allMantras
-                  .map((m) => DropdownMenuItem(value: m, child: Text(m.name)))
+                  .map((m) => DropdownMenuItem(
+                      value: m,
+                      child: Text(m.name, overflow: TextOverflow.ellipsis)))
                   .toList(),
               onChanged: (m) => setState(() => _selectedSankalpaMantra = m),
               decoration: InputDecoration(
@@ -849,27 +868,35 @@ class _ProfileScreenState extends State<ProfileScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // LOC: Sankalpa Title
-                    Text(
-                        AppLocalizations.of(context)!
-                            .profile_sankalpaTitle
-                            .toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.grey.shade400,
-                            letterSpacing: 1)),
-                    const SizedBox(height: 4),
-                    Text(sankalpaData['mantraName'],
-                        style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87)),
-                  ],
+                // --- FIX START: Expanded for Title ---
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // LOC: Sankalpa Title
+                      Text(
+                          AppLocalizations.of(context)!
+                              .profile_sankalpaTitle
+                              .toUpperCase(),
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.grey.shade400,
+                              letterSpacing: 1)),
+                      const SizedBox(height: 4),
+                      Text(sankalpaData['mantraName'],
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87),
+                          maxLines: 1, // Prevent overflow
+                          overflow: TextOverflow.ellipsis),
+                    ],
+                  ),
                 ),
+                // --- FIX END ---
+
+                const SizedBox(width: 12),
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -954,20 +981,29 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Icon(Icons.add, color: Colors.orange.shade800),
               ),
               const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // LOC: Start Sankalpa
-                  Text(AppLocalizations.of(context)!.profile_sankalpaSubtitle,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87)),
-                  Text(AppLocalizations.of(context)!.profile_sankalpaSet,
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black54)),
-                ],
+
+              // --- FIX START: Expanded for "Create New" text ---
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // LOC: Start Sankalpa
+                    Text(AppLocalizations.of(context)!.profile_sankalpaSubtitle,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    Text(AppLocalizations.of(context)!.profile_sankalpaSet,
+                        style: const TextStyle(
+                            fontSize: 13, color: Colors.black54),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
               )
+              // --- FIX END ---
             ],
           ),
         ),
@@ -1114,17 +1150,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         "https://play.google.com/store/apps/details?id=com.vivek.naamjaap"),
                     mode: LaunchMode.externalApplication)),
 
-            // 4. Support
-            _buildActionTile(
-                width,
-                AppLocalizations.of(context)!.profile_supportTitle,
-                Icons.favorite_rounded,
-                Colors.pink.shade50,
-                Colors.pink.shade700,
-                () => Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const SupportScreen()))),
-
-            // 5. Settings
+            // 4. Settings
             _buildActionTile(
                 width,
                 AppLocalizations.of(context)!.settings_title,
@@ -1170,11 +1196,19 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Icon(icon, color: accent, size: 24),
               ),
               const SizedBox(height: 12),
-              Text(title,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  title,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.black87)),
+                      color: Colors.black87),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
         ),
@@ -1188,6 +1222,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   Widget build(BuildContext context) {
     super.build(context);
     final bannerAd = _adService.getAdForScreen(_screenName);
+    // Check loading state
+    final isAdLoaded =
+        bannerAd != null && _adService.isAdLoadedForScreen(_screenName);
 
     // 1. GUEST MODE
     if (widget.user == null) {
@@ -1199,12 +1236,10 @@ class _ProfileScreenState extends State<ProfileScreen>
               Icon(Icons.lock_person_rounded,
                   size: 100, color: Colors.grey.shade300),
               const SizedBox(height: 20),
-              // LOC: Guest
               Text(AppLocalizations.of(context)!.guest_mode_title,
                   style: const TextStyle(
                       fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              // LOC: Desc
               Text(AppLocalizations.of(context)!.guest_mode_desc,
                   style: TextStyle(color: Colors.grey.shade600)),
               const SizedBox(height: 30),
@@ -1220,7 +1255,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                         horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30))),
-                // LOC: Sign In
                 child: Text(AppLocalizations.of(context)!.guest_signin_btn),
               )
             ],
@@ -1232,230 +1266,240 @@ class _ProfileScreenState extends State<ProfileScreen>
     // 2. SIGNED IN USER
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA),
-      body: Stack(
+      // CHANGED: Root is a Column to pin Ad to top
+      body: Column(
         children: [
-          Transform.translate(
-            offset: const Offset(-5000, 0),
-            child: RepaintBoundary(
-                key: _shareCardKey,
-                child: ShareCard(
-                    name: _shareableName, totalJapps: _shareableJapps)),
-          ),
+          // -----------------------------------------------------------
+          // 1. THE AD SECTION (Pinned Top)
+          // -----------------------------------------------------------
           StreamBuilder<DocumentSnapshot>(
-            stream: _firestoreService.getUserStatsStream(widget.user!.uid),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return const Center(child: CircularProgressIndicator());
+              stream: _firestoreService.getUserStatsStream(widget.user!.uid),
+              builder: (context, snapshot) {
+                // We need to check premium status here to decide on ad visibility
+                bool isPremium = false;
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
+                  isPremium = data['isPremium'] ?? false;
+                }
 
-              final userData = snapshot.data!.data() as Map<String, dynamic>;
-              final jappsMap = userData['japps'] as Map<String, dynamic>? ?? {};
-              final bool isPremium = userData['isPremium'] ?? false;
+                if (!isAdLoaded || isPremium) return const SizedBox.shrink();
 
-              return Consumer<MantraProvider>(
-                builder: (context, provider, _) {
-                  return CustomScrollView(
-                    controller: _scrollController,
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverAppBar(
-                        expandedHeight: 400,
-                        pinned: true,
-                        stretch: true,
-                        backgroundColor: const Color(0xFFFF5E62),
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: _buildDivineHeader(context, userData),
-                          stretchModes: const [
-                            StretchMode.zoomBackground,
-                            StretchMode.blurBackground
-                          ],
-                        ),
-                      ),
+                return Container(
+                  width: double.infinity,
+                  color: Colors.black, // Solid background
+                  child: SafeArea(
+                    bottom: false,
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: bannerAd.size.width.toDouble(),
+                      height: bannerAd.size.height.toDouble(),
+                      child: AdWidget(ad: bannerAd),
+                    ),
+                  ),
+                );
+              }),
 
-                      // LOC: Showcase Stats
-                      SliverToBoxAdapter(
-                        // child: _buildShowcase(
-                        //   key: _keyStats,
-                        //   title: AppLocalizations.of(context)!
-                        //       .tour_profile_stats_title,
-                        //   description: AppLocalizations.of(context)!
-                        //       .tour_profile_stats_desc,
-                        //   shapeBorder: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(20)),
-                        // ),
-                        child: _buildStatsArray(userData),
-                      ),
+          // -----------------------------------------------------------
+          // 2. MAIN CONTENT (Expanded)
+          // -----------------------------------------------------------
+          Expanded(
+            child: Stack(
+              children: [
+                // Hidden Share Card (kept for functionality)
+                Transform.translate(
+                  offset: const Offset(-5000, 0),
+                  child: RepaintBoundary(
+                      key: _shareCardKey,
+                      child: ShareCard(
+                          name: _shareableName, totalJapps: _shareableJapps)),
+                ),
 
-                      // LOC: Showcase Offline
-                      SliverToBoxAdapter(
-                        // child: _buildShowcase(
-                        //   key: _keyOffline,
-                        //   title: AppLocalizations.of(context)!
-                        //       .tour_profile_offline_title,
-                        //   description: AppLocalizations.of(context)!
-                        //       .tour_profile_offline_desc,
-                        //   shapeBorder: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(20)),
-                        // ),
-                        child: _buildOfflineJapaCard(),
-                      ),
+                // Main Data Stream
+                StreamBuilder<DocumentSnapshot>(
+                  stream:
+                      _firestoreService.getUserStatsStream(widget.user!.uid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                      // LOC: Gamification Header
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              AppLocalizations.of(context)!
-                                  .profile_gamification_header)),
-                      SliverToBoxAdapter(
-                        // child: _buildShowcase(
-                        //   key: _keyBodhi,
-                        //   title: AppLocalizations.of(context)!.profile_myBodhi,
-                        //   description: AppLocalizations.of(context)!
-                        //       .tour_profile_bodhi_desc,
-                        //   shapeBorder: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(20)),
-                        // ),
-                        child:
-                            _buildBodhiTreeCard(userData['total_malas'] ?? 0),
-                      ),
+                    final userData =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    final jappsMap =
+                        userData['japps'] as Map<String, dynamic>? ?? {};
 
-                      // LOC: Commitments Header
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              AppLocalizations.of(context)!
-                                  .profile_commitments_header)),
-                      SliverToBoxAdapter(
-                        // child: _buildShowcase(
-                        //   key: _keySankalpa,
-                        //   title: AppLocalizations.of(context)!
-                        //       .profile_sankalpaTitle,
-                        //   description: AppLocalizations.of(context)!
-                        //       .tour_profile_sankalpa_desc,
-                        //   shapeBorder: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(20)),
-                        // ),
-                        child: _buildSankalpaCard(userData, provider, jappsMap),
-                      ),
-
-                      // LOC: Insights Header
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              AppLocalizations.of(context)!
-                                  .profile_insights_header)),
-                      SliverToBoxAdapter(
-                          child: _buildMantraBreakdown(jappsMap, provider)),
-
-                      // LOC: My Mantras Header
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              AppLocalizations.of(context)!
-                                  .profile_my_mantras_header)),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final mantras = provider.allMantras
-                                .where((m) => m.isCustom)
-                                .toList();
-                            if (index >= mantras.length) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 8),
-                                child: OutlinedButton.icon(
-                                  icon: const Icon(Icons.add),
-                                  // LOC: Add New
-                                  label: Text(AppLocalizations.of(context)!
-                                      .profile_addNewMantra),
-                                  style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.all(16),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(16))),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              ChangeNotifierProvider.value(
-                                                  value: provider,
-                                                  child:
-                                                      const CustomMantraEditor()))),
-                                ),
-                              );
-                            }
-                            final mantra = mantras[index];
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 6),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey.withOpacity(0.05),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 2))
-                                  ]),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 4),
-                                leading: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: Colors.deepOrange.shade50,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Icon(Icons.music_note_rounded,
-                                      color: Colors.deepOrange),
-                                ),
-                                title: Text(mantra.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                trailing: IconButton(
-                                  icon: Icon(Icons.delete_outline_rounded,
-                                      color: Colors.red.shade300),
-                                  onPressed: () =>
-                                      provider.deleteCustomMantra(mantra.id),
-                                ),
+                    return Consumer<MantraProvider>(
+                      builder: (context, provider, _) {
+                        return CustomScrollView(
+                          controller: _scrollController,
+                          physics: const BouncingScrollPhysics(),
+                          slivers: [
+                            SliverAppBar(
+                              expandedHeight: 400,
+                              pinned: true,
+                              stretch: true,
+                              backgroundColor: const Color(0xFFFF5E62),
+                              flexibleSpace: FlexibleSpaceBar(
+                                background:
+                                    _buildDivineHeader(context, userData),
+                                stretchModes: const [
+                                  StretchMode.zoomBackground,
+                                  StretchMode.blurBackground
+                                ],
                               ),
-                            );
-                          },
-                          childCount: provider.allMantras
-                                  .where((m) => m.isCustom)
-                                  .length +
-                              1,
-                        ),
-                      ),
+                            ),
 
-                      if (bannerAd != null &&
-                          !isPremium &&
-                          _adService.isAdLoadedForScreen(_screenName))
-                        SliverToBoxAdapter(
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(vertical: 20),
-                            width: bannerAd.size.width.toDouble(),
-                            height: bannerAd.size.height.toDouble(),
-                            child: AdWidget(ad: bannerAd),
-                          ),
-                        ),
+                            // Stats
+                            SliverToBoxAdapter(
+                              child: _buildStatsArray(userData),
+                            ),
 
-                      // LOC: Quick Actions Header
-                      SliverToBoxAdapter(
-                          child: _buildSectionHeader(
-                              AppLocalizations.of(context)!
-                                  .profile_quick_actions_header)),
-                      SliverToBoxAdapter(child: _buildActionGrid()),
+                            // Offline Japa
+                            SliverToBoxAdapter(
+                              child: _buildOfflineJapaCard(),
+                            ),
 
-                      const SliverToBoxAdapter(child: SizedBox(height: 120)),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _sankalpaConfettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              gravity: 0.3,
+                            // Gamification Header
+                            SliverToBoxAdapter(
+                                child: _buildSectionHeader(
+                                    AppLocalizations.of(context)!
+                                        .profile_gamification_header)),
+                            SliverToBoxAdapter(
+                              child: _buildBodhiTreeCard(
+                                  userData['total_malas'] ?? 0),
+                            ),
+
+                            // Commitments Header
+                            SliverToBoxAdapter(
+                                child: _buildSectionHeader(
+                                    AppLocalizations.of(context)!
+                                        .profile_commitments_header)),
+                            SliverToBoxAdapter(
+                              child: _buildSankalpaCard(
+                                  userData, provider, jappsMap),
+                            ),
+
+                            // Insights Header
+                            SliverToBoxAdapter(
+                                child: _buildSectionHeader(
+                                    AppLocalizations.of(context)!
+                                        .profile_insights_header)),
+                            SliverToBoxAdapter(
+                                child:
+                                    _buildMantraBreakdown(jappsMap, provider)),
+
+                            // My Mantras Header
+                            SliverToBoxAdapter(
+                                child: _buildSectionHeader(
+                                    AppLocalizations.of(context)!
+                                        .profile_my_mantras_header)),
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  final mantras = provider.allMantras
+                                      .where((m) => m.isCustom)
+                                      .toList();
+                                  if (index >= mantras.length) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 8),
+                                      child: OutlinedButton.icon(
+                                        icon: const Icon(Icons.add),
+                                        label: Text(
+                                            AppLocalizations.of(context)!
+                                                .profile_addNewMantra),
+                                        style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.all(16),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16))),
+                                        onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    ChangeNotifierProvider.value(
+                                                        value: provider,
+                                                        child:
+                                                            const CustomMantraEditor()))),
+                                      ),
+                                    );
+                                  }
+                                  final mantra = mantras[index];
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 6),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.05),
+                                              blurRadius: 10,
+                                              offset: const Offset(0, 2))
+                                        ]),
+                                    child: ListTile(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 4),
+                                      leading: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            color: Colors.deepOrange.shade50,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: const Icon(
+                                            Icons.music_note_rounded,
+                                            color: Colors.deepOrange),
+                                      ),
+                                      title: Text(mantra.name,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.delete_outline_rounded,
+                                            color: Colors.red.shade300),
+                                        onPressed: () => provider
+                                            .deleteCustomMantra(mantra.id),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                childCount: provider.allMantras
+                                        .where((m) => m.isCustom)
+                                        .length +
+                                    1,
+                              ),
+                            ),
+
+                            // REMOVED AD SLIVER FROM HERE (It is now at the top)
+
+                            // Quick Actions Header
+                            SliverToBoxAdapter(
+                                child: _buildSectionHeader(
+                                    AppLocalizations.of(context)!
+                                        .profile_quick_actions_header)),
+                            SliverToBoxAdapter(child: _buildActionGrid()),
+
+                            const SliverToBoxAdapter(
+                                child: SizedBox(height: 120)),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+
+                // Confetti Layer (Safe in Expanded)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: ConfettiWidget(
+                    confettiController: _sankalpaConfettiController,
+                    blastDirectionality: BlastDirectionality.explosive,
+                    shouldLoop: false,
+                    gravity: 0.3,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

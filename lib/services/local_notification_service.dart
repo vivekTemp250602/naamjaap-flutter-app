@@ -48,11 +48,12 @@ class LocalNotificationService {
   Future<void> init() async {
     tz.initializeTimeZones();
 
-    // Android Initialization
+    // Set local timezone to IST — critical for correct scheduling
+    tz.setLocalLocation(tz.getLocation('Asia/Kolkata'));
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/launcher_icon');
 
-    // iOS Initialization
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
       requestSoundPermission: true,
@@ -73,11 +74,54 @@ class LocalNotificationService {
       },
     );
 
-    // Ask for permissions on Android 13+
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+    await _createNotificationChannels();
+    // NOTE: Do NOT request permissions here.
+    // Call requestPermissions() explicitly from the contextual soft-prompt.
+  }
+
+  /// Request OS notification permission explicitly.
+  /// Returns true if the user granted permission.
+  Future<bool> requestPermissions() async {
+    final androidPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin == null) return false;
+    final granted =
+        await androidPlugin.requestNotificationsPermission() ?? false;
+    // Best-effort — exact alarms may already be granted or may require
+    // a separate settings screen on some OEMs.
+    await androidPlugin.requestExactAlarmsPermission();
+    return granted;
+  }
+
+  Future<void> _createNotificationChannels() async {
+    final androidPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidPlugin == null) return;
+
+    const AndroidNotificationChannel silentChannel = AndroidNotificationChannel(
+      silentChannelId,
+      silentChannelName,
+      description: silentChannelDescription,
+      importance: Importance.high,
+      playSound: false,
+      enableVibration: true,
+    );
+
+    const AndroidNotificationChannel soundChannel = AndroidNotificationChannel(
+      soundChannelId,
+      soundChannelName,
+      description: soundChannelDescription,
+      importance: Importance.high,
+      playSound: true,
+      enableVibration: true,
+      sound: RawResourceAndroidNotificationSound('notification_sound'),
+    );
+
+    await androidPlugin.createNotificationChannel(silentChannel);
+    await androidPlugin.createNotificationChannel(soundChannel);
   }
 
   String _getRandomString(List<String> strings) {
@@ -87,14 +131,11 @@ class LocalNotificationService {
 
   Future<void> scheduleDailyReminders(
       {required bool isEnabled, required bool enableSound}) async {
-    // Cancel all previously scheduled matching notifications to reset
     await flutterLocalNotificationsPlugin.cancelAll();
 
-    if (!isEnabled) {
-      return;
-    }
+    if (!isEnabled) return;
 
-    // Schedule Morning Notification (6:30 AM)
+    // Morning Notification — 6:30 AM IST
     await _scheduleDailyAtTime(
       id: 1,
       hour: 6,
@@ -104,23 +145,13 @@ class LocalNotificationService {
       enableSound: enableSound,
     );
 
-    // Schedule Evening Notification (8:00 PM)
+    // Evening Notification — 6:00 PM IST
     await _scheduleDailyAtTime(
       id: 2,
-      hour: 20,
+      hour: 18,
       minute: 0,
       title: "Evening Jaap Reminder",
       body: _getRandomString(eveningStrings),
-      enableSound: enableSound,
-    );
-
-    // Generic Backup (e.g. 1:00 PM)
-    await _scheduleDailyAtTime(
-      id: 3,
-      hour: 13,
-      minute: 0,
-      title: "Mid-day Pause",
-      body: _getRandomString(genericStrings),
       enableSound: enableSound,
     );
   }
@@ -139,15 +170,20 @@ class LocalNotificationService {
       enableSound ? soundChannelName : silentChannelName,
       channelDescription:
           enableSound ? soundChannelDescription : silentChannelDescription,
-      importance: Importance.high,
+      importance: Importance.max,
       priority: Priority.high,
       playSound: enableSound,
+      sound: enableSound
+          ? const RawResourceAndroidNotificationSound('notification_sound')
+          : null,
       enableVibration: true,
+      ticker: title,
     );
 
     final DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails(
       presentSound: enableSound,
+      sound: enableSound ? 'notification_sound.mp3' : null,
       presentAlert: true,
       presentBadge: true,
     );
@@ -157,11 +193,13 @@ class LocalNotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
+    final scheduledDate = _nextInstanceOfTime(hour, minute);
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id: id,
       title: title,
       body: body,
-      scheduledDate: _nextInstanceOfTime(hour, minute),
+      scheduledDate: scheduledDate,
       notificationDetails: platformChannelSpecifics,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,

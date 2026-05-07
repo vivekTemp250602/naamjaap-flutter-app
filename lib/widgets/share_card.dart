@@ -145,7 +145,7 @@ class ShareCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/app_logo_simple.webp',
+                    'assets/images/app_logo.png',
                     height: 24,
                     color: Colors.white, // Tint logo white if possible
                   ),

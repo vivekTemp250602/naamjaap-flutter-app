@@ -1,0 +1,1060 @@
+================================================================================
+                    NAAM JAAP - COMPLETE APP DOCUMENTATION
+                         A-Z Guide to Understanding the App
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+1. App Overview
+2. Core Purpose & Philosophy
+3. Key Features
+4. Technical Architecture
+5. User Journey & Screens
+6. Mantras & Spiritual Content
+7. Gamification & Engagement
+8. Monetization Strategy
+9. Backend & Services
+10. Localization & Languages
+11. Notifications System
+12. Data & Privacy
+13. Performance Optimizations
+14. Future Roadmap
+15. Development Setup
+
+================================================================================
+1. APP OVERVIEW
+================================================================================
+
+App Name: Naam Jaap
+Version: 5.1.0 (Build 34)
+Platform: Android & iOS (Flutter)
+Category: Lifestyle / Spirituality
+Target Audience: Spiritual practitioners, meditation enthusiasts, devotees
+
+Tagline: "Your personal sacred space for daily chanting"
+
+Description:
+Naam Jaap is a spiritual companion app that helps users practice daily mantra 
+chanting (Jaap) with a beautiful digital mala (prayer beads). It combines 
+traditional spiritual practices with modern gamification to create an engaging 
+and meaningful experience.
+
+================================================================================
+2. CORE PURPOSE & PHILOSOPHY
+================================================================================
+
+PRIMARY PURPOSE:
+- Provide a digital platform for daily mantra chanting practice
+- Help users build consistent spiritual habits
+- Create a supportive community of practitioners
+- Make ancient spiritual practices accessible to modern users
+
+PHILOSOPHY:
+- Simplicity: Easy to use, distraction-free interface
+- Authenticity: Respect for traditional practices
+- Community: Connect practitioners worldwide
+- Progress: Track spiritual journey with meaningful metrics
+- Accessibility: Free core features, optional premium upgrades
+
+================================================================================
+3. KEY FEATURES
+================================================================================
+
+3.1 DIGITAL MALA (PRAYER BEADS)
+--------------------------------
+- Interactive 108-bead mala for chanting
+- Tap or swipe to count each mantra repetition
+- Visual feedback with animations
+- Haptic feedback (vibration) on each bead
+- Audio playback of mantras (optional)
+- Customizable backgrounds (gradients & images)
+- Mala completion celebration with confetti
+
+3.2 MANTRA SELECTION
+--------------------
+Available Mantras:
+1. Radha Radha - Devotion to Radha Rani
+2. Ram Ram - Devotion to Lord Rama
+3. Hare Krishna - Maha Mantra for Krishna devotion
+
+Custom Mantras:
+- Users can create their own mantras
+- Record custom audio for personal mantras
+- Set custom backgrounds
+- Save and reuse custom mantras
+
+3.3 PROGRESS TRACKING
+---------------------
+- Total Japas (mantra repetitions) count
+- Total Malas completed (1 mala = 108 japas)
+- Daily streak tracking
+- Weekly progress visualization
+- All-time statistics
+- Mantra-wise breakdown
+
+3.4 LEADERBOARD & COMPETITION
+------------------------------
+- Global leaderboard (all-time)
+- Weekly leaderboard (resets every week)
+- See top performers worldwide
+- View user profiles with stats
+- Rank display with podium for top 3
+- Sticky personal rank indicator
+
+3.5 WISDOM SECTION
+------------------
+- Daily quotes from Bhagavad Gita
+- Daily quotes from Ramayana
+- Shareable quote cards
+- Beautiful quote templates
+- Multi-language support (English, Hindi, Sanskrit)
+
+3.6 PROFILE & ACHIEVEMENTS
+--------------------------
+User Profile:
+- Display name and photo (Google Sign-In)
+- Total japas and malas count
+- Current streak display
+- Favorite mantra indicator
+- Sankalpa (spiritual resolution) setting
+- Bodhi Tree visualization (growth based on practice)
+
+Achievements:
+- Milestone badges (100, 500, 1000+ malas)
+- Streak achievements (7, 30, 100+ days)
+- Special event achievements
+- Achievement notifications
+
+3.7 SETTINGS & CUSTOMIZATION
+-----------------------------
+- Daily reminder notifications (morning & evening)
+- Notification sound toggle
+- Language selection (English, Hindi, Sanskrit)
+- Mute audio toggle
+- Vibration toggle
+- Theme customization
+- Account management
+
+3.8 SOCIAL FEATURES
+-------------------
+- Share progress on social media
+- Share quote cards
+- View other users' profiles
+- Community leaderboard
+- Invite friends
+
+3.9 OFFLINE MODE
+----------------
+- Full functionality without internet
+- Local data storage
+- Automatic sync when online
+- Offline progress tracking
+- Queue system for pending updates
+
+3.10 PREMIUM FEATURES
+---------------------
+- Ad-free experience
+- Exclusive backgrounds
+- Priority support
+- Advanced statistics
+- Custom notification times
+
+================================================================================
+4. TECHNICAL ARCHITECTURE
+================================================================================
+
+4.1 TECHNOLOGY STACK
+--------------------
+Framework: Flutter 3.2.6+
+Language: Dart
+Platform: Android & iOS (cross-platform)
+
+4.2 BACKEND SERVICES
+--------------------
+- Firebase Authentication (Google Sign-In)
+- Cloud Firestore (database)
+- Firebase Cloud Messaging (notifications)
+- Firebase Analytics (user behavior tracking)
+- Firebase Crashlytics (crash reporting)
+- Firebase Remote Config (feature flags)
+- Firebase Cloud Functions (server-side logic)
+- Firebase Storage (user-generated content)
+
+4.3 KEY DEPENDENCIES
+--------------------
+Core:
+- firebase_core, firebase_auth, cloud_firestore
+- google_sign_in (authentication)
+- provider (state management)
+
+UI/UX:
+- flutter_animate (animations)
+- confetti (celebrations)
+- lottie (animated illustrations)
+- google_fonts (typography)
+- cached_network_image (image caching)
+
+Audio:
+- audioplayers (mantra audio playback)
+- flutter_sound (audio recording for custom mantras)
+
+Utilities:
+- shared_preferences (local storage)
+- flutter_local_notifications (daily reminders)
+- timezone (notification scheduling)
+- connectivity_plus (network status)
+- package_info_plus (app version info)
+- url_launcher (external links)
+- image_picker (profile photos)
+- permission_handler (app permissions)
+
+Monetization:
+- google_mobile_ads (AdMob integration)
+- in_app_review (Play Store ratings)
+
+4.4 PROJECT STRUCTURE
+---------------------
+lib/
+├── main.dart                    # App entry point
+├── screens/                     # All UI screens
+│   ├── animated_splash_screen.dart
+│   ├── login_screen.dart
+│   ├── main_app_screens.dart    # Bottom navigation container
+│   ├── custom_mantra_editor.dart
+│   ├── garden_screen.dart       # Bodhi Tree visualization
+│   ├── sankalpa_editor_screen.dart
+│   ├── language_selector_page.dart
+│   └── tabs/
+│       ├── home_screen.dart     # Main chanting screen
+│       ├── leaderboard_screen.dart
+│       ├── wisdom_screen.dart
+│       ├── profile_screen.dart
+│       └── settings_screen.dart
+├── services/                    # Business logic
+│   ├── audio_service.dart
+│   ├── firestore_service.dart
+│   ├── notification_service.dart
+│   ├── local_notification_service.dart
+│   ├── achievements_service.dart
+│   ├── sync_service.dart
+│   ├── connectivity_service.dart
+│   ├── ad_service.dart
+│   └── ...
+├── widgets/                     # Reusable UI components
+│   ├── mala_widget.dart         # Digital mala beads
+│   ├── bottom_nav_bar.dart
+│   ├── quote_card.dart
+│   └── ...
+├── providers/                   # State management
+│   ├── mantra_provider.dart
+│   └── locale_provider.dart
+├── utils/                       # Helper functions
+│   ├── constants.dart           # App constants
+│   └── mala_type.dart
+└── l10n/                        # Localization files
+
+assets/
+├── audio/                       # Mantra audio files
+│   ├── radha_radha.mp3
+│   ├── ram_ram.mp3
+│   ├── hare_krishna.mp3
+│   ├── mala_complete.mp3
+│   └── temple_bells.mp3
+├── images/                      # App images
+│   ├── app_logo_simple.webp
+│   ├── radha_radha_1-5.png
+│   ├── ram_ram_1-5.png
+│   ├── hare_krishna_1-5.png
+│   ├── custom_backgrounds/
+│   └── ...
+└── data/                        # JSON data files
+    ├── gita_quotes.json
+    └── ramayana_quotes.json
+
+================================================================================
+5. USER JOURNEY & SCREENS
+================================================================================
+
+5.1 ONBOARDING FLOW
+-------------------
+1. Splash Screen
+   - Animated app logo
+   - Loading animation
+   - Auto-navigates to login or home
+
+2. Login Screen
+   - Google Sign-In button
+   - Guest mode option
+   - Beautiful gradient background
+   - Animated elements
+
+3. Language Selection (First Time)
+   - Choose preferred language
+   - English, Hindi, or Sanskrit
+   - Affects UI and content
+
+5.2 MAIN APP SCREENS (Bottom Navigation)
+-----------------------------------------
+
+TAB 1: HOME (Chanting Screen)
+- Digital mala with 108 beads
+- Selected mantra display
+- Background image/gradient
+- Japa counter (current session)
+- Total malas count
+- Mantra selector dropdown
+- Settings icon (mute, vibration)
+- Info button (mantra information)
+- Manual japa entry option
+- Mala completion celebration
+
+TAB 2: LEADERBOARD
+- Toggle: All-Time vs Weekly
+- Top 3 podium display
+- Scrollable rank list (4th onwards)
+- User profile cards on tap
+- Sticky personal rank at bottom
+- Mala count for each user
+- User avatars and names
+
+TAB 3: WISDOM
+- Daily Gita quote
+- Daily Ramayana quote
+- Quote source citation
+- Language toggle (EN/HI/SA)
+- Share button (creates image card)
+- Refresh for new quote
+- Beautiful card design
+
+TAB 4: PROFILE
+- User photo and name
+- Total japas and malas
+- Current streak display
+- Favorite mantra
+- Sankalpa (resolution) editor
+- Bodhi Tree visualization
+- Share progress button
+- Statistics breakdown
+- Achievement badges
+- Settings access
+
+5.3 ADDITIONAL SCREENS
+----------------------
+- Settings Screen
+  - Daily reminders toggle
+  - Notification sound toggle
+  - Test notification button
+  - Language selector
+  - Mute/vibration toggles
+  - Sign out option
+  - App version info
+  - Privacy policy link
+  - Terms of service link
+
+- Custom Mantra Editor
+  - Mantra name input
+  - Audio recording
+  - Background selection
+  - Save/cancel options
+
+- Sankalpa Editor
+  - Text input for resolution
+  - Save button
+  - Character limit
+
+- Garden Screen (Bodhi Tree)
+  - Tree growth visualization
+  - Based on total malas
+  - Inspirational messages
+
+- Language Selector
+  - English, Hindi, Sanskrit options
+  - Visual language cards
+  - Immediate UI update
+
+================================================================================
+6. MANTRAS & SPIRITUAL CONTENT
+================================================================================
+
+6.1 AVAILABLE MANTRAS
+----------------------
+
+1. RADHA RADHA
+   - Devotion: Radha Rani (consort of Krishna)
+   - Tradition: Vaishnavism
+   - Benefits: Love, devotion, emotional healing
+   - Audio: radha_radha.mp3
+   - Backgrounds: 5 themed images
+
+2. RAM RAM
+   - Devotion: Lord Rama (avatar of Vishnu)
+   - Tradition: Vaishnavism
+   - Benefits: Strength, righteousness, protection
+   - Audio: ram_ram.mp3
+   - Backgrounds: 5 themed images
+
+3. HARE KRISHNA (Maha Mantra)
+   - Full Mantra: "Hare Krishna Hare Krishna, Krishna Krishna Hare Hare,
+                   Hare Rama Hare Rama, Rama Rama Hare Hare"
+   - Devotion: Krishna and Rama
+   - Tradition: Gaudiya Vaishnavism
+   - Benefits: Liberation, peace, divine connection
+   - Audio: hare_krishna.mp3
+   - Backgrounds: 5 themed images
+
+6.2 CUSTOM MANTRAS
+------------------
+Users can create unlimited custom mantras with:
+- Custom name
+- Recorded audio (using phone microphone)
+- Selected background (from 10 options)
+- Personal significance
+
+6.3 WISDOM CONTENT
+------------------
+Bhagavad Gita Quotes:
+- 700+ verses from all 18 chapters
+- Available in English, Hindi, Sanskrit
+- Source citations included
+- Daily rotation
+
+Ramayana Quotes:
+- Selected verses and teachings
+- Available in English, Hindi, Sanskrit
+- Source citations included
+- Daily rotation
+
+================================================================================
+7. GAMIFICATION & ENGAGEMENT
+================================================================================
+
+7.1 PROGRESS METRICS
+--------------------
+- Japas: Individual mantra repetitions
+- Malas: Sets of 108 japas (traditional count)
+- Streak: Consecutive days of practice
+- Weekly Total: Japas in current week
+- All-Time Total: Lifetime japas
+
+7.2 LEADERBOARD SYSTEM
+----------------------
+All-Time Leaderboard:
+- Ranks users by total japas
+- Never resets
+- Shows lifetime dedication
+
+Weekly Leaderboard:
+- Ranks users by weekly japas
+- Resets every Monday
+- Encourages consistent practice
+- Fresh competition each week
+
+7.3 ACHIEVEMENTS & MILESTONES
+------------------------------
+Mala Milestones:
+- First Mala (1)
+- Dedicated (10 malas)
+- Committed (50 malas)
+- Devoted (100 malas)
+- Enlightened (500 malas)
+- Master (1000 malas)
+- Guru (5000 malas)
+
+Streak Milestones:
+- Week Warrior (7 days)
+- Month Master (30 days)
+- Quarter Champion (90 days)
+- Year Yogi (365 days)
+
+7.4 VISUAL REWARDS
+------------------
+- Confetti animation on mala completion
+- Achievement unlock animations
+- Bodhi Tree growth visualization
+- Rank badges on leaderboard
+- Crown icons for top 3 users
+
+7.5 SOCIAL MOTIVATION
+---------------------
+- See friends' progress
+- Compare stats
+- Share achievements
+- Community encouragement
+
+================================================================================
+8. MONETIZATION STRATEGY
+================================================================================
+
+8.1 FREE TIER
+-------------
+- Unlimited chanting
+- All 3 default mantras
+- Basic backgrounds
+- Progress tracking
+- Leaderboard access
+- Daily wisdom quotes
+- Basic notifications
+- With ads (banner ads on some screens)
+
+8.2 PREMIUM TIER (Future)
+--------------------------
+Planned Features:
+- Ad-free experience
+- Exclusive backgrounds (10+ premium)
+- Custom notification times
+- Advanced statistics
+- Priority support
+- Exclusive mantras
+- Offline quote library
+- Export progress data
+
+8.3 AD PLACEMENT
+----------------
+Current Ad Locations:
+- Home screen (banner, top)
+- Leaderboard screen (banner, top)
+- Wisdom screen (banner, top)
+
+Ad Strategy:
+- Non-intrusive placement
+- Never during active chanting
+- Respects premium users (no ads)
+- AdMob integration
+- Banner ads only (no interstitials)
+
+8.4 IN-APP PURCHASES (Planned)
+-------------------------------
+- Premium subscription (monthly/yearly)
+- One-time premium unlock
+- Donation option
+- Custom mantra packs
+
+================================================================================
+9. BACKEND & SERVICES
+================================================================================
+
+9.1 FIREBASE AUTHENTICATION
+----------------------------
+- Google Sign-In integration
+- Guest mode (local-only data)
+- Secure token management
+- Auto sign-in on app launch
+- Sign-out functionality
+
+9.2 CLOUD FIRESTORE DATABASE
+-----------------------------
+Collections:
+1. users/
+   - uid (document ID)
+   - name, email, photoURL
+   - total_japas, weekly_total_japas
+   - currentStreak, longestStreak
+   - lastJapaDate
+   - japps (map of mantra counts)
+   - settings (notifications, language, etc.)
+   - isPremium (boolean)
+   - createdAt, updatedAt
+
+2. leaderboard/ (auto-generated)
+   - Aggregated user stats
+   - Sorted by total_japas
+
+3. achievements/
+   - User achievement records
+   - Unlock timestamps
+
+4. custom_mantras/
+   - User-created mantras
+   - Audio file references
+
+9.3 CLOUD FUNCTIONS
+-------------------
+Functions:
+- Weekly leaderboard reset (scheduled)
+- Achievement unlock detection
+- Streak calculation
+- Data aggregation
+- Push notification triggers
+
+9.4 FIREBASE CLOUD MESSAGING
+-----------------------------
+Notification Types:
+1. Daily Reminders
+   - Morning: 6:30 AM
+   - Evening: 8:00 PM
+   - Customizable messages
+   - Local notifications (scheduled)
+
+2. Achievement Unlocks
+   - Milestone notifications
+   - Celebration messages
+
+3. Streak Reminders
+   - "Don't break your streak!"
+   - Sent if user hasn't practiced
+
+9.5 FIREBASE ANALYTICS
+-----------------------
+Tracked Events:
+- app_open
+- login_success
+- japa_completed
+- mala_completed
+- mantra_changed
+- quote_shared
+- achievement_unlocked
+- premium_purchased
+- ad_impression
+
+9.6 FIREBASE CRASHLYTICS
+-------------------------
+- Automatic crash reporting
+- Error logging
+- User flow tracking
+- Performance monitoring
+
+9.7 FIREBASE REMOTE CONFIG
+---------------------------
+Configurable Parameters:
+- Feature flags (enable/disable features)
+- Minimum app version
+- Maintenance mode
+- Ad frequency
+- Premium pricing
+- Notification messages
+
+9.8 FIREBASE STORAGE
+---------------------
+Stored Content:
+- User profile photos
+- Custom mantra audio files
+- Shared quote images (temporary)
+
+================================================================================
+10. LOCALIZATION & LANGUAGES
+================================================================================
+
+10.1 SUPPORTED LANGUAGES
+------------------------
+1. English (en)
+   - Default language
+   - Full UI translation
+   - All content available
+
+2. Hindi (hi)
+   - Full UI translation
+   - Native script (Devanagari)
+   - All content available
+
+3. Sanskrit (sa)
+   - Full UI translation
+   - Native script (Devanagari)
+   - All content available
+
+10.2 LOCALIZED CONTENT
+----------------------
+UI Elements:
+- All buttons and labels
+- Navigation items
+- Settings options
+- Error messages
+- Success messages
+
+Content:
+- Mantra names
+- Wisdom quotes (Gita & Ramayana)
+- Achievement descriptions
+- Notification messages
+
+10.3 LANGUAGE SWITCHING
+-----------------------
+- Change language anytime in Settings
+- Immediate UI update
+- Persists across app restarts
+- Affects all screens and content
+
+================================================================================
+11. NOTIFICATIONS SYSTEM
+================================================================================
+
+11.1 LOCAL NOTIFICATIONS
+-------------------------
+Daily Reminders:
+- Morning: 6:30 AM - "Morning Sadhana"
+- Evening: 8:00 PM - "Evening Jaap Reminder"
+
+Messages (Hinglish):
+Morning:
+- "Radhe Radhe! Aaj ka sadhana baaki hai 🙏"
+- "Prabhu ka dhyaan karein. Shubh prabhat! 🌅"
+- "Brahma muhurta me jaap ka vishesh labh hai! Hari Bol 📿"
+
+Evening:
+- "Aapka streak tootne wala hai. Ek mala jaap karein 📿"
+- "Sham dhal chuki hai, Prabhu ko yaad karna na bhoolein 🙏"
+- "Sone se pehle ek baar naam jaap awashya karein ✨"
+
+11.2 NOTIFICATION CHANNELS
+--------------------------
+Android Channels:
+1. Silent Reminders
+   - Vibration only
+   - No sound
+   - High importance
+
+2. Reminders with Sound
+   - Custom sound (mala_complete.mp3)
+   - Vibration
+   - High importance
+
+11.3 NOTIFICATION SETTINGS
+--------------------------
+User Controls:
+- Enable/disable daily reminders
+- Toggle notification sound
+- Test notification button
+- Respects system Do Not Disturb
+
+11.4 PERMISSIONS
+----------------
+Required:
+- POST_NOTIFICATIONS (Android 13+)
+- SCHEDULE_EXACT_ALARM (Android 12+)
+- RECEIVE_BOOT_COMPLETED
+- VIBRATE
+- WAKE_LOCK
+
+================================================================================
+12. DATA & PRIVACY
+================================================================================
+
+12.1 DATA COLLECTION
+---------------------
+Personal Data:
+- Name (from Google account)
+- Email (from Google account)
+- Profile photo (from Google account)
+- User ID (Firebase UID)
+
+Usage Data:
+- Japa counts
+- Mantra preferences
+- App usage patterns
+- Device information
+- Crash reports
+
+12.2 DATA STORAGE
+-----------------
+Cloud Storage (Firebase):
+- User profile data
+- Progress statistics
+- Custom mantras
+- Settings preferences
+
+Local Storage:
+- Offline japa counts
+- App preferences
+- Cached images
+- Audio files
+
+12.3 DATA SYNC
+--------------
+Sync Strategy:
+- Real-time sync when online
+- Queue offline changes
+- Auto-sync on reconnection
+- Conflict resolution (server wins)
+
+12.4 PRIVACY FEATURES
+---------------------
+- No data sharing with third parties
+- Secure authentication
+- Encrypted data transmission
+- User data deletion on account removal
+- GDPR compliant
+- Privacy policy available
+
+12.5 GUEST MODE
+---------------
+- No account required
+- Local-only data
+- No cloud sync
+- No leaderboard access
+- Full chanting functionality
+- Can upgrade to account anytime
+
+================================================================================
+13. PERFORMANCE OPTIMIZATIONS
+================================================================================
+
+13.1 APP SIZE REDUCTION
+------------------------
+Optimizations Applied:
+- Removed unused assets (tour folder: 18 MB saved)
+- Converted images to WebP format
+- Removed duplicate images
+- Removed unused fonts
+- Enabled ProGuard (Android)
+- Enabled shrinkResources (Android)
+
+Results:
+- Original: 63 MB
+- Optimized: ~38 MB (Play Store download)
+- 40% size reduction
+
+13.2 LOADING PERFORMANCE
+------------------------
+- Lazy loading of screens
+- Image caching (cached_network_image)
+- Preloading audio files
+- Efficient state management
+- Minimal rebuilds
+
+13.3 MEMORY MANAGEMENT
+----------------------
+- Dispose controllers properly
+- Cancel subscriptions
+- Clear image cache when needed
+- Efficient list rendering
+- AutomaticKeepAliveClientMixin for tabs
+
+13.4 NETWORK OPTIMIZATION
+--------------------------
+- Batch Firestore writes
+- Offline-first architecture
+- Compressed image uploads
+- Efficient query design
+- Connection state monitoring
+
+================================================================================
+14. FUTURE ROADMAP
+================================================================================
+
+14.1 PLANNED FEATURES
+---------------------
+Short-term (Next 3 months):
+- More mantras (Gayatri, Om, etc.)
+- Dark mode
+- Widget for home screen
+- Apple Watch support
+- Wear OS support
+
+Mid-term (3-6 months):
+- Social features (friends, groups)
+- Challenges and events
+- Meditation timer
+- Breath work integration
+- Audio library expansion
+
+Long-term (6-12 months):
+- AI-powered insights
+- Personalized recommendations
+- Virtual sangha (community)
+- Live group chanting sessions
+- Teacher/student features
+- Course integration
+
+14.2 PLATFORM EXPANSION
+-----------------------
+- iOS App Store launch
+- Web app version
+- Desktop apps (Windows, Mac)
+- Smart TV apps
+- Voice assistant integration
+
+14.3 CONTENT EXPANSION
+----------------------
+- More scriptures (Upanishads, Puranas)
+- Audio lectures
+- Guided meditations
+- Bhajan library
+- Kirtan recordings
+- Spiritual podcasts
+
+================================================================================
+15. DEVELOPMENT SETUP
+================================================================================
+
+15.1 PREREQUISITES
+------------------
+- Flutter SDK 3.2.6 or higher
+- Dart SDK
+- Android Studio / VS Code
+- Android SDK (for Android)
+- Xcode (for iOS, Mac only)
+- Firebase account
+- Google Cloud account
+
+15.2 INSTALLATION
+-----------------
+1. Clone repository
+2. Run: flutter pub get
+3. Configure Firebase:
+   - Add google-services.json (Android)
+   - Add GoogleService-Info.plist (iOS)
+4. Run: flutter run
+
+15.3 BUILD COMMANDS
+-------------------
+Development:
+- flutter run (debug mode)
+- flutter run --release (release mode)
+
+Production:
+- flutter build apk (Android APK)
+- flutter build appbundle (Android AAB for Play Store)
+- flutter build ios (iOS)
+
+15.4 TESTING
+------------
+- flutter test (unit tests)
+- flutter drive (integration tests)
+- flutter analyze (code analysis)
+
+15.5 KEY FILES
+--------------
+- pubspec.yaml: Dependencies
+- android/app/build.gradle: Android config
+- android/app/src/main/AndroidManifest.xml: Permissions
+- ios/Runner/Info.plist: iOS config
+- lib/main.dart: App entry point
+- firebase.json: Firebase config
+
+================================================================================
+16. SUPPORT & CONTACT
+================================================================================
+
+16.1 USER SUPPORT
+-----------------
+- In-app feedback form
+- Email: support@naamjaap.com (if configured)
+- FAQ section (planned)
+- Video tutorials (planned)
+
+16.2 DEVELOPER CONTACT
+----------------------
+- GitHub: (repository link)
+- Email: dev@naamjaap.com (if configured)
+- Documentation: This file
+
+16.3 COMMUNITY
+--------------
+- Discord server (planned)
+- Facebook group (planned)
+- Instagram: @naamjaap (if configured)
+- Twitter: @naamjaap (if configured)
+
+================================================================================
+17. CREDITS & ACKNOWLEDGMENTS
+================================================================================
+
+17.1 DEVELOPMENT
+----------------
+- Built with Flutter framework
+- Firebase backend services
+- Google Fonts typography
+- Material Design guidelines
+
+17.2 CONTENT
+------------
+- Bhagavad Gita translations
+- Ramayana translations
+- Mantra audio recordings
+- Background images
+
+17.3 INSPIRATION
+----------------
+- Traditional mala practice
+- Vedic scriptures
+- Spiritual teachers
+- User community feedback
+
+================================================================================
+18. VERSION HISTORY
+================================================================================
+
+Current Version: 5.1.0 (Build 34)
+
+Recent Updates:
+- Removed tour/showcase feature for smoother UX
+- Fixed notification system with proper scheduling
+- Added test notification feature
+- Optimized app size (40% reduction)
+- Improved offline functionality
+- Enhanced leaderboard UI
+- Added custom notification sound
+- Bug fixes and performance improvements
+
+Previous Major Versions:
+- 5.0.0: Major UI overhaul
+- 4.0.0: Leaderboard introduction
+- 3.0.0: Custom mantras feature
+- 2.0.0: Wisdom section added
+- 1.0.0: Initial release
+
+================================================================================
+19. TROUBLESHOOTING
+================================================================================
+
+Common Issues:
+
+1. Notifications not working
+   - Check app permissions
+   - Enable exact alarms (Android 12+)
+   - Disable battery optimization
+   - Use test notification button
+
+2. Google Sign-In fails
+   - Check internet connection
+   - Verify SHA-1 fingerprint in Firebase
+   - Clear app cache
+   - Reinstall app
+
+3. Audio not playing
+   - Check device volume
+   - Verify mute toggle is off
+   - Check audio file permissions
+   - Restart app
+
+4. Sync issues
+   - Check internet connection
+   - Force sync from settings
+   - Sign out and sign in again
+   - Clear app data (last resort)
+
+5. App crashes
+   - Update to latest version
+   - Clear cache
+   - Reinstall app
+   - Report crash with details
+
+================================================================================
+20. GLOSSARY
+================================================================================
+
+Jaap/Japa: Repetition of a mantra or divine name
+Mala: String of 108 beads used for counting mantras
+Sankalpa: Spiritual resolution or intention
+Sadhana: Spiritual practice or discipline
+Bodhi Tree: Sacred tree under which Buddha attained enlightenment
+Streak: Consecutive days of practice
+Mantra: Sacred sound, word, or phrase
+Bhagavad Gita: Hindu scripture, part of Mahabharata
+Ramayana: Ancient Indian epic
+Vaishnavism: Hindu tradition focused on Vishnu/Krishna/Rama
+Sangha: Spiritual community
+Kirtan: Devotional singing
+Bhajan: Devotional song
+
+================================================================================
+                              END OF DOCUMENTATION
+================================================================================
+
+Last Updated: May 6, 2026
+Document Version: 1.0
+Maintained by: Naam Jaap Development Team
+
+For the latest updates and information, please refer to the app's official
+documentation and release notes.
+
+================================================================================

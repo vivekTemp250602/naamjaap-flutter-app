@@ -179,11 +179,11 @@ class _LoginScreenState extends State<LoginScreen>
                       Hero(
                         tag: 'app_logo',
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 160),
+                          constraints: const BoxConstraints(maxWidth: 240),
                           child: FractionallySizedBox(
-                            widthFactor: 0.38,
+                            widthFactor: 0.55,
                             child: Image.asset(
-                              'assets/images/app_logo_simple.webp',
+                              'assets/images/app_logo.png',
                               fit: BoxFit.contain,
                             ),
                           ),

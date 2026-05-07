@@ -23,10 +23,10 @@ import 'package:naamjaap/services/sync_service.dart';
 import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/utils/mala_type.dart';
 import 'package:naamjaap/widgets/mala_widget.dart';
+import 'package:naamjaap/widgets/notification_permission_prompt.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 enum InfoLanguage { english, hindi, sanskrit }
 
@@ -170,11 +170,6 @@ class _HomeScreenState extends State<HomeScreen>
   Timer? _syncTimer;
   final List<_Sparkle> _sparkles = [];
 
-  // Tour Keys
-  final GlobalKey _keyCarousel = GlobalKey();
-  final GlobalKey _keyMala = GlobalKey();
-  final GlobalKey _keyDock = GlobalKey();
-
   @override
   void initState() {
     super.initState();
@@ -229,6 +224,13 @@ class _HomeScreenState extends State<HomeScreen>
 
     _loadPreferences();
 
+    // ── ONE-TIME NOTIFICATION SOFT-PROMPT ──
+    // Fires after the first frame is rendered, visible to all users
+    // regardless of whether they came through login or auto-logged in.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationPermissionPrompt.showIfNeeded(context);
+    });
+
     _userDocSubscription =
         _firestoreService.getUserStatsStream(_uid).listen((snapshot) {
       if (snapshot.exists && mounted) {
@@ -256,8 +258,6 @@ class _HomeScreenState extends State<HomeScreen>
         _audioService.onPlayerStateChanged.listen((state) {
       if (mounted) setState(() => _isPlaying = state == PlayerState.playing);
     });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startHomeTour());
   }
 
   @override
@@ -290,17 +290,6 @@ class _HomeScreenState extends State<HomeScreen>
       setState(() {
         _dbMantraCount = jappsMap[mantraId] as int? ?? 0;
       });
-    }
-  }
-
-  void _startHomeTour() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool hasSeenTour = prefs.getBool('has_seen_home_tour') ?? false;
-
-    if (!hasSeenTour) {
-      ShowCaseWidget.of(context)
-          .startShowCase([_keyCarousel, _keyMala, _keyDock]);
-      await prefs.setBool('has_seen_home_tour', true);
     }
   }
 
@@ -1263,160 +1252,138 @@ class _HomeScreenState extends State<HomeScreen>
 
                       const SizedBox(height: 20),
 
-                      // Carousel Tour
-                      _buildShowcase(
-                        key: _keyCarousel,
-                        title: AppLocalizations.of(context)!
-                            .tour_home_carousel_title,
-                        description: AppLocalizations.of(context)!
-                            .tour_home_carousel_desc,
-                        child:
-                            _build3DMantraCarousel(allMantras, selectedMantra),
-                      ),
+                      // Mantra Carousel
+                      _build3DMantraCarousel(allMantras, selectedMantra),
 
                       const Spacer(),
 
-                      // Mala Tour & Interaction
-                      _buildShowcase(
-                        key: _keyMala,
-                        title:
-                            AppLocalizations.of(context)!.tour_home_mala_title,
-                        description:
-                            AppLocalizations.of(context)!.tour_home_mala_desc,
-                        child: GestureDetector(
-                          onTap: _incrementCounter,
-                          child: AnimatedBuilder(
-                            animation: _pulseController,
-                            builder: (context, child) {
-                              // Responsive sizing: use 85% of screen width, capped at 320
-                              final screenWidth = MediaQuery.of(context).size.width;
-                              final malaSize = (screenWidth * 0.85).clamp(240.0, 320.0);
-                              final innerSize = malaSize * 0.75;
-                              final counterFontSize = (malaSize * 0.25).clamp(56.0, 80.0);
-                              return Container(
-                                width: malaSize,
-                                height: malaSize,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.orange.withOpacity(
-                                          0.2 + (_pulseController.value * 0.1)),
-                                      blurRadius:
-                                          40 + (_pulseController.value * 20),
-                                      spreadRadius: 5,
-                                    )
-                                  ],
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    MalaWidget(
-                                      activeBeadIndex: malaProgressCounter,
-                                      beadCount: 109,
-                                    ),
-                                    Container(
-                                      width: innerSize,
-                                      height: innerSize,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        gradient: RadialGradient(
-                                          colors: [
-                                            Colors.orange.shade400
-                                                .withOpacity(0.9),
-                                            Colors.deepOrange.shade900
-                                                .withOpacity(0.95),
-                                          ],
-                                          center: const Alignment(-0.2, -0.2),
+                      // Mala Interaction
+                      GestureDetector(
+                        onTap: _incrementCounter,
+                        child: AnimatedBuilder(
+                          animation: _pulseController,
+                          builder: (context, child) {
+                            // Responsive sizing: use 85% of screen width, capped at 320
+                            final screenWidth =
+                                MediaQuery.of(context).size.width;
+                            final malaSize =
+                                (screenWidth * 0.85).clamp(240.0, 320.0);
+                            final innerSize = malaSize * 0.75;
+                            final counterFontSize =
+                                (malaSize * 0.25).clamp(56.0, 80.0);
+                            return Container(
+                              width: malaSize,
+                              height: malaSize,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.orange.withOpacity(
+                                        0.2 + (_pulseController.value * 0.1)),
+                                    blurRadius:
+                                        40 + (_pulseController.value * 20),
+                                    spreadRadius: 5,
+                                  )
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  MalaWidget(
+                                    activeBeadIndex: malaProgressCounter,
+                                    beadCount: 109,
+                                  ),
+                                  Container(
+                                    width: innerSize,
+                                    height: innerSize,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          Colors.orange.shade400
+                                              .withOpacity(0.9),
+                                          Colors.deepOrange.shade900
+                                              .withOpacity(0.95),
+                                        ],
+                                        center: const Alignment(-0.2, -0.2),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 20,
+                                          spreadRadius: 2,
                                         ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                            blurRadius: 20,
-                                            spreadRadius: 2,
+                                        BoxShadow(
+                                          color: Colors.white.withOpacity(0.2),
+                                          blurRadius: 5,
+                                          offset: const Offset(-10, -10),
+                                        )
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          AnimatedSwitcher(
+                                            duration: 150.ms,
+                                            transitionBuilder: (child, anim) =>
+                                                ScaleTransition(
+                                                    scale: anim, child: child),
+                                            child: Text(
+                                              (malaProgressCounter == 0 &&
+                                                      displayTotal > 0)
+                                                  ? "108"
+                                                  : "$malaProgressCounter",
+                                              key:
+                                                  ValueKey(malaProgressCounter),
+                                              style: TextStyle(
+                                                fontSize: counterFontSize,
+                                                fontWeight: FontWeight.w900,
+                                                color: Colors.white,
+                                                fontFamily: 'Serif',
+                                                height: 1.0,
+                                                shadows: const [
+                                                  Shadow(
+                                                    color: Colors.black45,
+                                                    blurRadius: 10,
+                                                    offset: Offset(2, 4),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                          BoxShadow(
-                                            color:
-                                                Colors.white.withOpacity(0.2),
-                                            blurRadius: 5,
-                                            offset: const Offset(-10, -10),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            "${AppLocalizations.of(context)!.home_total} $displayTotal",
+                                            style: TextStyle(
+                                              color:
+                                                  Colors.white.withOpacity(0.8),
+                                              fontSize: 16,
+                                              letterSpacing: 1,
+                                            ),
                                           )
                                         ],
                                       ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            AnimatedSwitcher(
-                                              duration: 150.ms,
-                                              transitionBuilder:
-                                                  (child, anim) =>
-                                                      ScaleTransition(
-                                                          scale: anim,
-                                                          child: child),
-                                              child: Text(
-                                                (malaProgressCounter == 0 &&
-                                                        displayTotal > 0)
-                                                    ? "108"
-                                                    : "$malaProgressCounter",
-                                                key: ValueKey(
-                                                    malaProgressCounter),
-                                                style: TextStyle(
-                                                  fontSize: counterFontSize,
-                                                  fontWeight: FontWeight.w900,
-                                                  color: Colors.white,
-                                                  fontFamily: 'Serif',
-                                                  height: 1.0,
-                                                  shadows: const [
-                                                    Shadow(
-                                                      color: Colors.black45,
-                                                      blurRadius: 10,
-                                                      offset: Offset(2, 4),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              "${AppLocalizations.of(context)!.home_total} $displayTotal",
-                                              style: TextStyle(
-                                                color: Colors.white
-                                                    .withOpacity(0.8),
-                                                fontSize: 16,
-                                                letterSpacing: 1,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
                                     ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
 
                       const Spacer(),
 
-                      // Dock Tour
-                      _buildShowcase(
-                        key: _keyDock,
-                        title: AppLocalizations.of(context)!
-                            .tour_home_toolkit_title,
-                        description: AppLocalizations.of(context)!
-                            .tour_home_toolkit_desc,
-                        child: _buildFloatingDock(selectedMantra),
-                      ),
+                      // Floating Dock
+                      _buildFloatingDock(selectedMantra),
 
                       const SizedBox(height: 16),
 
                       // Provide safe-area bottom padding dynamically
-                      SizedBox(height: MediaQuery.of(context).padding.bottom + 80),
+                      SizedBox(
+                          height: MediaQuery.of(context).padding.bottom + 80),
                     ],
                   ),
 
@@ -1444,27 +1411,5 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       );
     });
-  }
-
-  Widget _buildShowcase({
-    required GlobalKey key,
-    required String title,
-    required String description,
-    required Widget child,
-  }) {
-    return Showcase(
-      key: key,
-      title: title,
-      description: description,
-      targetShapeBorder: const CircleBorder(),
-      tooltipBackgroundColor: const Color(0xFF1A1A1A),
-      textColor: Colors.white,
-      titleTextStyle: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
-      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
-      tooltipPadding: const EdgeInsets.all(20),
-      tooltipBorderRadius: BorderRadius.circular(20),
-      child: child,
-    );
   }
 }

@@ -6,20 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/services/local_quotes_service.dart';
 import 'package:naamjaap/widgets/shareable_quote_template.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:naamjaap/l10n/app_localizations.dart'; // Ensure imported
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
-import 'package:naamjaap/utils/constants.dart';
 import 'package:naamjaap/widgets/quote_card.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // ... [Keep WisdomSparkles and _Sparkle as is] ...
 class WisdomSparkles extends CustomPainter {
@@ -98,9 +94,6 @@ class _WisdomScreenState extends State<WisdomScreen>
   bool _isCapturing = false;
   bool _isProcessingShare = false;
 
-  // Tour key
-  final GlobalKey _keyQuote = GlobalKey();
-
   @override
   void initState() {
     super.initState();
@@ -113,45 +106,6 @@ class _WisdomScreenState extends State<WisdomScreen>
     )..repeat();
 
     _loadAdAndPremiumStatus();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startWisdomTour());
-  }
-
-  void _startWisdomTour() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool hasSeenTour = prefs.getBool('has_seen_wisdom_tour') ?? false;
-
-    if (!hasSeenTour) {
-      // Wait for the stream to load data
-      await Future.delayed(const Duration(milliseconds: 800));
-      if (mounted) {
-        ShowCaseWidget.of(context).startShowCase([_keyQuote]);
-        await prefs.setBool('has_seen_wisdom_tour', true);
-      }
-    }
-  }
-
-  // 3. ADD HELPER
-  Widget _buildShowcase({
-    required GlobalKey key,
-    required String title,
-    required String description,
-    required Widget child,
-  }) {
-    return Showcase(
-      key: key,
-      title: title,
-      description: description,
-      targetShapeBorder:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      tooltipBackgroundColor: const Color(0xFF1A1A1A),
-      textColor: Colors.white,
-      titleTextStyle: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
-      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
-      tooltipPadding: const EdgeInsets.all(20),
-      tooltipBorderRadius: BorderRadius.circular(20),
-      child: child,
-    );
   }
 
   // ... [Keep _loadAdAndPremiumStatus, dispose, wantKeepAlive, _onShareQuote] ...
@@ -398,7 +352,6 @@ class _WisdomScreenState extends State<WisdomScreen>
                           children: [
                             _buildQuoteStream(
                               LocalQuotesService.getTodaysGitaQuote(),
-                              showcaseKey: _keyQuote,
                             ),
                             _buildQuoteStream(
                               LocalQuotesService.getTodaysRamayanaQuote(),
@@ -531,8 +484,7 @@ class _WisdomScreenState extends State<WisdomScreen>
   // Import the new service at the top of wisdom_screen.dart
   // import 'package:naamjaap/services/local_quotes_service.dart';
 
-  Widget _buildQuoteStream(Map<String, dynamic> quoteData,
-      {GlobalKey? showcaseKey}) {
+  Widget _buildQuoteStream(Map<String, dynamic> quoteData) {
     // 1. Create the base card
     Widget card = QuoteCard(
       textEN: quoteData['text_en'] ?? '...',
@@ -545,26 +497,13 @@ class _WisdomScreenState extends State<WisdomScreen>
         .animate()
         .scale(delay: 200.ms, duration: 600.ms, curve: Curves.easeOutBack);
 
-    // 2. Wrap it in Showcase ONLY if the key exists, but don't return yet!
-    Widget finalCard = card;
-    if (showcaseKey != null) {
-      finalCard = _buildShowcase(
-        key: showcaseKey,
-        // LOC: Tour Title
-        title: AppLocalizations.of(context)!.tour_wisdom_card_title,
-        // LOC: Tour Desc
-        description: AppLocalizations.of(context)!.tour_wisdom_card_desc,
-        child: card,
-      );
-    }
-
-    // 3. ALWAYS return the ListView so the height is dynamic
+    // 2. Return the ListView so the height is dynamic
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       physics: const BouncingScrollPhysics(),
       children: [
         if (_uid == 'guest') _buildGuestBanner(),
-        finalCard, // Put the card (with or without showcase) inside the list
+        card,
         const SizedBox(height: 80),
       ],
     );

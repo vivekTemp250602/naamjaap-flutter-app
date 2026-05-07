@@ -29,8 +29,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // ... [Keep DivineSparkles and _Sparkle classes exactly as they are] ...
 class DivineSparkles extends CustomPainter {
@@ -112,11 +110,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool _isUploading = false;
   bool _isCreatingSankalpa = false;
 
-  // Tour Keys
-  final GlobalKey _keyStats = GlobalKey();
-  final GlobalKey _keyOffline = GlobalKey();
-  final GlobalKey _keySankalpa = GlobalKey();
-  final GlobalKey _keyBodhi = GlobalKey();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -137,8 +130,6 @@ class _ProfileScreenState extends State<ProfileScreen>
             if (mounted) setState(() {});
           });
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startProfileTour());
   }
 
   @override
@@ -154,48 +145,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // --- ACTIONS ---
-
-  void _startProfileTour() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool hasSeenTour = prefs.getBool('has_seen_profile_tour') ?? false;
-
-    if (!hasSeenTour) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        // FIX: Removed _keyBodhi and _keySankalpa
-        // Only showing items visible at the top to prevent scrolling bugs
-        ShowCaseWidget.of(context).startShowCase([_keyStats, _keyOffline]);
-
-        await prefs.setBool('has_seen_profile_tour', true);
-      }
-    }
-  }
-
-  // Helper
-  Widget _buildShowcase({
-    required GlobalKey key,
-    required String title,
-    required String description,
-    required Widget child,
-    ShapeBorder? shapeBorder,
-  }) {
-    return Showcase(
-      key: key,
-      title: title,
-      description: description,
-      targetShapeBorder: shapeBorder ?? const CircleBorder(),
-      tooltipBackgroundColor: const Color(0xFF1A1A1A),
-      textColor: Colors.white,
-      titleTextStyle: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
-      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
-      tooltipPadding: const EdgeInsets.all(20),
-      tooltipBorderRadius: BorderRadius.circular(20),
-      child: child,
-    );
-  }
-
   // ... [Keep _pickAndUploadImage, _showEditNameDialog, _signOut, _triggerShare, _captureAndShareImage as is] ...
   Future<void> _pickAndUploadImage() async {
     final ImagePicker picker = ImagePicker();
@@ -209,15 +158,17 @@ class _ProfileScreenState extends State<ProfileScreen>
           await _storageService.uploadProfilePicture(widget.user!.uid, image);
       await _firestoreService.updateUserProfilePicture(
           widget.user!.uid, downloadUrl);
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
                 AppLocalizations.of(context)!.dialog_profilePictureUpdate)));
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:
                 Text(AppLocalizations.of(context)!.dialog_failedToUpload)));
+      }
     } finally {
       if (mounted) setState(() => _isUploading = false);
     }
@@ -1016,7 +967,9 @@ class _ProfileScreenState extends State<ProfileScreen>
     final count = int.tryParse(_countController.text);
     if (_selectedSankalpaMantra == null ||
         count == null ||
-        _selectedSankalpaDate == null) return;
+        _selectedSankalpaDate == null) {
+      return;
+    }
 
     final start = jappsMap[_selectedSankalpaMantra!.id] as int? ?? 0;
     await _firestoreService.setSankalpa(

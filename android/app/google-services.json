@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "287482200316-p4kjm5a5h32p2hnd4ue18fpmcnefbtb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vivek.naamjaap",
+            "certificate_hash": "9ab2af21fd7910e8b3723072282dbd29b3ebef80"
+          }
+        },
+        {
           "client_id": "287482200316-mru5gla6vkcbt69v2jav81h4cjtj2s27.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -56,7 +64,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-6393216612155655~6781716832"
     }
   ],
   "configuration_version": "1"

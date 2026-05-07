@@ -11,11 +11,11 @@ class RatingService {
     int currentCount = prefs.getInt(_keyMalaCountForRating) ?? 0;
     currentCount++;
 
-    // STRATEGY: Ask after the 1st Mala, then the 5th, then every 20th.
-    // This captures early happy users and loyal long-term users.
-    if (currentCount == 1 ||
+    // STRATEGY: Ask after the 3rd Mala (genuine delight, user is committed),
+    // then the 5th, then every 25th (preserves OS rate-limiting budget).
+    if (currentCount == 3 ||
         currentCount == 5 ||
-        (currentCount > 5 && currentCount % 20 == 0)) {
+        (currentCount > 5 && currentCount % 25 == 0)) {
       if (await _inAppReview.isAvailable()) {
         _inAppReview.requestReview();
       }

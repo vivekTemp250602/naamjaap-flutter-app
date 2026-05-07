@@ -7,8 +7,6 @@ import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:naamjaap/utils/constants.dart';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' as ui;
 
 enum LeaderboardType { allTime, weekly }
@@ -29,10 +27,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   static const String _screenName = 'leader';
   final AdService _adService = AdService();
 
-  // Tour keys
-  final GlobalKey _keyToggle = GlobalKey();
-  final GlobalKey _keyPodium = GlobalKey();
-
   @override
   void initState() {
     super.initState();
@@ -45,9 +39,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
             if (mounted) setState(() {});
           });
     }
-
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _startLeaderboardTour());
   }
 
   @override
@@ -58,43 +49,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   @override
   bool get wantKeepAlive => true;
-
-  void _startLeaderboardTour() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool hasSeenTour =
-        prefs.getBool('has_seen_leaderboard_tour') ?? false;
-
-    if (!hasSeenTour) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        ShowCaseWidget.of(context).startShowCase([_keyToggle, _keyPodium]);
-        await prefs.setBool('has_seen_leaderboard_tour', true);
-      }
-    }
-  }
-
-  Widget _buildShowcase({
-    required GlobalKey key,
-    required String title,
-    required String description,
-    required Widget child,
-    ShapeBorder? shapeBorder,
-  }) {
-    return Showcase(
-      key: key,
-      title: title,
-      description: description,
-      targetShapeBorder: shapeBorder ?? const CircleBorder(),
-      tooltipBackgroundColor: const Color(0xFF1A1A1A),
-      textColor: Colors.white,
-      titleTextStyle: const TextStyle(
-          fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFFFD700)),
-      descTextStyle: const TextStyle(fontSize: 14, color: Colors.white70),
-      tooltipPadding: const EdgeInsets.all(20),
-      tooltipBorderRadius: BorderRadius.circular(20),
-      child: child,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -279,58 +233,52 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                 letterSpacing: 1),
           ),
         ),
-        // LOC: Showcase Toggle
-        _buildShowcase(
-          key: _keyToggle,
-          title: AppLocalizations.of(context)!.tour_leader_toggle_title,
-          description: AppLocalizations.of(context)!.tour_leader_toggle_desc,
-          shapeBorder: const StadiumBorder(),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.white.withOpacity(0.1))),
-            child: LayoutBuilder(builder: (context, constraints) {
-              return Stack(
-                children: [
-                  AnimatedAlign(
-                    alignment: _selectedLeaderboard == LeaderboardType.allTime
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOutBack,
-                    child: Container(
-                      width: constraints.maxWidth * 0.5,
-                      height: double.infinity,
-                      margin: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2))
-                          ]),
-                    ),
+        // Toggle
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 40),
+          height: 50,
+          decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: Colors.white.withOpacity(0.1))),
+          child: LayoutBuilder(builder: (context, constraints) {
+            return Stack(
+              children: [
+                AnimatedAlign(
+                  alignment: _selectedLeaderboard == LeaderboardType.allTime
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutBack,
+                  child: Container(
+                    width: constraints.maxWidth * 0.5,
+                    height: double.infinity,
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2))
+                        ]),
                   ),
-                  Row(
-                    children: [
-                      // LOC: All Time & This Week
-                      _buildToggleItem(
-                          AppLocalizations.of(context)!.leaderboard_allTime,
-                          LeaderboardType.allTime),
-                      _buildToggleItem(
-                          AppLocalizations.of(context)!.leaderboard_thisWeek,
-                          LeaderboardType.weekly),
-                    ],
-                  )
-                ],
-              );
-            }),
-          ),
+                ),
+                Row(
+                  children: [
+                    // LOC: All Time & This Week
+                    _buildToggleItem(
+                        AppLocalizations.of(context)!.leaderboard_allTime,
+                        LeaderboardType.allTime),
+                    _buildToggleItem(
+                        AppLocalizations.of(context)!.leaderboard_thisWeek,
+                        LeaderboardType.weekly),
+                  ],
+                )
+              ],
+            );
+          }),
         ),
         const SizedBox(height: 10),
       ],
@@ -367,24 +315,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     final second = docs.length > 1 ? docs[1] : null;
     final third = docs.length > 2 ? docs[2] : null;
 
-    // LOC: Showcase Podium
-    return _buildShowcase(
-      key: _keyPodium,
-      title: AppLocalizations.of(context)!.tour_leader_podium_title,
-      description: AppLocalizations.of(context)!.tour_leader_podium_desc,
-      shapeBorder:
-          const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 30, 16, 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (second != null) _buildPodiumStep(second, 2, 130),
-            _buildPodiumStep(first, 1, 170),
-            if (third != null) _buildPodiumStep(third, 3, 110),
-          ],
-        ),
+    // Podium
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 30, 16, 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (second != null) _buildPodiumStep(second, 2, 130),
+          _buildPodiumStep(first, 1, 170),
+          if (third != null) _buildPodiumStep(third, 3, 110),
+        ],
       ),
     );
   }

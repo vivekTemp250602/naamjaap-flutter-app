@@ -11,7 +11,6 @@ import 'package:naamjaap/services/notification_service.dart';
 import 'package:naamjaap/widgets/bottom_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
-import 'package:showcaseview/showcaseview.dart'; // 1. IMPORT THIS
 
 class MainAppScreens extends StatefulWidget {
   final User? user;
@@ -85,52 +84,49 @@ class _MainAppScreensState extends State<MainAppScreens> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MantraProvider(widget.user?.uid ?? 'guest'),
-      // 2. WRAP EVERYTHING IN ShowCaseWidget
-      child: ShowCaseWidget(
-        builder: (context) => PopScope(
-          canPop: false,
-          onPopInvoked: (didPop) {
-            if (didPop) return;
-            if (_currentIndex != 0) {
-              _onTabTapped(0);
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          if (_currentIndex != 0) {
+            _onTabTapped(0);
+          } else {
+            final now = DateTime.now();
+            if (_lastBackPressed == null ||
+                now.difference(_lastBackPressed!) >
+                    const Duration(seconds: 2)) {
+              _lastBackPressed = now;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Press back again to exit")),
+              );
             } else {
-              final now = DateTime.now();
-              if (_lastBackPressed == null ||
-                  now.difference(_lastBackPressed!) >
-                      const Duration(seconds: 2)) {
-                _lastBackPressed = now;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Press back again to exit")),
-                );
-              } else {
-                SystemNavigator.pop();
-              }
+              SystemNavigator.pop();
             }
-          },
-          child: Scaffold(
-            extendBody: true,
-            body: Stack(
-              fit: StackFit.expand,
-              children: [
-                PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: _screens,
-                  onPageChanged: (index) {
-                    setState(() => _currentIndex = index);
-                  },
+          }
+        },
+        child: Scaffold(
+          extendBody: true,
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _screens,
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
+                },
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: BottomNavBar(
+                  currentIndex: _currentIndex,
+                  onTap: _onTabTapped,
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: BottomNavBar(
-                    currentIndex: _currentIndex,
-                    onTap: _onTabTapped,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

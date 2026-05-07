@@ -86,7 +86,7 @@ class NaamJaapApp extends StatelessWidget {
     return Consumer<LocaleProvider>(
       builder: (context, provider, child) {
         return MaterialApp(
-          title: "Moksha Mala Jaap",
+          title: "Naam Jaap",
           theme: theme,
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,

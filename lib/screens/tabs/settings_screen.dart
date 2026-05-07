@@ -89,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   bool _isAmbianceEnabled = false;
   bool _areRemindersEnabled = false;
-  bool _isNotificationSoundEnabled = false;
+  bool _isNotificationSoundEnabled = true;
   bool _isDeleting = false;
 
   static const String _screenName = 'setting';
@@ -147,7 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (mounted) {
       setState(() {
         _areRemindersEnabled = settings['enableReminders'] ?? false;
-        _isNotificationSoundEnabled = settings['enableNotificationSound'] ?? false;
+        _isNotificationSoundEnabled =
+            settings['enableNotificationSound'] ?? true;
       });
     }
   }
@@ -166,6 +167,9 @@ class _SettingsScreenState extends State<SettingsScreen>
       isEnabled: isEnabled,
     );
 
+    // REQUIRED: init() sets timezone to Asia/Kolkata. Without it, tz.local = UTC
+    // and 9 PM IST would fire at 2:30 AM IST instead.
+    await LocalNotificationService().init();
     await LocalNotificationService().scheduleDailyReminders(
       isEnabled: isEnabled,
       enableSound: _isNotificationSoundEnabled,
@@ -513,12 +517,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                           if (_areRemindersEnabled)
                             _buildSwitchTile(
                               title: 'Notification Sound',
-                              subtitle: 'Play sound for reminders (otherwise visual/vibrate)',
+                              subtitle:
+                                  'Play sound for reminders (otherwise visual/vibrate)',
                               icon: Icons.volume_up_rounded,
                               value: _isNotificationSoundEnabled,
                               onChanged: _toggleNotificationSound,
                               activeColor: Colors.amber.shade800,
                             ),
+
                         ],
                         Divider(
                             height: 1,

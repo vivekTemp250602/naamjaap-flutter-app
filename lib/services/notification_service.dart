@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:naamjaap/services/firestore_service.dart';
+import 'package:naamjaap/services/local_notification_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
@@ -21,6 +22,33 @@ class NotificationService {
 
     /// Set up a handler for messages that come in when the app is terminated
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // CRITICAL FIX: Schedule local notifications when FCM is initialized
+    // Get user's notification preferences and schedule local notifications
+    final userDoc = await _firestoreService.getUserDocument(uid);
+    if (userDoc.exists) {
+      final userData = userDoc.data() as Map<String, dynamic>;
+      final settings = userData['settings'] as Map<String, dynamic>? ?? {};
+      final enableReminders = settings['enableReminders'] ?? true;
+      final enableSound = settings['enableNotificationSound'] ?? true;
+      final notificationLang = settings['notificationLanguage'] ?? 'en';
+
+      // CRITICAL: init() must be called first to set Asia/Kolkata timezone
+      // Without this, tz.local defaults to UTC and 21:00 fires at 2:30 AM IST instead of 9 PM IST
+      await LocalNotificationService().init();
+
+      // Schedule local daily reminders
+      await LocalNotificationService().scheduleDailyReminders(
+        isEnabled: enableReminders,
+        enableSound: enableSound,
+      );
+
+      // Subscribe to FCM topics based on preferences
+      await updateNotificationPreferences(
+        language: notificationLang,
+        isEnabled: enableReminders,
+      );
+    }
   }
 
   Future<void> updateNotificationPreferences(

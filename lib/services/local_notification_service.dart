@@ -88,9 +88,9 @@ class LocalNotificationService {
     if (androidPlugin == null) return false;
     final granted =
         await androidPlugin.requestNotificationsPermission() ?? false;
-    // Best-effort — exact alarms may already be granted or may require
-    // a separate settings screen on some OEMs.
-    await androidPlugin.requestExactAlarmsPermission();
+    // NOTE: requestExactAlarmsPermission() intentionally removed.
+    // Naam Jaap uses inexact alarms and is not eligible for the exact
+    // alarm policy exception (non-alarm/calendar app).
     return granted;
   }
 
@@ -201,7 +201,9 @@ class LocalNotificationService {
       body: body,
       scheduledDate: scheduledDate,
       notificationDetails: platformChannelSpecifics,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      // inexactAllowWhileIdle: fires even in Doze mode but does NOT require
+      // SCHEDULE_EXACT_ALARM / USE_EXACT_ALARM — fully Play-policy compliant.
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }

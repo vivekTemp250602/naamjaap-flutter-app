@@ -2,7 +2,7 @@ name: naamjaap
 description: "Naam Jaap: Your personal sacred space for daily chanting."
 publish_to: 'none'
 
-version: 5.1.1+35
+version: 5.1.2+37
 
 environment:
   sdk: '>=3.2.6 <4.0.0'

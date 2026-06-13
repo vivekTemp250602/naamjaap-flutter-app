@@ -231,6 +231,10 @@ class _HomeScreenState extends State<HomeScreen>
       NotificationPermissionPrompt.showIfNeeded(context);
     });
 
+    // ── REVIEW PROMPT (time-based: prompts 2 & 3) ──
+    // Prompt 1 is triggered by the 10th mala completion in _incrementCounter.
+    _ratingService.checkOnAppStart();
+
     _userDocSubscription =
         _firestoreService.getUserStatsStream(_uid).listen((snapshot) {
       if (snapshot.exists && mounted) {
@@ -421,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen>
     if (currentTotal > 0 && currentTotal % 108 == 0) {
       _celebrateMala();
       _achievementsService.checkAndAwardBadges(_uid);
-      _ratingService.checkAndAskForReview();
+      _ratingService.checkOnMalaComplete();
     }
   }
 

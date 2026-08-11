@@ -7,8 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:naamjaap/providers/locale_provider.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
 import 'package:naamjaap/screens/language_selector_page.dart';
-import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/screens/main_app_screens.dart';
+import 'package:naamjaap/services/analytics_service.dart';
 import 'package:naamjaap/services/remote_config_service.dart';
 import 'package:naamjaap/services/version_check_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -35,6 +35,10 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+    // Analytics: Track splash screen view
+    AnalyticsService().logSplashScreenView();
+    AnalyticsService().logAppOpen();
 
     // 1. Play Divine Sound
     _player.play(AssetSource("audio/om_chant.mp3"), volume: 0.6);
@@ -110,6 +114,8 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
     if (!mounted) return;
 
     Widget nextScreen;
+    final user = FirebaseAuth.instance.currentUser;
+    final isGuest = user == null;
 
     // 2. Logic Flow
     if (!localeProvider.isLocaleSet) {
@@ -117,18 +123,16 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
       nextScreen = const LanguageSelectorPage(uid: "", isFirstRun: true);
     } else {
       // B. Language is set: Check Auth
-      final user = FirebaseAuth.instance.currentUser;
+      // NEW: Always go to Main App, either as logged-in user or guest
+      // No more forced login screen
+      nextScreen = ChangeNotifierProvider(
+        create: (_) => MantraProvider(user?.uid ?? 'guest'),
+        child: MainAppScreens(user: user),
+      );
 
-      if (user == null) {
-        // Not logged in -> Login Screen
-        nextScreen = const LoginScreen();
-      } else {
-        // Logged in -> Main App
-        nextScreen = ChangeNotifierProvider(
-          create: (_) => MantraProvider(user.uid),
-          child: MainAppScreens(user: user),
-        );
-      }
+      // Analytics: Track onboarding completion
+      await AnalyticsService().logOnboardingCompleted(asGuest: isGuest);
+      await AnalyticsService().updateUserType(isGuest);
     }
 
     // 3. Navigate

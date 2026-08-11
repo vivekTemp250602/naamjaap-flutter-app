@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:naamjaap/screens/login_screen.dart';
+import 'package:naamjaap/services/analytics_service.dart';
 import 'package:naamjaap/screens/tabs/home_screen.dart';
 import 'package:naamjaap/screens/tabs/leaderboard_screen.dart';
 import 'package:naamjaap/screens/tabs/profile_screen.dart';
@@ -27,8 +27,6 @@ class _MainAppScreensState extends State<MainAppScreens> {
   StreamSubscription<User?>? _authSubscription;
   DateTime? _lastBackPressed;
 
-  bool get _isGuest => widget.user == null;
-
   @override
   void initState() {
     super.initState();
@@ -46,17 +44,21 @@ class _MainAppScreensState extends State<MainAppScreens> {
       NotificationService().initialize(widget.user!.uid);
     }
 
-    if (!_isGuest) {
-      _authSubscription =
-          FirebaseAuth.instance.authStateChanges().listen((user) {
-        if (user == null && mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-            (Route<dynamic> route) => false,
-          );
-        }
-      });
-    }
+    // NEW: Listen to auth changes for all users (logged-in and guest)
+    // If user signs out, they become a guest - don't force navigate to login
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (mounted && widget.user != null && user == null) {
+        // User was logged in and signed out - stay in app as guest
+        // The app will continue working in guest mode
+        // No forced navigation to LoginScreen
+      }
+    });
+
+    // Analytics: Initialize and track initial screen
+    AnalyticsService().initialize();
+    AnalyticsService().logScreenView('home', params: {
+      'user_type': widget.user == null ? 'guest' : 'authenticated',
+    });
   }
 
   @override
@@ -78,6 +80,14 @@ class _MainAppScreensState extends State<MainAppScreens> {
     );
 
     HapticFeedback.selectionClick();
+
+    // Analytics: Track tab navigation
+    final tabNames = ['home', 'leaderboard', 'wisdom', 'profile'];
+    if (index >= 0 && index < tabNames.length) {
+      AnalyticsService().logScreenView(tabNames[index], params: {
+        'user_type': widget.user == null ? 'guest' : 'authenticated',
+      });
+    }
   }
 
   @override

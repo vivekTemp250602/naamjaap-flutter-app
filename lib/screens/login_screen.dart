@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
-import 'package:naamjaap/providers/mantra_provider.dart';
-import 'package:naamjaap/screens/main_app_screens.dart';
+import 'package:naamjaap/services/analytics_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,6 +31,13 @@ class _LoginScreenState extends State<LoginScreen>
       vsync: this,
       duration: const Duration(seconds: 20),
     )..repeat();
+
+    // Analytics: Track login screen view and determine source
+    String source = 'unknown';
+    // You can pass source via constructor if needed
+    AnalyticsService().logScreenView('login', params: {
+      'source': source,
+    });
   }
 
   @override
@@ -45,6 +50,10 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<void> _handleGoogleSignIn() async {
     setState(() => _isLoading = true);
+
+    // Analytics: Track sign-in attempt
+    await AnalyticsService().logSignInAttempt('google', source: 'login_screen');
+
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -62,12 +71,24 @@ class _LoginScreenState extends State<LoginScreen>
           // Create/Update user in Firestore
           await _firestoreService.createOrUpdateUser(userCredential.user!);
 
+          // Analytics: Track successful sign-in
+          await AnalyticsService().logSignIn('google', source: 'login_screen');
+          await AnalyticsService().updateUserType(false);
+
           if (mounted) {
             _navigateToHome(userCredential.user);
           }
         }
+      } else {
+        // User cancelled
+        await AnalyticsService().logSignInFailure('google', 'user_cancelled',
+            source: 'login_screen');
       }
     } catch (e) {
+      // Analytics: Track sign-in failure
+      await AnalyticsService()
+          .logSignInFailure('google', e.toString(), source: 'login_screen');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login Failed: $e")),
@@ -78,21 +99,10 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  void _handleGuestLogin() {
-    // No terms check needed anymore
-    _navigateToHome(null);
-  }
-
   void _navigateToHome(User? user) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider(
-          create: (_) => MantraProvider(user?.uid ?? 'guest'),
-          child: MainAppScreens(user: user),
-        ),
-      ),
-    );
+    // Navigate back to previous screen (Profile/Leaderboard) after successful login
+    Navigator.pop(context);
+    // The user will be automatically updated via the auth state listener in MainAppScreens
   }
 
   void _launchURL(String url) async {
@@ -269,69 +279,6 @@ class _LoginScreenState extends State<LoginScreen>
                                             child: Text(
                                               l10n.login_signInWithGoogle,
                                               style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // DIVIDER OR
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                          child: Divider(
-                                              color: Colors.white
-                                                  .withOpacity(0.3))),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Text("OR",
-                                            style: TextStyle(
-                                                color: Colors.white
-                                                    .withOpacity(0.7))),
-                                      ),
-                                      Expanded(
-                                          child: Divider(
-                                              color: Colors.white
-                                                  .withOpacity(0.3))),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 16),
-
-                                  // GUEST MODE BUTTON
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 55,
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            color: Colors.white, width: 1.5),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      onPressed: () => _handleGuestLogin(),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.temple_buddhist,
-                                              color: Colors.white),
-                                          SizedBox(width: 10),
-                                          Flexible(
-                                            child: Text(
-                                              "Prarambh (Continue as Guest)",
-                                              style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold),
                                               overflow: TextOverflow.ellipsis,

@@ -1,7 +1,10 @@
 import 'dart:math' as math;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:naamjaap/l10n/app_localizations.dart';
-import 'package:naamjaap/screens/login_screen.dart';
+import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/screens/main_app_screens.dart';
+import 'package:naamjaap/services/analytics_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/locale_provider.dart';
@@ -174,6 +177,12 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
       _filteredLanguages = allLanguages;
       _searchController.addListener(_filterLanguages);
       _isInit = false;
+
+      // Analytics: Track screen view
+      AnalyticsService().logScreenView('language_selector', params: {
+        'is_first_run': widget.isFirstRun,
+        'current_locale': _selectedLocale.languageCode,
+      });
     }
     super.didChangeDependencies();
   }
@@ -603,13 +612,27 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
                         borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     localeProvider.setLocale(_selectedLocale, widget.uid);
+
+                    // Analytics: Track language selection
+                    await AnalyticsService().logLanguageSelected(
+                      _selectedLocale.languageCode,
+                      isFirstRun: widget.isFirstRun,
+                    );
+
                     if (widget.isFirstRun) {
+                      // NEW: Navigate directly to Main App in guest mode after language selection
+                      final user = FirebaseAuth.instance.currentUser;
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const LoginScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChangeNotifierProvider(
+                            create: (_) => MantraProvider(user?.uid ?? 'guest'),
+                            child: MainAppScreens(user: user),
+                          ),
+                        ),
+                      );
                     } else {
                       Navigator.of(context).pop();
                     }

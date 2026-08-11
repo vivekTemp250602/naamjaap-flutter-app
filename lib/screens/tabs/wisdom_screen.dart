@@ -460,10 +460,8 @@ class _WisdomScreenState extends State<WisdomScreen>
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepOrange,

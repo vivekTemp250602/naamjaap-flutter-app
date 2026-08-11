@@ -16,6 +16,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:naamjaap/providers/mantra_provider.dart';
+import 'package:naamjaap/screens/animated_splash_screen.dart';
 import 'package:naamjaap/screens/custom_mantra_editor.dart';
 import 'package:naamjaap/screens/garden_screen.dart';
 import 'package:naamjaap/screens/login_screen.dart';
@@ -209,8 +210,9 @@ class _ProfileScreenState extends State<ProfileScreen>
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
       if (mounted) {
+        // Navigate to splash screen which will redirect to main app in guest mode
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(builder: (_) => const AnimatedSplashScreen()),
           (route) => false,
         );
       }
@@ -1197,10 +1199,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                   style: TextStyle(color: Colors.grey.shade600)),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () => Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
-                    (r) => false),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen())),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepOrange,
                     foregroundColor: Colors.white,

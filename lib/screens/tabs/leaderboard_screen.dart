@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:naamjaap/l10n/app_localizations.dart'; // Ensure imported
+import 'package:naamjaap/screens/login_screen.dart';
 import 'package:naamjaap/services/ad_service.dart';
 import 'package:naamjaap/services/firestore_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -654,25 +655,43 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   Widget _buildGuestOrEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.lock_clock_rounded,
-              size: 80, color: Colors.white.withOpacity(0.5)),
-          const SizedBox(height: 20),
-          // LOC: Guest Mode Strings
-          Text(
-            AppLocalizations.of(context)!.guest_mode_title,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            AppLocalizations.of(context)!.guest_mode_desc,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white.withOpacity(0.8)),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.lock_clock_rounded,
+                size: 80, color: Colors.white.withOpacity(0.5)),
+            const SizedBox(height: 20),
+            // LOC: Guest Mode Strings
+            Text(
+              AppLocalizations.of(context)!.guest_mode_title,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              AppLocalizations.of(context)!.guest_mode_desc,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white.withOpacity(0.8)),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen())),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.deepOrange,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
+              child: Text(AppLocalizations.of(context)!.guest_signin_btn),
+            ),
+          ],
+        ),
       ),
     );
   }
